@@ -48,16 +48,7 @@ export default function ProductCard({ product }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
               <span className="mrp-strikethrough">₹{mrp}</span>
               {discountPercent > 0 && (
-                <span
-                  style={{
-                    fontSize: '0.65rem',
-                    color: '#0C831F',
-                    fontWeight: 800,
-                    background: '#E8F5E9',
-                    padding: '0.1rem 0.3rem',
-                    borderRadius: '3px'
-                  }}
-                >
+                <span className="discount-badge">
                   {discountPercent}% OFF
                 </span>
               )}

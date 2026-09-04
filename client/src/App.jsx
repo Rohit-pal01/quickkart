@@ -28,14 +28,14 @@ import {
 } from 'lucide-react';
 
 const CATEGORY_ITEMS = [
-  { name: 'All', label: 'All Items', Icon: Layers, color: '#0C831F', bg: '#E8F5E9' },
-  { name: 'Dairy & Breakfast', label: 'Dairy & Bread', Icon: Milk, color: '#0284C7', bg: '#E0F2FE' },
+  { name: 'All', label: 'All Items', Icon: Layers, color: '#0b5e54', bg: 'rgba(81, 226, 245, 0.22)' },
+  { name: 'Dairy & Breakfast', label: 'Dairy & Bread', Icon: Milk, color: '#0284C7', bg: 'rgba(157, 249, 239, 0.3)' },
   { name: 'Fruits & Vegetables', label: 'Fresh Fruits', Icon: Apple, color: '#16A34A', bg: '#DCFCE7' },
-  { name: 'Snacks & Munchies', label: 'Chips & Snacks', Icon: Cookie, color: '#D97706', bg: '#FEF3C7' },
-  { name: 'Beverages', label: 'Cold Drinks', Icon: CupSoda, color: '#EA580C', bg: '#FFEDD5' },
-  { name: 'Instant Food', label: 'Instant Food', Icon: Utensils, color: '#DC2626', bg: '#FEE2E2' },
-  { name: 'Chocolates & Sweets', label: 'Chocolates', Icon: Gift, color: '#9333EA', bg: '#F3E8FF' },
-  { name: 'Personal & Home', label: 'Home Hygiene', Icon: Sparkles, color: '#4F46E5', bg: '#EEF2FF' }
+  { name: 'Snacks & Munchies', label: 'Chips & Snacks', Icon: Cookie, color: '#9c384e', bg: 'rgba(255, 168, 182, 0.32)' },
+  { name: 'Beverages', label: 'Cold Drinks', Icon: CupSoda, color: '#088395', bg: 'rgba(81, 226, 245, 0.25)' },
+  { name: 'Instant Food', label: 'Instant Food', Icon: Utensils, color: '#704f57', bg: 'rgba(162, 128, 137, 0.22)' },
+  { name: 'Chocolates & Sweets', label: 'Chocolates', Icon: Gift, color: '#a83256', bg: 'rgba(255, 168, 182, 0.38)' },
+  { name: 'Personal & Home', label: 'Home Hygiene', Icon: Sparkles, color: '#09707e', bg: 'rgba(81, 226, 245, 0.35)' }
 ];
 
 function StoreContent() {
@@ -137,63 +137,98 @@ function StoreContent() {
           />
         ) : (
           <>
-            {/* Zepto/Blinkit Promo Banner */}
+            {/* Zepto/Blinkit Promo Banner with Custom Brand Palette */}
             <div
               style={{
-                background: 'linear-gradient(135deg, #0C831F 0%, #05420E 100%)',
+                background: 'linear-gradient(135deg, #0d2822 0%, #153a41 45%, #463b41 100%)',
                 color: 'white',
                 borderRadius: 'var(--radius-lg)',
-                padding: '1.25rem 1.5rem',
+                padding: '1.35rem 1.6rem',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 flexWrap: 'wrap',
                 gap: '1rem',
-                boxShadow: '0 4px 16px rgba(12, 131, 31, 0.25)',
-                marginBottom: '1.25rem',
+                boxShadow: '0 8px 24px rgba(81, 226, 245, 0.18)',
+                border: '1px solid rgba(81, 226, 245, 0.25)',
+                marginBottom: '1.35rem',
                 position: 'relative',
                 overflow: 'hidden'
               }}
             >
+              {/* Subtle ambient lighting */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '-40px',
+                  right: '-40px',
+                  width: '180px',
+                  height: '180px',
+                  background: 'radial-gradient(circle, rgba(255, 168, 182, 0.3) 0%, transparent 70%)',
+                  pointerEvents: 'none'
+                }}
+              />
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '-30px',
+                  left: '20%',
+                  width: '160px',
+                  height: '160px',
+                  background: 'radial-gradient(circle, rgba(81, 226, 245, 0.2) 0%, transparent 70%)',
+                  pointerEvents: 'none'
+                }}
+              />
+
               <div style={{ maxWidth: '520px', zIndex: 2 }}>
                 <div
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '0.35rem',
-                    background: 'rgba(255, 255, 255, 0.2)',
-                    padding: '0.2rem 0.6rem',
+                    background: 'rgba(237, 247, 86, 0.15)',
+                    border: '1px solid rgba(237, 247, 86, 0.45)',
+                    color: 'var(--dusty-white)',
+                    padding: '0.22rem 0.65rem',
                     borderRadius: 'var(--radius-full)',
                     fontSize: '0.72rem',
                     fontWeight: 800,
-                    marginBottom: '0.5rem',
+                    marginBottom: '0.55rem',
                     letterSpacing: '0.5px'
                   }}
                 >
-                  <Zap size={13} fill="#F7D000" color="#F7D000" />
+                  <Zap size={13} fill="var(--dusty-white)" color="var(--dusty-white)" />
                   <span>SUPERFAST QUICK COMMERCE</span>
                 </div>
-                <h1 style={{ fontSize: '1.5rem', fontWeight: 900, lineHeight: 1.25, marginBottom: '0.35rem' }}>
-                  Groceries delivered in 8 to 10 minutes.
+                <h1 style={{ fontSize: '1.55rem', fontWeight: 900, lineHeight: 1.25, marginBottom: '0.35rem', letterSpacing: '-0.4px' }}>
+                  Groceries & Essentials delivered in <span style={{ color: 'var(--blue-green)' }}>8 to 10 minutes</span>.
                 </h1>
-                <p style={{ opacity: 0.9, fontSize: '0.84rem' }}>
+                <p style={{ opacity: 0.9, fontSize: '0.86rem', color: '#E2E8F0' }}>
                   Over 1,000+ daily essentials from your nearest micro dark store.
                 </p>
               </div>
 
               <div
                 style={{
-                  background: 'rgba(255, 255, 255, 0.15)',
-                  backdropFilter: 'blur(8px)',
-                  padding: '0.85rem 1.1rem',
+                  background: 'rgba(255, 168, 182, 0.12)',
+                  backdropFilter: 'blur(10px)',
+                  padding: '0.95rem 1.25rem',
                   borderRadius: 'var(--radius-md)',
                   textAlign: 'center',
-                  border: '1px solid rgba(255, 255, 255, 0.25)'
+                  border: '1.5px solid rgba(255, 168, 182, 0.35)',
+                  zIndex: 2,
+                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)'
                 }}
               >
-                <div style={{ fontSize: '0.72rem', fontWeight: 800, opacity: 0.9 }}>FREE DELIVERY</div>
-                <div style={{ fontSize: '1.35rem', fontWeight: 900, color: '#F7D000' }}>ABOVE ₹199</div>
-                <div style={{ fontSize: '0.68rem', opacity: 0.85 }}>Auto applied at checkout</div>
+                <div style={{ fontSize: '0.74rem', fontWeight: 800, color: 'var(--pink-sand)', letterSpacing: '0.5px' }}>
+                  SPECIAL OFFER
+                </div>
+                <div style={{ fontSize: '1.4rem', fontWeight: 900, color: 'var(--dusty-white)', margin: '0.1rem 0' }}>
+                  FREE DELIVERY
+                </div>
+                <div style={{ fontSize: '0.72rem', color: 'var(--blue-green)', fontWeight: 700 }}>
+                  On orders above ₹199
+                </div>
               </div>
             </div>
 
@@ -306,10 +341,10 @@ function StoreContent() {
               <ShoppingCart size={18} />
             </div>
             <div>
-              <div style={{ fontSize: '0.72rem', opacity: 0.9, fontWeight: 700 }}>
+              <div style={{ fontSize: '0.72rem', color: 'var(--blue-green)', fontWeight: 800, letterSpacing: '0.3px' }}>
                 {itemCount} {itemCount === 1 ? 'ITEM' : 'ITEMS'}
               </div>
-              <div style={{ fontSize: '1.1rem', fontWeight: 900 }}>₹{totalAmount}</div>
+              <div style={{ fontSize: '1.15rem', fontWeight: 900, color: 'var(--dusty-white)' }}>₹{totalAmount}</div>
             </div>
           </div>
 

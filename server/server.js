@@ -6,6 +6,7 @@ const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
+const path = require('path');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -13,6 +14,7 @@ const app = express();
 // Global Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Connect Database
 connectDB();

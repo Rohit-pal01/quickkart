@@ -1,15 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  /* Zepto & Blinkit Inspired Vibrant Quick Commerce Palette */
+  /* User Custom Design Palette */
+  --bright-blue: #51e2f5;
+  --blue-green: #9df9ef;
+  --dusty-white: #edf756;
+  --pink-sand: #ffa8B6;
+  --dark-sand: #a28089;
+
   --primary: #0C831F;
   --primary-hover: #086616;
   --primary-light: #E8F5E9;
   --primary-dark: #05420E;
   
   --zepto-purple: #3A0066;
-  --zepto-pink: #FF3269;
-  --blinkit-yellow: #F7D000;
+  --zepto-pink: var(--pink-sand);
+  --blinkit-yellow: var(--dusty-white);
   --blinkit-dark-yellow: #B88E00;
   
   --bg-main: #F4F6F8;
@@ -113,18 +119,24 @@ body {
 }
 
 .delivery-eta-badge {
-  background: #F8F9FA;
-  border: 1px solid #E2E8F0;
-  padding: 0.3rem 0.75rem;
+  background: rgba(157, 249, 239, 0.18);
+  border: 1.5px solid var(--blue-green);
+  padding: 0.32rem 0.75rem;
   border-radius: var(--radius-md);
   display: flex;
   flex-direction: column;
+  transition: var(--transition);
+}
+
+.delivery-eta-badge:hover {
+  background: rgba(157, 249, 239, 0.32);
+  border-color: var(--bright-blue);
 }
 
 .eta-time {
   font-size: 0.78rem;
   font-weight: 900;
-  color: #0C831F;
+  color: #0a5f55;
   display: flex;
   align-items: center;
   gap: 0.25rem;
@@ -161,8 +173,8 @@ body {
 .search-input:focus {
   outline: none;
   background: #FFFFFF;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(12, 131, 31, 0.12);
+  border-color: var(--bright-blue);
+  box-shadow: 0 0 0 4px rgba(81, 226, 245, 0.25);
 }
 
 .search-icon {
@@ -201,13 +213,13 @@ body {
 }
 
 .cart-btn-desktop {
-  background: var(--primary);
+  background: linear-gradient(135deg, #0C831F 0%, #086616 100%);
   color: white;
   padding: 0.65rem 1.35rem;
   border-radius: var(--radius-md);
   font-weight: 800;
   font-size: 0.92rem;
-  border: none;
+  border: 1.5px solid transparent;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -217,7 +229,8 @@ body {
 }
 
 .cart-btn-desktop:hover {
-  background: var(--primary-hover);
+  border-color: var(--bright-blue);
+  box-shadow: 0 4px 16px rgba(81, 226, 245, 0.35);
   transform: translateY(-1px);
 }
 
@@ -259,10 +272,11 @@ body {
 }
 
 .cat-circle-card.active .cat-icon-circle {
-  border-color: var(--primary);
-  background: var(--primary-light);
+  border-color: var(--bright-blue);
+  background: linear-gradient(135deg, var(--bright-blue) 0%, var(--blue-green) 100%);
+  color: #0c433e !important;
   transform: scale(1.08);
-  box-shadow: 0 4px 12px rgba(12, 131, 31, 0.22);
+  box-shadow: 0 4px 14px rgba(81, 226, 245, 0.35);
 }
 
 .cat-name-label {
@@ -329,17 +343,18 @@ body {
   position: absolute;
   top: 0.5rem;
   left: 0.5rem;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid var(--blue-green);
   backdrop-filter: blur(4px);
-  padding: 0.2rem 0.45rem;
+  padding: 0.2rem 0.5rem;
   border-radius: var(--radius-sm);
   font-size: 0.68rem;
   font-weight: 800;
-  color: #0C831F;
+  color: #0b5e54;
   display: flex;
   align-items: center;
-  gap: 0.2rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  gap: 0.25rem;
+  box-shadow: 0 2px 6px rgba(81, 226, 245, 0.18);
 }
 
 .unit-tag {
@@ -396,11 +411,22 @@ body {
   text-decoration: line-through;
 }
 
+.discount-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #262a00;
+  background: var(--dusty-white);
+  padding: 0.12rem 0.38rem;
+  border-radius: 4px;
+  border: 1px solid rgba(162, 128, 137, 0.3);
+  letter-spacing: 0.2px;
+}
+
 /* Zepto / Blinkit ADD Button */
 .btn-add {
   background: #FFFFFF;
-  color: #0C831F;
-  border: 1.5px solid #0C831F;
+  color: #0b5e54;
+  border: 1.5px solid var(--blue-green);
   font-weight: 800;
   font-size: 0.82rem;
   padding: 0.38rem 1rem;
@@ -408,23 +434,26 @@ body {
   cursor: pointer;
   transition: var(--transition);
   text-transform: uppercase;
-  box-shadow: 0 1px 3px rgba(12, 131, 31, 0.12);
+  box-shadow: 0 1px 4px rgba(81, 226, 245, 0.15);
 }
 
 .btn-add:hover {
-  background: #0C831F;
-  color: #FFFFFF;
-  box-shadow: 0 3px 8px rgba(12, 131, 31, 0.25);
+  background: linear-gradient(135deg, var(--bright-blue) 0%, var(--blue-green) 100%);
+  color: #0c433e;
+  border-color: var(--bright-blue);
+  box-shadow: 0 3px 10px rgba(81, 226, 245, 0.35);
+  transform: translateY(-1px);
 }
 
 .qty-counter {
   display: flex;
   align-items: center;
-  background: #0C831F;
+  background: #0b5e54;
   color: white;
   border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: 0 2px 6px rgba(12, 131, 31, 0.25);
+  box-shadow: 0 2px 8px rgba(11, 94, 84, 0.3);
+  border: 1px solid var(--blue-green);
 }
 
 .qty-btn {
@@ -458,11 +487,12 @@ body {
   transform: translateX(-50%);
   width: calc(100% - 2rem);
   max-width: 520px;
-  background: linear-gradient(135deg, #0C831F 0%, #065F46 100%);
+  background: linear-gradient(135deg, #0b2e26 0%, #133940 50%, var(--dark-sand) 100%);
+  border: 1.5px solid var(--bright-blue);
   color: white;
   padding: 0.85rem 1.25rem;
   border-radius: var(--radius-xl);
-  box-shadow: 0 8px 24px rgba(12, 131, 31, 0.4);
+  box-shadow: 0 8px 26px rgba(81, 226, 245, 0.32);
   display: flex;
   align-items: center;
   justify-content: space-between;
