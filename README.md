@@ -1,211 +1,152 @@
-# ⚡ QuickKart — Full-Stack Quick Commerce & Juspay Integration
+<div align="center">
 
-[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
-[![Vite](https://img.shields.io/badge/Vite-8.2-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![Node.js](https://img.shields.io/badge/Node.js-20+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![Express](https://img.shields.io/badge/Express-5.2-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose_9-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+# ⚡ QuickKart
+
+### *Ultra-Fast 10-Minute Quick Commerce Engine & Juspay Integration*
+
+[![React](https://img.shields.io/badge/Frontend-React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Bundler-Vite_8.2-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Node.js](https://img.shields.io/badge/Backend-Node.js_20+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Framework-Express_5.2-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/Database-MongoDB_Mongoose_9-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
 [![Juspay](https://img.shields.io/badge/Payment-Juspay_ExpressCheckout-003366?style=for-the-badge)](https://juspay.in/)
-[![License](https://img.shields.io/badge/License-ISC-blue?style=for-the-badge)](LICENSE)
 
-> A modern, production-grade 10-minute quick-commerce web platform inspired by Blinkit and Zepto. Features catalog browsing, dynamic cart drawer with free delivery progress calculations, multi-address geocoding, server-side tamper-proof price reconciliation, **Juspay ExpressCheckout payment gateway integration with asynchronous webhooks**, live order tracking, and an administrative dark-store management dashboard.
+<p align="center">
+  <b>A full-stack quick-commerce platform inspired by Blinkit & Zepto.</b><br>
+  Built with end-to-end catalog discovery, real-time cart bill calculations, multi-address geocoding,<br>
+  <b>Juspay ExpressCheckout payment gateway</b> with asynchronous webhook reconciliation, live order progression, and a dark-store warehouse dashboard.
+</p>
 
----
-
-## 📑 Table of Contents
-
-- [Features Overview](#-features-overview)
-- [Architecture & Tech Stack](#-architecture--tech-stack)
-- [Project Directory Structure](#-project-directory-structure)
-- [Juspay Payment Integration Flow](#-juspay-payment-integration-flow)
-- [Order Lifecycle State Machine](#-order-lifecycle-state-machine)
-- [Getting Started](#-getting-started)
-  - [Prerequisites](#prerequisites)
-  - [1. Backend Setup](#1-backend-setup)
-  - [2. Frontend Setup](#2-frontend-setup)
-- [Environment Configuration](#-environment-configuration)
-- [Default Demo Credentials](#-default-demo-credentials)
-- [REST API Reference](#-rest-api-reference)
-- [Placement & Resume-Ready Section](#-placement--resume-ready-section)
-- [Technical Interview Q&A](#-technical-interview-qa)
-- [Future Enhancements](#-future-enhancements)
-- [Author & Links](#-author)
-- [License](#-license)
+<p align="center">
+  <a href="#-quick-start">Quick Start</a> •
+  <a href="#-key-features">Key Features</a> •
+  <a href="#-system-architecture">Architecture</a> •
+  <a href="#-juspay-payment-lifecycle">Juspay Flow</a> •
+  <a href="#-resume--interview-guide">Interview Guide</a> •
+  <a href="#-api-specifications">API Specs</a>
+</p>
 
 ---
 
-## ✨ Features Overview
+</div>
 
-### 🛒 Customer Storefront
-- **Instant Category Browsing**: Smooth filtering across Dairy, Fruits & Vegetables, Snacks, Beverages, Instant Food, and Bakery.
-- **Real-Time Instant Search**: Live multi-field query matching against product titles and categories.
-- **Interactive Cart & Slide-out Drawer**:
-  - Incremental quantity updates with stock ceiling validation.
-  - Dynamic free delivery progress bar (qualifies above ₹199).
-  - Clear bill breakdown: item subtotal, delivery fee, packaging charge, and grand total.
-- **Multi-Address Management**: Add and switch between Home, Work, and Other addresses with geocoded labels.
-- **10-Minute Delivery Experience**: Dynamic ETA indicator and dark-store proximity simulator.
+## 🌟 Key Highlights
 
-### 💳 Juspay Payment Gateway Integration
-- **Official SDK Integration**: Engineered with Juspay's `expresscheckout-nodejs` SDK.
-- **Two-Phase Session Creation**: Secure server-side session initialization with customer tokens and unique `orderId`.
-- **ExpressCheckout Modal**: Sleek gateway interface supporting UPI (Google Pay, PhonePe, Paytm), Credit/Debit Cards, Net Banking, and Wallets.
-- **Asynchronous Webhook Reconciliation**: Server-to-server webhook endpoint (`/api/payments/webhook`) handling `CHARGED` and `PAYMENT_FAILED` events.
-- **Automated Stock Deduction**: Inventory is atomically reserved and deducted upon verified payment confirmation.
-- **Instant Sandbox Simulator**: Built-in 1-click sandbox payment simulator for local development without active merchant keys.
-
-### 📦 Live Order Progression & Tracking
-- **Step-by-Step Delivery Pipeline**: Visual progress tracker:
-  `Order Placed` ➔ `Confirmed` ➔ `Packed` ➔ `Out for Delivery` ➔ `Delivered`.
-- **Live Polling Updates**: Automatically refreshes order status every 4 seconds.
-- **Order Cancellation**: In-app cancellation available while order is in `PENDING_PAYMENT` or `CONFIRMED` states.
-
-### 🛠️ Dark Store Admin Operations
-- **Store Performance Metrics**: Live counters for total orders, delivered volume, active catalog size, and gross platform revenue.
-- **Order Dispatch Controller**: Advance orders through warehouse lifecycle stages in real time.
-- **Catalog Management**: Add new items, update pricing and units, adjust stock levels, or toggle product visibility.
-
-### 🔒 Enterprise Security & Resilience
-- **Zero-Config Database**: Automatic fallback to embedded `mongodb-memory-server` if local MongoDB or MongoDB Atlas is offline.
-- **Catalog Auto-Seeder**: Automatically seeds 19 quick-commerce products and demo accounts on startup.
-- **Server-Side Price Authority**: Subtotals, packaging fees, and discounts are computed strictly from database records, preventing client-side cart tampering.
-- **Role-Based Access Control (RBAC)**: Secure routes protected with JSON Web Tokens (JWT) and Bcrypt password hashing.
+<table>
+  <tr>
+    <td width="50%">
+      <h3>⚡ 10-Minute Hyperlocal Storefront</h3>
+      <ul>
+        <li><b>Instant Catalog:</b> Multi-category filtering across Dairy, Produce, Snacks, Beverages, Bakery, and Instant Meals.</li>
+        <li><b>Dynamic Cart Engine:</b> Real-time stock cap validation, threshold-based free delivery tracker (₹199), and itemized fee breakdown.</li>
+        <li><b>Multi-Address Hub:</b> Manage tagged addresses (Home, Work, Other) with instant active selector.</li>
+      </ul>
+    </td>
+    <td width="50%">
+      <h3>💳 Juspay ExpressCheckout Integration</h3>
+      <ul>
+        <li><b>Enterprise Payment Gateway:</b> Integrated via official <code>expresscheckout-nodejs</code> SDK.</li>
+        <li><b>Multi-Rail Checkout:</b> Seamless support for UPI (GPay, PhonePe, Paytm), Credit/Debit Cards, and Net Banking.</li>
+        <li><b>Asynchronous Webhooks:</b> Server-to-server cryptographic reconciliation with automated inventory decrement on <code>CHARGED</code> events.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <h3>📦 Real-Time Order Dispatch Pipeline</h3>
+      <ul>
+        <li><b>State Machine:</b> <code>Pending</code> ➔ <code>Confirmed</code> ➔ <code>Packed</code> ➔ <code>Out for Delivery</code> ➔ <code>Delivered</code>.</li>
+        <li><b>Live Progress Tracker:</b> Visual timeline polling every 4 seconds for immediate warehouse updates.</li>
+        <li><b>Self-Serve Cancellation:</b> Safe cancellation before fulfillment kicks off.</li>
+      </ul>
+    </td>
+    <td width="50%">
+      <h3>🏪 Dark-Store Admin Operations</h3>
+      <ul>
+        <li><b>Inventory Management:</b> Live stock adjustments, pricing controls, and catalog toggle directly from the warehouse view.</li>
+        <li><b>Lifecycle Dispatcher:</b> Advance customer orders through packing, dispatch, and delivery stages.</li>
+        <li><b>Business Metrics:</b> Live metrics tracking total orders, completed volume, active SKUs, and gross revenue.</li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
 ---
 
-## 🏗️ Architecture & Tech Stack
+## 🏛️ System Architecture
 
 ```
-┌────────────────────────────────────────────────────────┐
-│                   QuickKart Client                     │
-│          React 19 + Vite + Context API + CSS           │
-└───────────────────────────┬────────────────────────────┘
-                            │ REST APIs & JWT
-┌───────────────────────────▼────────────────────────────┐
-│                   QuickKart Backend                    │
-│                 Node.js + Express 5                    │
-│   ┌────────────────────────────────────────────────┐   │
-│   │ Controllers (Auth, Product, Order, Payment)    │   │
-│   │ Middleware (JWT Protect, RBAC, Error Handler)  │   │
-│   │ Mongoose ODM (User, Product, Order, Payment)   │   │
-│   └───────────────────────┬────────────────────────┘   │
-└───────────────┬───────────┴─────────────────┬──────────┘
-                │                             │
-    ┌───────────▼────────────┐    ┌───────────▼───────────┐
-    │     MongoDB Atlas      │    │    Juspay Gateway     │
-    │  (or In-Memory Server) │    │  (ExpressCheckout)   │
-    └────────────────────────┘    └───────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                    QuickKart Web Client                         │
+│       React 19 • Vite • Context API • Lucide React • CSS3       │
+└──────────────────────────────┬──────────────────────────────────┘
+                               │ JSON REST APIs (JWT Bearer)
+┌──────────────────────────────▼──────────────────────────────────┐
+│                   Node.js & Express 5 API Server                │
+│  ┌───────────────────────────────────────────────────────────┐  │
+│  │ Controllers: Auth • Products • Orders • Payments          │  │
+│  │ Middleware: JWT Protect • RBAC Guard • Central Error Log  │  │
+│  │ Security: Server-side Price Verification & Tamper Defense │  │
+│  └───────────────────────────┬───────────────────────────────┘  │
+└──────────────┬───────────────┴─────────────────┬────────────────┘
+               │                                 │
+     ┌─────────▼──────────┐            ┌─────────▼──────────┐
+     │   MongoDB Atlas    │            │   Juspay Gateway   │
+     │  (or Embedded DB)  │            │  (ExpressCheckout) │
+     └────────────────────┘            └────────────────────┘
 ```
 
-| Component | Technologies Used |
-| :--- | :--- |
-| **Frontend** | React 19, Vite, Lucide React (Icons), Canvas-Confetti, Modern Responsive CSS |
-| **Backend** | Node.js (v18+), Express.js 5.2, CORS, Dotenv |
-| **Database** | MongoDB, Mongoose 9.9, Embedded `mongodb-memory-server` (Zero-config fallback) |
-| **Payment Gateway** | Juspay ExpressCheckout (`expresscheckout-nodejs` SDK) |
-| **Authentication** | JSON Web Tokens (`jsonwebtoken`), Password Hashing (`bcrypt`), RBAC middleware |
+### Core Technology Stack
+
+| Domain | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Frontend** | React 19, Vite, Lucide Icons | Responsive UI, single-page reactive state, fast bundling |
+| **Backend** | Node.js, Express.js 5.2 | High-throughput REST API server, webhook listeners |
+| **Database** | MongoDB, Mongoose 9.9 | Document store with schemas, validation, and auto-seeding |
+| **Fallback DB** | `mongodb-memory-server` | Zero-configuration embedded database for instant local evaluation |
+| **Payments** | Juspay ExpressCheckout SDK | Server session initiation, webhooks, and payment reconciliation |
+| **Security** | JWT, Bcrypt | Cryptographic authentication, password hashing, and RBAC |
 
 ---
 
-## 📁 Project Directory Structure
+## 💳 Juspay Payment Lifecycle
 
-```
-quick-commerce-project/
-├── client/                     # Frontend Application (React + Vite)
-│   ├── public/                 # Static assets
-│   ├── src/
-│   │   ├── components/         # UI Components
-│   │   │   ├── AdminDashboard.jsx  # Warehouse management & revenue stats
-│   │   │   ├── AuthModal.jsx       # Login/Register with 1-click Demo buttons
-│   │   │   ├── CartDrawer.jsx      # Slide-out bill & delivery progress
-│   │   │   ├── JuspayModal.jsx     # ExpressCheckout payment modal
-│   │   │   ├── LocationModal.jsx   # Multi-address selector
-│   │   │   ├── Navbar.jsx          # Header with search & cart badges
-│   │   │   ├── OrderTracking.jsx   # Real-time delivery progress timeline
-│   │   │   └── ProductCard.jsx     # Card with +/- stock counters
-│   │   ├── context/            # Global React State
-│   │   │   ├── AuthContext.jsx     # Session, JWT, user roles
-│   │   │   └── CartContext.jsx     # Cart items, drawer open/close, bill math
-│   │   ├── services/           # Axios / Fetch API service abstractions
-│   │   │   └── api.js
-│   │   ├── App.jsx             # Main Application layout & routing
-│   │   └── index.css           # Global design system & typography
-│   ├── package.json
-│   └── vite.config.js
-│
-├── server/                     # Backend API Server (Node.js + Express)
-│   ├── config/
-│   │   ├── db.js               # MongoDB connection with auto in-memory fallback
-│   │   └── juspay.js           # Juspay SDK initialization
-│   ├── controllers/            # Request handlers
-│   │   ├── authController.js   # Register, login, address management
-│   │   ├── orderController.js  # Order placement, status update, cancellation
-│   │   ├── paymentController.js# Juspay session, webhooks, sandbox simulation
-│   │   └── productController.js# Product listing, filtering, dark store inventory
-│   ├── middleware/
-│   │   ├── authMiddleware.js   # JWT authentication & role authorization
-│   │   └── errorHandler.js     # Centralized error handler
-│   ├── models/                 # Mongoose schemas
-│   │   ├── Order.js            # Order schema & item snapshots
-│   │   ├── Payment.js          # Juspay transaction logs
-│   │   ├── Product.js          # Catalog schema & stock tracking
-│   │   └── User.js             # User credentials & saved addresses
-│   ├── routes/                 # Express API routes
-│   │   ├── authRoutes.js
-│   │   ├── orderRoutes.js
-│   │   ├── paymentRoutes.js
-│   │   └── productRoutes.js
-│   ├── seed/
-│   │   └── productsSeed.js     # 19 initial quick-commerce items & demo users
-│   ├── .env.example            # Environment template
-│   ├── package.json
-│   └── server.js               # Server entry point
-│
-├── SRS_QuickKart.md            # Detailed Software Requirements Specification
-├── WALKTHROUGH.md              # Architecture & Verification Walkthrough
-└── README.md                   # Project documentation (this file)
-```
-
----
-
-## 💳 Juspay Payment Integration Flow
+The sequence below illustrates how QuickKart orchestrates secure payments, webhook validation, and inventory reservations:
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor Customer
-    participant Frontend as QuickKart Client
-    participant Backend as QuickKart Server
+    participant Client as React Client
+    participant Server as Express Server
     participant DB as MongoDB
     participant Juspay as Juspay Gateway
 
-    Customer->>Frontend: Clicks "Proceed to Pay"
-    Frontend->>Backend: POST /api/orders (items, address)
-    Backend->>DB: Validate stock & compute tamper-proof total
-    Backend->>DB: Save Order (Status: PENDING_PAYMENT)
-    Backend-->>Frontend: Return Order ID & Total
+    Customer->>Client: Clicks "Proceed to Pay"
+    Client->>Server: POST /api/orders (cart items, address)
+    Note over Server: Server recalculates prices from DB<br/>(tamper-proof validation)
+    Server->>DB: Save Order (Status: PENDING_PAYMENT)
+    Server-->>Client: Return Order ID & Payable Amount
 
-    Frontend->>Backend: POST /api/payments/create-session (orderId)
-    Backend->>Juspay: Initiate Session (Order ID, Amount, Customer info)
-    Juspay-->>Backend: Return Payment Session Token / Link
-    Backend-->>Frontend: Return Session Token
-    Frontend->>Customer: Display Juspay ExpressCheckout Modal
+    Client->>Server: POST /api/payments/create-session
+    Server->>Juspay: Initiate Session (Order ID, Amount, Customer Info)
+    Juspay-->>Server: Return Session Token & SDK Parameters
+    Server-->>Client: Deliver Session Token
+    Client->>Customer: Present Juspay ExpressCheckout Modal
 
-    alt Option A: Complete Payment in Gateway
-        Customer->>Juspay: Authorize Payment (UPI / Card / NetBanking)
-        Juspay-->>Backend: POST /api/payments/webhook (Status: CHARGED)
-        Backend->>DB: Update Order -> CONFIRMED
-        Backend->>DB: Decrement Product Stock
-        Backend->>DB: Save Payment Audit Log
-        Backend-->>Juspay: 200 OK
-    else Option B: Local Sandbox Simulator
-        Customer->>Backend: POST /api/payments/simulate-sandbox-pay
-        Backend->>DB: Update Order -> CONFIRMED & Decrement Stock
+    alt Option 1: Live Payment Flow
+        Customer->>Juspay: Authorize via UPI / Cards / Net Banking
+        Juspay-->>Server: POST /api/payments/webhook (Status: CHARGED)
+        Server->>DB: Update Order -> CONFIRMED & Decrement Stock
+        Server-->>Juspay: 200 OK
+    else Option 2: Local Sandbox Simulation
+        Customer->>Server: POST /api/payments/simulate-sandbox-pay
+        Server->>DB: Update Order -> CONFIRMED & Decrement Stock
     end
 
-    Frontend->>Backend: GET /api/orders/:orderId
-    Backend-->>Frontend: Order Confirmed
-    Frontend->>Customer: Trigger Confetti & Open Live Tracking
+    Client->>Server: Poll GET /api/orders/:id
+    Server-->>Client: Status: CONFIRMED
+    Client->>Customer: Confetti Animation & Open Live Delivery Tracker
 ```
 
 ---
@@ -214,218 +155,189 @@ sequenceDiagram
 
 ```mermaid
 stateDiagram-v2
-    [*] --> PENDING_PAYMENT: Order Created
-    PENDING_PAYMENT --> CONFIRMED: Payment CHARGED (Webhook / Simulation)
-    PENDING_PAYMENT --> CANCELLED: User Cancels / Payment Expired
-    CONFIRMED --> PACKED: Dark Store Staff Packs Items
-    CONFIRMED --> CANCELLED: Customer Cancels before packing
-    PACKED --> OUT_FOR_DELIVERY: Assigned to Delivery Rider
-    OUT_FOR_DELIVERY --> DELIVERED: Reached Customer's Doorstep
+    [*] --> PENDING_PAYMENT: Customer initiates checkout
+    PENDING_PAYMENT --> CONFIRMED: Payment CHARGED (Webhook / Sandbox Sim)
+    PENDING_PAYMENT --> CANCELLED: Order cancelled before payment
+    CONFIRMED --> PACKED: Dark Store picks & packs items
+    CONFIRMED --> CANCELLED: Cancelled prior to packaging
+    PACKED --> OUT_FOR_DELIVERY: Assigned to delivery partner
+    OUT_FOR_DELIVERY --> DELIVERED: Reached customer doorstep
     DELIVERED --> [*]
     CANCELLED --> [*]
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
-- **Node.js**: v18.0.0 or higher ([Download Node.js](https://nodejs.org/))
-- **npm**: v9.0.0 or higher
-- *(Optional)* **MongoDB**: Local MongoDB service or MongoDB Atlas connection string. *(If left unconfigured, QuickKart automatically spins up an embedded in-memory database).*
+- **Node.js**: v18.0.0 or later ([Download Node](https://nodejs.org/))
+- **npm**: v9.0.0 or later
+- *(Optional)* **MongoDB**: Local MongoDB or MongoDB Atlas URI. *(QuickKart includes an embedded in-memory MongoDB that starts automatically if no URI is provided).*
 
 ---
 
-### 1. Backend Setup
+### Step 1: Clone the Repository
+```bash
+git clone https://github.com/Rohit-pal01/quickkart.git
+cd quickkart
+```
 
-1. Open your terminal and navigate to the `server` folder:
-   ```bash
-   cd server
-   ```
+### Step 2: Start Backend Server
+```bash
+cd server
+npm install
+npm start
+```
+> The server will boot at `http://localhost:5000`. If no local MongoDB is running, it automatically starts the embedded in-memory MongoDB and seeds 19 quick-commerce items and demo users.
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Setup environment configuration:
-   ```bash
-   cp .env.example .env
-   ```
-
-4. Start the server:
-   ```bash
-   npm start
-   ```
-   The backend starts at `http://localhost:5000` with the following console output:
-   ```text
-   ✅ MongoDB Connected (or In-Memory MongoDB Connected)
-   ⚡ Initializing catalog with sample quick-commerce products...
-   Server running on port 5000
-   ```
+### Step 3: Start Frontend Client
+In a new terminal window:
+```bash
+cd client
+npm install
+npm run dev
+```
+> Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ---
 
-### 2. Frontend Setup
+## 🔑 Demo Access Accounts
 
-1. Open a second terminal window and navigate to the `client` folder:
-   ```bash
-   cd client
-   ```
+For instant testing, use the **1-Click Demo** buttons inside the login popup, or enter:
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Launch the Vite development server:
-   ```bash
-   npm run dev
-   ```
-
-4. Open [http://localhost:5173](http://localhost:5173) in your browser.
+| Role | Email | Password | Allowed Capabilities |
+| :--- | :--- | :--- | :--- |
+| 🛍️ **Customer** | `customer@quickkart.com` | `customer123` | Add products, switch addresses, checkout with Juspay, live order tracking |
+| 🏪 **Store Admin** | `admin@quickkart.com` | `admin123` | Real-time dark-store inventory control, price updates, order dispatch status transitions |
 
 ---
 
 ## ⚙️ Environment Configuration
 
-### Backend (`server/.env`)
+Copy the sample environment file in `server/`:
+```bash
+cp server/.env.example server/.env
+```
 
-| Variable | Description | Default / Example Value |
+| Key | Description | Default / Example Value |
 | :--- | :--- | :--- |
-| `PORT` | Port the Express server listens on | `5000` |
-| `MONGO_URI` | MongoDB connection string (Atlas or local) | `mongodb://localhost:27017/quickkart` |
-| `JWT_SECRET` | Secret key used to sign JWT tokens | `quickkart_super_secure_jwt_token_secret_key_2026` |
-| `NODE_ENV` | Environment stage (`development` / `production`) | `development` |
-| `APP_BASE_URL` | Frontend URL for CORS authorization | `http://localhost:5173` |
-| `JUSPAY_MERCHANT_ID` | Juspay Merchant identifier | `sandbox_quickkart` |
+| `PORT` | Port for Express API server | `5000` |
+| `MONGO_URI` | MongoDB Connection URI *(Optional)* | `mongodb://localhost:27017/quickkart` |
+| `JWT_SECRET` | Secret key for signing JWT tokens | `quickkart_super_secure_jwt_token_secret_key_2026` |
+| `NODE_ENV` | Environment state | `development` |
+| `APP_BASE_URL` | Frontend origin for CORS authorization | `http://localhost:5173` |
+| `JUSPAY_MERCHANT_ID` | Juspay merchant identifier | `sandbox_quickkart` |
 | `JUSPAY_API_KEY` | Juspay API / Sub-account key | `sandbox_api_key_demo` |
-| `JUSPAY_BASE_URL` | Juspay Gateway Endpoint | `https://sandbox.juspay.in` |
-| `JUSPAY_CLIENT_ID` | Juspay Client ID | `quickkart_client` |
-
-> [!TIP]
-> **Zero-Config Database**: If `MONGO_URI` is blank or unreachable, QuickKart starts an embedded `mongodb-memory-server` in the background with auto-seeded demo data.
+| `JUSPAY_BASE_URL` | Juspay gateway endpoint | `https://sandbox.juspay.in` |
 
 ---
 
-## 🔑 Default Demo Credentials
+## 📡 API Specifications
 
-You can log in directly using the **1-Click Demo Buttons** inside the Login Modal, or manually enter:
+<details>
+<summary><b>🔍 Click to Expand REST API Reference</b></summary>
+<br>
 
-| Role | Email | Password | Capabilities |
-| :--- | :--- | :--- | :--- |
-| **Customer** | `customer@quickkart.com` | `customer123` | Add to cart, choose address, pay with Juspay, track live delivery |
-| **Admin** | `admin@quickkart.com` | `admin123` | Dark store inventory, change stock/pricing, view revenue, advance order stages |
+### Authentication Endpoints (`/api/auth`)
+- `POST /api/auth/register` — Create a new customer profile.
+- `POST /api/auth/login` — Authenticate credentials and retrieve JWT bearer token.
+- `GET  /api/auth/me` — Retrieve active session profile and saved addresses *(Protected)*.
+- `POST /api/auth/address` — Save a delivery address *(Protected)*.
+- `DELETE /api/auth/address/:addressId` — Delete a saved delivery address *(Protected)*.
 
----
+### Catalog Endpoints (`/api/products`)
+- `GET  /api/products` — Filter products by `category` or `search` query.
+- `GET  /api/products/categories` — Retrieve distinct category listing.
+- `GET  /api/products/:id` — Fetch detailed product profile.
+- `POST /api/products` — Create new inventory SKU *(Admin only)*.
+- `PUT  /api/products/:id` — Update stock levels, price, or visibility *(Admin only)*.
+- `DELETE /api/products/:id` — Delete product from catalog *(Admin only)*.
 
-## 📡 REST API Reference
+### Order Operations (`/api/orders`)
+- `POST /api/orders` — Place order with server-calculated tamper-proof total *(Protected)*.
+- `GET  /api/orders/my-orders` — List current customer's order history *(Protected)*.
+- `GET  /api/orders/:identifier` — Get order status by MongoDB ID or readable `orderId` *(Protected)*.
+- `POST /api/orders/:id/cancel` — Cancel pending/confirmed order *(Protected)*.
+- `GET  /api/orders` — View global warehouse orders *(Admin & Delivery Staff)*.
+- `PUT  /api/orders/:id/status` — Transition order state *(Admin & Delivery Staff)*.
 
-### Authentication (`/api/auth`)
-| Method | Endpoint | Access | Description |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/api/auth/register` | Public | Register a new customer account |
-| `POST` | `/api/auth/login` | Public | Authenticate user and receive JWT |
-| `GET` | `/api/auth/me` | Protected | Fetch current logged-in user profile & addresses |
-| `POST` | `/api/auth/address` | Protected | Add a new delivery address |
-| `DELETE` | `/api/auth/address/:addressId` | Protected | Remove a saved delivery address |
+### Payment & Webhook Operations (`/api/payments`)
+- `POST /api/payments/create-session` — Initiate Juspay ExpressCheckout session *(Protected)*.
+- `POST /api/payments/webhook` — Asynchronous server-to-server gateway callback.
+- `POST /api/payments/verify-status` — Fallback status reconciliation endpoint *(Protected)*.
+- `POST /api/payments/simulate-sandbox-pay` — Instant local sandbox payment simulation.
 
-### Products & Catalog (`/api/products`)
-| Method | Endpoint | Access | Description |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/products` | Public | List products (supports `category` and `search` query params) |
-| `GET` | `/api/products/categories` | Public | Get distinct list of product categories |
-| `GET` | `/api/products/:id` | Public | Get single product detail |
-| `POST` | `/api/products` | Admin | Create a new catalog product |
-| `PUT` | `/api/products/:id` | Admin | Update price, stock, or active status |
-| `DELETE` | `/api/products/:id` | Admin | Delete a product from the catalog |
-
-### Orders (`/api/orders`)
-| Method | Endpoint | Access | Description |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/api/orders` | Protected | Place a new order (calculates server-side total) |
-| `GET` | `/api/orders/my-orders` | Protected | Retrieve all orders placed by the current user |
-| `GET` | `/api/orders/:identifier` | Protected | Fetch order by MongoDB `_id` or unique `orderId` |
-| `POST` | `/api/orders/:id/cancel` | Protected | Cancel an order in `PENDING_PAYMENT` or `CONFIRMED` state |
-| `GET` | `/api/orders` | Admin / Staff | List all platform orders for warehouse dispatch |
-| `PUT` | `/api/orders/:id/status` | Admin / Staff | Update order stage (`PACKED`, `OUT_FOR_DELIVERY`, `DELIVERED`) |
-
-### Payments & Juspay (`/api/payments`)
-| Method | Endpoint | Access | Description |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/api/payments/create-session` | Protected | Initiate Juspay checkout session for an order |
-| `POST` | `/api/payments/webhook` | Gateway | Asynchronous webhook receiving status from Juspay |
-| `POST` | `/api/payments/verify-status` | Protected | Fallback client reconciliation endpoint |
-| `POST` | `/api/payments/simulate-sandbox-pay`| Public | Instant sandbox payment completion for dev/demo |
+</details>
 
 ---
 
-## 💼 Placement & Resume-Ready Section
+## 💼 Resume & Interview Guide
 
-Use these bullet points for campus placements, software developer internships, or full-stack engineering applications:
+### 📄 Resume Bullet Points
 
-### Option 1: Bullet Points for Software Engineer / Full-Stack Role
+#### Option A: Full-Stack / Software Development Engineer (Recommended)
 ```text
-QuickKart — Quick Commerce & Payment Processing Web Platform (MERN Stack)
-• Engineered a full-stack 10-minute grocery delivery web platform using React 19, Node.js, Express, and MongoDB.
-• Integrated Juspay ExpressCheckout SDK supporting UPI, Cards, and Net Banking; built asynchronous webhook listeners to achieve idempotent order confirmation and automated stock reservation.
-• Designed server-side price calculation and tamper-proofing logic, preventing client-side cart manipulation.
-• Built an interactive dark-store admin panel enabling store managers to update live inventory stock and advance order lifecycle states (Pending → Confirmed → Packed → Out for Delivery → Delivered).
-• Implemented JWT authentication, role-based access control (RBAC), and zero-configuration in-memory database fallback for instant local evaluation.
+QuickKart — 10-Minute Quick Commerce Platform (MERN Stack & Juspay Gateway)
+• Built a full-stack quick-commerce web application using React 19, Node.js, Express 5, and MongoDB.
+• Integrated Juspay ExpressCheckout SDK with server-to-server webhook handling for asynchronous reconciliation and atomic stock deduction.
+• Implemented server-side cart calculation and tamper-proof price verification to prevent client-side cart tampering.
+• Developed a dark-store warehouse dashboard enabling real-time stock management and order dispatch lifecycle transitions.
+• Architected a zero-configuration fallback using an embedded in-memory MongoDB instance with automatic catalog seeding.
 ```
 
-### Option 2: Short 3-Line Summary (For Single-Page Resume)
+#### Option B: 3-Line Summary (For Compact Resumes)
 ```text
-QuickKart | MERN Stack, Juspay Gateway, JWT, React 19 | GitHub: github.com/Rohit-pal01/quick-commerce-project
-• Developed a responsive quick-commerce web application with real-time order tracking and dark-store inventory control.
-• Implemented end-to-end payment processing with Juspay ExpressCheckout SDK, webhook handling, and atomic stock updates.
-• Built secure RESTful APIs with JWT authentication, server-side cart validation, and zero-config in-memory database fallback.
+QuickKart | React 19, Node.js, Express, MongoDB, Juspay SDK | GitHub: github.com/Rohit-pal01/quickkart
+• Built a full-stack quick-commerce application featuring instant search, dynamic cart drawers, and live order tracking.
+• Implemented end-to-end payment processing with Juspay ExpressCheckout, webhook validation, and inventory reservations.
+• Designed role-based authentication (JWT/Bcrypt), server-side price security, and zero-config in-memory database fallback.
 ```
 
 ---
 
-## 🎯 Technical Interview Q&A
+### 🎯 Technical Interview Questions & Answers
 
 <details>
-<summary><b>1. How did you handle security and prevent users from tampering with product prices in the frontend?</b></summary>
+<summary><b>1. How do you prevent client-side price tampering?</b></summary>
 
-> **Answer:** The frontend only submits `productId` and `quantity` to `POST /api/orders`. The backend fetches the official prices directly from MongoDB, recalculates the subtotal, delivery charges, and packaging fee on the server, and establishes the order record. The client has zero control over the payable amount.
+> **Answer:** The frontend never sends prices to the server. The checkout payload only contains `productId` and `quantity`. The backend fetches canonical product records directly from MongoDB, calculates line totals, adds packaging and delivery fees, and generates the final payable amount on the server.
 </details>
 
 <details>
-<summary><b>2. Why did you integrate Juspay instead of standard Razorpay or Stripe?</b></summary>
+<summary><b>2. Why integrate Juspay ExpressCheckout instead of standard redirect gateways?</b></summary>
 
-> **Answer:** Juspay is the underlying checkout infrastructure powering top Indian quick-commerce and delivery giants (such as Swiggy and Zepto). Working with Juspay ExpressCheckout provided direct hands-on experience with production-grade payment orchestration, server-to-server session tokens, and cryptographic webhook reconciliation.
+> **Answer:** Juspay powers checkout infrastructure for high-scale platforms like Swiggy and Zepto. It provides higher UPI conversion rates through native intent routing, server-to-server session tokens, and webhook reconciliation, minimizing dropped checkouts in quick-commerce flows.
 </details>
 
 <details>
-<summary><b>3. What happens if the customer completes payment but closes their browser before returning?</b></summary>
+<summary><b>3. What happens if a user pays but closes their tab before returning?</b></summary>
 
-> **Answer:** The payment confirmation does not depend on the browser. Juspay triggers an asynchronous server-to-server Webhook notification (`CHARGED`) directly to `/api/payments/webhook`. The server processes this notification, transitions the order to `CONFIRMED`, and decrements inventory in MongoDB. When the customer logs back in, their order is already confirmed.
+> **Answer:** Payment confirmation does not rely on the client browser. Juspay dispatches an asynchronous webhook (`CHARGED`) directly to the backend. The server validates the callback, marks the order as `CONFIRMED`, and decrements inventory in MongoDB. When the customer logs back in, their order is already updated.
 </details>
 
 <details>
-<summary><b>4. How does the database fallback work?</b></summary>
+<summary><b>4. How does the zero-config database fallback work?</b></summary>
 
-> **Answer:** In `server/config/db.js`, the server attempts to connect to `process.env.MONGO_URI` with a 3-second timeout. If the database is unreachable or omitted, it gracefully falls back to `mongodb-memory-server` and triggers automatic seeding of products and demo users. This allows anyone to clone and run the application instantly without setup friction.
+> **Answer:** The database connection module (`server/config/db.js`) attempts to connect to `MONGO_URI` with a 3-second timeout. If unreachable or unconfigured, it dynamically spawns an in-memory MongoDB instance using `mongodb-memory-server` and triggers catalog auto-seeding, enabling immediate zero-friction evaluation.
 </details>
 
 ---
 
 ## 📈 Future Enhancements
 
-- [ ] Real-time rider geocoding using Socket.io and Leaflet / Google Maps.
-- [ ] Redis caching for high-throughput product catalog queries.
-- [ ] SMS / WhatsApp order status notifications using Twilio API.
-- [ ] Mobile companion app built with React Native.
+- [ ] **Rider Geolocation Tracking**: Live rider tracking on Leaflet / Mapbox using WebSockets (Socket.io).
+- [ ] **High-Performance Caching**: Redis caching layer for top-searched categories and catalog items.
+- [ ] **Customer Notifications**: Delivery updates via WhatsApp / SMS using Twilio.
+- [ ] **Mobile Client**: Native iOS and Android companion apps built with React Native.
 
 ---
 
 ## 👨‍💻 Author
 
 **Rohit Pal**  
-- **GitHub:** [@Rohit-pal01](https://github.com/Rohit-pal01)  
-- **Project Repository:** [quick-commerce-project](https://github.com/Rohit-pal01/quick-commerce-project)  
+- **GitHub**: [@Rohit-pal01](https://github.com/Rohit-pal01)  
+- **Repository**: [quickkart](https://github.com/Rohit-pal01/quickkart)  
 
 ---
 
