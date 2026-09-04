@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, User, Mail, Phone, Lock, Sparkles, AlertCircle } from 'lucide-react';
+import { X, User, Mail, Phone, Lock, Sparkles, AlertCircle, UserPlus, LogIn } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function AuthModal({ isOpen, onClose }) {
@@ -28,7 +28,12 @@ export default function AuthModal({ isOpen, onClose }) {
           setError(res.message);
         }
       } else {
-        const res = await register({ name, email, phone, password });
+        if (!name.trim()) {
+          setError('Please enter your full name');
+          setLoading(false);
+          return;
+        }
+        const res = await register({ name: name.trim(), email, phone, password });
         if (res.success) {
           onClose();
         } else {
@@ -68,7 +73,7 @@ export default function AuthModal({ isOpen, onClose }) {
         style={{
           background: 'white',
           width: '90%',
-          maxWidth: '420px',
+          maxWidth: '430px',
           borderRadius: 'var(--radius-lg)',
           boxShadow: 'var(--shadow-xl)',
           overflow: 'hidden',
@@ -76,6 +81,7 @@ export default function AuthModal({ isOpen, onClose }) {
         }}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Header */}
         <div
           style={{
             padding: '1.25rem',
@@ -85,23 +91,23 @@ export default function AuthModal({ isOpen, onClose }) {
             justifyContent: 'space-between'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
             <div
               style={{
-                width: '32px',
-                height: '32px',
-                background: '#ECFDF5',
-                color: '#10B981',
+                width: '34px',
+                height: '34px',
+                background: isLogin ? '#ECFDF5' : '#EEF2FF',
+                color: isLogin ? '#10B981' : '#6366F1',
                 borderRadius: 'var(--radius-sm)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
               }}
             >
-              <User size={18} />
+              {isLogin ? <LogIn size={18} /> : <UserPlus size={18} />}
             </div>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 800 }}>
-              {isLogin ? 'Welcome Back' : 'Create QuickKart Account'}
+            <h3 style={{ fontSize: '1.15rem', fontWeight: 800 }}>
+              {isLogin ? 'Sign In to QuickKart' : 'Create New Account'}
             </h3>
           </div>
           <button
@@ -112,59 +118,112 @@ export default function AuthModal({ isOpen, onClose }) {
           </button>
         </div>
 
-        <div style={{ padding: '1.25rem' }}>
-          {/* 1-Click Demo Login Shortcuts */}
-          <div
+        {/* Tab Switcher */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            borderBottom: '1px solid var(--border-light)',
+            background: 'var(--bg-subtle)'
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => {
+              setIsLogin(true);
+              setError(null);
+            }}
             style={{
-              background: '#F8FAFC',
-              border: '1px solid var(--border-light)',
-              borderRadius: 'var(--radius-md)',
-              padding: '0.85rem',
-              marginBottom: '1.25rem'
+              padding: '0.75rem',
+              border: 'none',
+              background: isLogin ? 'white' : 'transparent',
+              fontWeight: 800,
+              fontSize: '0.88rem',
+              color: isLogin ? '#10B981' : 'var(--text-muted)',
+              cursor: 'pointer',
+              borderBottom: isLogin ? '2px solid #10B981' : 'none',
+              transition: 'var(--transition)'
             }}
           >
+            Sign In
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setIsLogin(false);
+              setError(null);
+            }}
+            style={{
+              padding: '0.75rem',
+              border: 'none',
+              background: !isLogin ? 'white' : 'transparent',
+              fontWeight: 800,
+              fontSize: '0.88rem',
+              color: !isLogin ? '#10B981' : 'var(--text-muted)',
+              cursor: 'pointer',
+              borderBottom: !isLogin ? '2px solid #10B981' : 'none',
+              transition: 'var(--transition)'
+            }}
+          >
+            Sign Up
+          </button>
+        </div>
+
+        <div style={{ padding: '1.25rem' }}>
+          {/* ONLY show Demo buttons on the Sign In tab */}
+          {isLogin && (
             <div
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.4rem',
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                color: '#4F46E5',
-                marginBottom: '0.5rem'
+                background: '#F8FAFC',
+                border: '1px solid var(--border-light)',
+                borderRadius: 'var(--radius-md)',
+                padding: '0.85rem',
+                marginBottom: '1.25rem'
               }}
             >
-              <Sparkles size={14} />
-              <span>1-CLICK DEMO ACCOUNTS</span>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-              <button
-                type="button"
-                className="btn-auth"
-                style={{ fontSize: '0.78rem', justifyContent: 'center', padding: '0.45rem' }}
-                onClick={() => handleDemoLogin('customer')}
-                disabled={loading}
-              >
-                Customer Demo
-              </button>
-              <button
-                type="button"
-                className="btn-auth"
+              <div
                 style={{
-                  fontSize: '0.78rem',
-                  justifyContent: 'center',
-                  padding: '0.45rem',
-                  borderColor: '#10B981',
-                  color: '#059669',
-                  background: '#ECFDF5'
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  color: '#4F46E5',
+                  marginBottom: '0.5rem'
                 }}
-                onClick={() => handleDemoLogin('admin')}
-                disabled={loading}
               >
-                Admin Demo
-              </button>
+                <Sparkles size={14} />
+                <span>QUICK TEST WITH PRE-CONFIGURED DEMO:</span>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                <button
+                  type="button"
+                  className="btn-auth"
+                  style={{ fontSize: '0.78rem', justifyContent: 'center', padding: '0.45rem' }}
+                  onClick={() => handleDemoLogin('customer')}
+                  disabled={loading}
+                >
+                  Demo Customer
+                </button>
+                <button
+                  type="button"
+                  className="btn-auth"
+                  style={{
+                    fontSize: '0.78rem',
+                    justifyContent: 'center',
+                    padding: '0.45rem',
+                    borderColor: '#10B981',
+                    color: '#059669',
+                    background: '#ECFDF5'
+                  }}
+                  onClick={() => handleDemoLogin('admin')}
+                  disabled={loading}
+                >
+                  Demo Admin
+                </button>
+              </div>
             </div>
-          </div>
+          )}
 
           {error && (
             <div
@@ -190,7 +249,7 @@ export default function AuthModal({ isOpen, onClose }) {
             {!isLogin && (
               <div>
                 <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem' }}>
-                  Full Name
+                  Your Full Name
                 </label>
                 <div style={{ position: 'relative' }}>
                   <User size={16} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
@@ -199,7 +258,7 @@ export default function AuthModal({ isOpen, onClose }) {
                     required
                     className="search-input"
                     style={{ borderRadius: 'var(--radius-md)', paddingLeft: '2.5rem' }}
-                    placeholder="Rahul Sharma"
+                    placeholder="e.g. Rohit Pal"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
@@ -218,7 +277,7 @@ export default function AuthModal({ isOpen, onClose }) {
                   required
                   className="search-input"
                   style={{ borderRadius: 'var(--radius-md)', paddingLeft: '2.5rem' }}
-                  placeholder="name@example.com"
+                  placeholder="yourname@gmail.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -237,7 +296,7 @@ export default function AuthModal({ isOpen, onClose }) {
                     required
                     className="search-input"
                     style={{ borderRadius: 'var(--radius-md)', paddingLeft: '2.5rem' }}
-                    placeholder="9876543210"
+                    placeholder="10-digit mobile number"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                   />
@@ -256,7 +315,7 @@ export default function AuthModal({ isOpen, onClose }) {
                   required
                   className="search-input"
                   style={{ borderRadius: 'var(--radius-md)', paddingLeft: '2.5rem' }}
-                  placeholder="••••••••"
+                  placeholder="Enter a secure password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -269,7 +328,13 @@ export default function AuthModal({ isOpen, onClose }) {
               style={{ justifyContent: 'center', marginTop: '0.5rem', padding: '0.75rem' }}
               disabled={loading}
             >
-              <span>{loading ? 'Please wait...' : isLogin ? 'Sign In' : 'Create Account'}</span>
+              <span>
+                {loading
+                  ? 'Please wait...'
+                  : isLogin
+                  ? 'Sign In'
+                  : 'Create My Account'}
+              </span>
             </button>
           </form>
 
@@ -282,7 +347,7 @@ export default function AuthModal({ isOpen, onClose }) {
                 setError(null);
               }}
             >
-              {isLogin ? 'Sign Up' : 'Log In'}
+              {isLogin ? 'Sign Up' : 'Sign In'}
             </span>
           </div>
         </div>
