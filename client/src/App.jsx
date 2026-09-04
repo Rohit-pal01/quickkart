@@ -9,14 +9,24 @@ import AuthModal from './components/AuthModal';
 import OrderTracking from './components/OrderTracking';
 import AdminDashboard from './components/AdminDashboard';
 import { api } from './services/api';
-import { Zap, Clock, ShieldCheck, ShoppingBag, ArrowRight } from 'lucide-react';
+import { Zap, Clock, ShieldCheck, ShoppingBag, ArrowRight, ShoppingCart } from 'lucide-react';
+
+const CATEGORY_ITEMS = [
+  { name: 'All', label: 'All Items', icon: '⚡' },
+  { name: 'Dairy & Breakfast', label: 'Dairy & Bread', icon: '🥛' },
+  { name: 'Fruits & Vegetables', label: 'Fresh Fruits & Veggies', icon: '🍎' },
+  { name: 'Snacks & Munchies', label: 'Chips & Namkeen', icon: '🍟' },
+  { name: 'Beverages', label: 'Drinks & Juices', icon: '🥤' },
+  { name: 'Instant Food', label: 'Maggi & Noodles', icon: '🍜' },
+  { name: 'Chocolates & Sweets', label: 'Chocolates & Sweets', icon: '🍫' },
+  { name: 'Personal & Home', label: 'Home Care & Hygiene', icon: '🧼' }
+];
 
 function StoreContent() {
   const { user, activeAddress } = useAuth();
-  const { items, clearCart, setIsCartOpen } = useCart();
+  const { items, itemCount, totalAmount, clearCart, setIsCartOpen } = useCart();
 
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
@@ -28,20 +38,18 @@ function StoreContent() {
   const [isJuspayOpen, setIsJuspayOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
-  // Load products & categories from API
+  // Load products from API
   const loadCatalog = async () => {
     setLoading(true);
     try {
-      const [prodRes, catRes] = await Promise.all([
-        api.getProducts({ category: selectedCategory, search: searchTerm }),
-        api.getCategories()
-      ]);
+      const prodRes = await api.getProducts({
+        category: selectedCategory,
+        search: searchTerm,
+        limit: 50
+      });
 
       if (prodRes.success && prodRes.products) {
         setProducts(prodRes.products);
-      }
-      if (catRes.success && catRes.categories) {
-        setCategories(['All', ...catRes.categories.map(c => c.name)]);
       }
     } catch (err) {
       console.error('Failed to load catalog from server:', err);
@@ -54,7 +62,7 @@ function StoreContent() {
     loadCatalog();
   }, [selectedCategory, searchTerm]);
 
-  // Handle proceeding from cart to order creation & Juspay
+  // Handle checkout
   const handleProceedToPayment = async () => {
     if (items.length === 0) return;
 
@@ -80,11 +88,10 @@ function StoreContent() {
         alert(res.message || 'Failed to initialize order');
       }
     } catch (err) {
-      alert('Error initiating checkout. Please make sure backend is running.');
+      alert('Error initiating checkout. Please make sure backend is reachable.');
     }
   };
 
-  // Called when Juspay simulates payment success
   const handlePaymentSuccess = (orderId) => {
     clearCart();
     setIsJuspayOpen(false);
@@ -112,100 +119,91 @@ function StoreContent() {
           />
         ) : (
           <>
-            {/* Hero Quick Commerce Promotion Banner */}
+            {/* Zepto/Blinkit Promo Banner */}
             <div
               style={{
-                background: 'linear-gradient(135deg, #065F46 0%, #047857 50%, #10B981 100%)',
+                background: 'linear-gradient(135deg, #0C831F 0%, #05420E 100%)',
                 color: 'white',
                 borderRadius: 'var(--radius-lg)',
-                padding: '1.75rem 2rem',
+                padding: '1.25rem 1.5rem',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 flexWrap: 'wrap',
-                gap: '1.5rem',
-                boxShadow: '0 8px 24px rgba(16, 185, 129, 0.2)',
-                marginBottom: '1.5rem',
+                gap: '1rem',
+                boxShadow: '0 4px 16px rgba(12, 131, 31, 0.25)',
+                marginBottom: '1.25rem',
                 position: 'relative',
                 overflow: 'hidden'
               }}
             >
-              <div style={{ maxWidth: '580px', position: 'relative', zIndex: 2 }}>
+              <div style={{ maxWidth: '520px', zIndex: 2 }}>
                 <div
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
-                    gap: '0.4rem',
+                    gap: '0.35rem',
                     background: 'rgba(255, 255, 255, 0.2)',
-                    backdropFilter: 'blur(6px)',
-                    padding: '0.3rem 0.75rem',
+                    padding: '0.2rem 0.6rem',
                     borderRadius: 'var(--radius-full)',
-                    fontSize: '0.78rem',
-                    fontWeight: 700,
-                    marginBottom: '0.75rem'
+                    fontSize: '0.72rem',
+                    fontWeight: 800,
+                    marginBottom: '0.5rem',
+                    letterSpacing: '0.5px'
                   }}
                 >
-                  <Zap size={14} fill="#FCD34D" color="#FCD34D" />
-                  <span>LIGHTNING QUICK COMMERCE</span>
+                  <Zap size={13} fill="#F7D000" color="#F7D000" />
+                  <span>SUPERFAST QUICK COMMERCE</span>
                 </div>
-                <h1 style={{ fontSize: '1.85rem', fontWeight: 800, lineHeight: 1.25, marginBottom: '0.5rem' }}>
-                  Groceries & daily essentials delivered in 10 minutes.
+                <h1 style={{ fontSize: '1.5rem', fontWeight: 900, lineHeight: 1.25, marginBottom: '0.35rem' }}>
+                  Groceries delivered in 8 to 10 minutes.
                 </h1>
-                <p style={{ opacity: 0.9, fontSize: '0.92rem', marginBottom: '1rem' }}>
-                  Fresh farm produce, dairy, chilled drinks, and snacks straight from your nearest micro dark store.
+                <p style={{ opacity: 0.9, fontSize: '0.84rem' }}>
+                  Over 1,000+ daily essentials from your nearest micro dark store.
                 </p>
-                <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.82rem', fontWeight: 600 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <Clock size={16} />
-                    <span>10 Min Delivery Guarantee</span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <ShieldCheck size={16} />
-                    <span>Juspay 1-Click Payments</span>
-                  </div>
-                </div>
               </div>
 
               <div
                 style={{
-                  background: 'rgba(255, 255, 255, 0.12)',
-                  backdropFilter: 'blur(10px)',
-                  padding: '1.25rem',
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  backdropFilter: 'blur(8px)',
+                  padding: '0.85rem 1.1rem',
                   borderRadius: 'var(--radius-md)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
                   textAlign: 'center',
-                  minWidth: '180px'
+                  border: '1px solid rgba(255, 255, 255, 0.25)'
                 }}
               >
-                <div style={{ fontSize: '0.75rem', opacity: 0.85, fontWeight: 700 }}>FREE DELIVERY ON</div>
-                <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#FCD34D' }}>ORDERS &gt; ₹199</div>
-                <div style={{ fontSize: '0.72rem', opacity: 0.8, marginTop: '0.2rem' }}>No coupon required</div>
+                <div style={{ fontSize: '0.72rem', fontWeight: 800, opacity: 0.9 }}>FREE DELIVERY</div>
+                <div style={{ fontSize: '1.35rem', fontWeight: 900, color: '#F7D000' }}>ABOVE ₹199</div>
+                <div style={{ fontSize: '0.68rem', opacity: 0.85 }}>Auto applied at checkout</div>
               </div>
             </div>
 
-            {/* Category Filter Pills */}
-            <div className="category-strip">
-              {categories.length > 0 ? (
-                categories.map((cat) => (
-                  <button
-                    key={cat}
-                    className={`category-chip ${selectedCategory === cat ? 'active' : ''}`}
-                    onClick={() => setSelectedCategory(cat)}
+            {/* Zepto Style Circular Category Grid */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <div
+                style={{
+                  fontSize: '0.95rem',
+                  fontWeight: 800,
+                  marginBottom: '0.75rem',
+                  color: 'var(--text-main)'
+                }}
+              >
+                Explore By Category
+              </div>
+
+              <div className="category-visual-grid">
+                {CATEGORY_ITEMS.map((cat) => (
+                  <div
+                    key={cat.name}
+                    className={`cat-circle-card ${selectedCategory === cat.name ? 'active' : ''}`}
+                    onClick={() => setSelectedCategory(cat.name)}
                   >
-                    {cat}
-                  </button>
-                ))
-              ) : (
-                ['All', 'Dairy & Breakfast', 'Fruits & Vegetables', 'Snacks & Munchies', 'Beverages', 'Instant Food', 'Bakery'].map((cat) => (
-                  <button
-                    key={cat}
-                    className={`category-chip ${selectedCategory === cat ? 'active' : ''}`}
-                    onClick={() => setSelectedCategory(cat)}
-                  >
-                    {cat}
-                  </button>
-                ))
-              )}
+                    <div className="cat-icon-circle">{cat.icon}</div>
+                    <span className="cat-name-label">{cat.label}</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Product Section Header */}
@@ -214,15 +212,15 @@ function StoreContent() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                margin: '1rem 0 1.25rem 0'
+                margin: '0 0 1rem 0'
               }}
             >
               <div>
-                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)' }}>
+                <h2 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-main)' }}>
                   {selectedCategory === 'All' ? 'Popular Essentials' : selectedCategory}
                 </h2>
-                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                  Showing {products.length} items available in your location
+                <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>
+                  Showing {products.length} items available near you
                 </div>
               </div>
             </div>
@@ -230,8 +228,8 @@ function StoreContent() {
             {/* Products Grid */}
             {loading ? (
               <div style={{ textAlign: 'center', padding: '4rem 1rem' }}>
-                <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#10B981' }}>
-                  Loading fresh items from Dark Store...
+                <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0C831F' }}>
+                  ⚡ Fetching fresh stock from dark store...
                 </div>
               </div>
             ) : products.length === 0 ? (
@@ -244,10 +242,10 @@ function StoreContent() {
                   border: '1px solid var(--border-light)'
                 }}
               >
-                <ShoppingBag size={48} color="var(--text-muted)" style={{ margin: '0 auto 1rem auto' }} />
-                <h3>No products found</h3>
-                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
-                  Try changing your search terms or selecting a different category.
+                <ShoppingBag size={44} color="var(--text-muted)" style={{ margin: '0 auto 0.75rem auto' }} />
+                <h3>No items found</h3>
+                <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+                  Try changing your search term or select another category.
                 </p>
               </div>
             ) : (
@@ -261,7 +259,42 @@ function StoreContent() {
         )}
       </main>
 
-      {/* Cart Drawer Modal */}
+      {/* Floating Bottom Cart Bar (Zepto & Blinkit Iconic Mobile UX) */}
+      {itemCount > 0 && activeView === 'store' && (
+        <div
+          className="floating-bottom-cart"
+          onClick={() => setIsCartOpen(true)}
+          role="button"
+          aria-label="View Cart"
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div
+              style={{
+                background: 'rgba(255, 255, 255, 0.25)',
+                padding: '0.4rem',
+                borderRadius: 'var(--radius-sm)',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              <ShoppingCart size={18} />
+            </div>
+            <div>
+              <div style={{ fontSize: '0.72rem', opacity: 0.9, fontWeight: 700 }}>
+                {itemCount} {itemCount === 1 ? 'ITEM' : 'ITEMS'}
+              </div>
+              <div style={{ fontSize: '1.1rem', fontWeight: 900 }}>₹{totalAmount}</div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontWeight: 900, fontSize: '0.94rem' }}>
+            <span>VIEW CART</span>
+            <ArrowRight size={18} />
+          </div>
+        </div>
+      )}
+
+      {/* Cart Drawer */}
       <CartDrawer
         onProceedToPayment={handleProceedToPayment}
         onOpenAuth={() => setIsAuthOpen(true)}
