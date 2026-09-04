@@ -28,6 +28,10 @@ export default function ProductCard({ product }) {
           alt={product.name}
           className="product-img"
           loading="lazy"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80';
+          }}
         />
       </div>
 

@@ -177,7 +177,7 @@ const sampleProducts = [
     price: 20,
     unit: '85 g',
     stock: 200,
-    imageUrl: 'https://images.unsplash.com/photo-1621996346565-e3d5d62811b7?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80',
     isActive: true
   },
   {
@@ -291,7 +291,7 @@ const sampleProducts = [
     price: 125,
     unit: '420 g pack',
     stock: 65,
-    imageUrl: 'https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=80',
     isActive: true
   },
   {
@@ -355,7 +355,7 @@ const sampleProducts = [
     price: 85,
     unit: '150 g tube',
     stock: 110,
-    imageUrl: 'https://images.unsplash.com/photo-1559591937-e10f135b5a79?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=600&q=80',
     isActive: true
   },
   {
