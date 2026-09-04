@@ -109,11 +109,11 @@ const sampleProducts = [
     isActive: true
   },
   {
-    name: 'Fresh Coriander (Dhaniya Patta)',
-    description: 'Aromatic, clean and freshly plucked green coriander leaves.',
+    name: 'Fresh Spinach (Palak)',
+    description: 'Fresh, tender green spinach leaves rich in iron and essential vitamins.',
     category: 'Fruits & Vegetables',
-    price: 15,
-    unit: '100 g bunch',
+    price: 25,
+    unit: '250 g bunch',
     stock: 90,
     imageUrl: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?auto=format&fit=crop&w=600&q=80',
     isActive: true
@@ -149,11 +149,11 @@ const sampleProducts = [
     isActive: true
   },
   {
-    name: 'Fresh Mosambi (Sweet Lime)',
-    description: 'Juicy, refreshing citrus sweet limes packed with immunity-boosting Vitamin C.',
+    name: 'Fresh Sweet Pineapple',
+    description: 'Juicy, tropical and sweet ripe pineapple rich in Vitamin C.',
     category: 'Fruits & Vegetables',
     price: 65,
-    unit: '1 kg',
+    unit: '1 pc (approx 800g)',
     stock: 50,
     imageUrl: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?auto=format&fit=crop&w=600&q=80',
     isActive: true
@@ -161,8 +161,8 @@ const sampleProducts = [
 
   // 🍟 SNACKS & MUNCHIES
   {
-    name: 'Lay\'s India\'s Magic Masala Chips',
-    description: 'Spicy, crunchy potato chips seasoned with an explosion of Indian spices.',
+    name: 'Cheetos Cheesy Crunchy Puffs',
+    description: 'Irresistibly cheesy, deliciously crunchy corn puff curls.',
     category: 'Snacks & Munchies',
     price: 20,
     unit: '50 g',
@@ -171,11 +171,11 @@ const sampleProducts = [
     isActive: true
   },
   {
-    name: 'Kurkure Masala Munch Crunchy',
-    description: 'Tedhe medhe, spicy corn puff twists flavored with zesty chili masala.',
+    name: 'Crispy Punjabi Samosa',
+    description: 'Golden, crispy crust stuffed with spiced potatoes and fragrant peas.',
     category: 'Snacks & Munchies',
-    price: 20,
-    unit: '85 g',
+    price: 25,
+    unit: '2 pcs pack',
     stock: 200,
     imageUrl: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80',
     isActive: true
@@ -191,11 +191,11 @@ const sampleProducts = [
     isActive: true
   },
   {
-    name: 'Haldiram\'s Nagpur Aloo Bhujia',
-    description: 'Crispy mint flavored potato and besan noodles for teatime crunch.',
+    name: 'Haldiram\'s Nagpur Potato Chips',
+    description: 'Crispy and crunchy salted golden potato chips for instant snacking.',
     category: 'Snacks & Munchies',
-    price: 48,
-    unit: '200 g pouch',
+    price: 35,
+    unit: '100 g pouch',
     stock: 90,
     imageUrl: 'https://images.unsplash.com/photo-1599490659213-e2b9527bd087?auto=format&fit=crop&w=600&q=80',
     isActive: true
@@ -229,7 +229,7 @@ const sampleProducts = [
     price: 40,
     unit: '750 ml bottle',
     stock: 160,
-    imageUrl: 'https://images.unsplash.com/photo-1554866585-cd94860890b7?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '/thums-up.jpg',
     isActive: true
   },
   {
@@ -243,11 +243,11 @@ const sampleProducts = [
     isActive: true
   },
   {
-    name: 'Raw Pressery 100% Tender Coconut Water',
-    description: 'Pure, electrolyte-rich natural coconut water with no added sugar.',
+    name: 'Fresh Melon Juice',
+    description: 'Pure, refreshing and hydrating natural melon juice with no artificial flavors.',
     category: 'Beverages',
     price: 65,
-    unit: '200 ml',
+    unit: '250 ml bottle',
     stock: 90,
     imageUrl: 'https://images.unsplash.com/photo-1525385133512-2f3bdd039054?auto=format&fit=crop&w=600&q=80',
     isActive: true
@@ -313,7 +313,7 @@ const sampleProducts = [
     price: 90,
     unit: '60 g bar',
     stock: 140,
-    imageUrl: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '/dairy-milk.jpg',
     isActive: true
   },
   {
