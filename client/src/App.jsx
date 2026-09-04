@@ -24,7 +24,9 @@ import {
   CupSoda,
   Utensils,
   Gift,
-  Sparkles
+  Sparkles,
+  Bike,
+  CheckCircle2
 } from 'lucide-react';
 
 const CATEGORY_ITEMS = [
@@ -208,26 +210,159 @@ function StoreContent() {
                 </p>
               </div>
 
+              {/* Zepto / Rapido style Free Delivery Perk Pass */}
               <div
                 style={{
-                  background: 'rgba(255, 168, 182, 0.12)',
-                  backdropFilter: 'blur(10px)',
-                  padding: '0.95rem 1.25rem',
-                  borderRadius: 'var(--radius-md)',
-                  textAlign: 'center',
-                  border: '1.5px solid rgba(255, 168, 182, 0.35)',
+                  background: 'rgba(12, 26, 28, 0.72)',
+                  backdropFilter: 'blur(14px)',
+                  padding: '1.05rem 1.3rem',
+                  borderRadius: 'var(--radius-lg)',
+                  border: '1.5px solid rgba(81, 226, 245, 0.4)',
                   zIndex: 2,
-                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)'
+                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.45rem',
+                  minWidth: '245px'
                 }}
               >
-                <div style={{ fontSize: '0.74rem', fontWeight: 800, color: 'var(--pink-sand)', letterSpacing: '0.5px' }}>
-                  SPECIAL OFFER
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
+                  <div
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.3rem',
+                      background: 'rgba(157, 249, 239, 0.18)',
+                      border: '1px solid var(--blue-green)',
+                      color: 'var(--blue-green)',
+                      padding: '0.2rem 0.55rem',
+                      borderRadius: 'var(--radius-full)',
+                      fontSize: '0.68rem',
+                      fontWeight: 800,
+                      letterSpacing: '0.4px'
+                    }}
+                  >
+                    <Bike size={12} strokeWidth={2.5} />
+                    <span>ZERO DELIVERY FEE</span>
+                  </div>
+
+                  <span
+                    style={{
+                      fontSize: '0.68rem',
+                      fontWeight: 800,
+                      color: 'var(--pink-sand)',
+                      background: 'rgba(255, 168, 182, 0.18)',
+                      border: '1px solid rgba(255, 168, 182, 0.35)',
+                      padding: '0.15rem 0.45rem',
+                      borderRadius: 'var(--radius-sm)'
+                    }}
+                  >
+                    SAVE ₹25
+                  </span>
                 </div>
-                <div style={{ fontSize: '1.4rem', fontWeight: 900, color: 'var(--dusty-white)', margin: '0.1rem 0' }}>
-                  FREE DELIVERY
+
+                <div style={{ marginTop: '0.2rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.45rem' }}>
+                    <span style={{ fontSize: '1.55rem', fontWeight: 900, color: 'var(--dusty-white)', letterSpacing: '-0.3px' }}>
+                      ₹0 Delivery
+                    </span>
+                    <span style={{ fontSize: '0.88rem', color: '#94A3B8', textDecoration: 'line-through', fontWeight: 600 }}>
+                      ₹25
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '0.78rem', color: '#E2E8F0', fontWeight: 600, marginTop: '0.1rem' }}>
+                    Unlocked on all orders above <strong style={{ color: 'var(--blue-green)' }}>₹199</strong>
+                  </div>
                 </div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--blue-green)', fontWeight: 700 }}>
-                  On orders above ₹199
+
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                    fontSize: '0.71rem',
+                    color: 'var(--blue-green)',
+                    fontWeight: 700,
+                    borderTop: '1px dashed rgba(255, 255, 255, 0.15)',
+                    paddingTop: '0.45rem',
+                    marginTop: '0.15rem'
+                  }}
+                >
+                  <CheckCircle2 size={13} color="var(--blue-green)" />
+                  <span>Auto-applied at checkout • No code needed</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Rapido / Zepto Style Value Proposition Quick Strip */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
+                gap: '0.75rem',
+                marginBottom: '1.35rem'
+              }}
+            >
+              <div
+                style={{
+                  background: 'white',
+                  border: '1px solid rgba(157, 249, 239, 0.7)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '0.65rem 0.9rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.65rem',
+                  boxShadow: 'var(--shadow-sm)'
+                }}
+              >
+                <div style={{ width: '34px', height: '34px', borderRadius: '50%', background: 'rgba(157, 249, 239, 0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0b5e54', flexShrink: 0 }}>
+                  <Bike size={18} />
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--text-main)' }}>Free Delivery Above ₹199</div>
+                  <div style={{ fontSize: '0.71rem', color: 'var(--text-muted)' }}>Zero delivery fee on all eligible orders</div>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  background: 'white',
+                  border: '1px solid var(--border-light)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '0.65rem 0.9rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.65rem',
+                  boxShadow: 'var(--shadow-sm)'
+                }}
+              >
+                <div style={{ width: '34px', height: '34px', borderRadius: '50%', background: 'rgba(81, 226, 245, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0284C7', flexShrink: 0 }}>
+                  <Clock size={18} />
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--text-main)' }}>8-10 Mins Express</div>
+                  <div style={{ fontSize: '0.71rem', color: 'var(--text-muted)' }}>Instant dispatch from nearest dark store</div>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  background: 'white',
+                  border: '1px solid var(--border-light)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '0.65rem 0.9rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.65rem',
+                  boxShadow: 'var(--shadow-sm)'
+                }}
+              >
+                <div style={{ width: '34px', height: '34px', borderRadius: '50%', background: 'rgba(255, 168, 182, 0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#a83256', flexShrink: 0 }}>
+                  <ShieldCheck size={18} />
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--text-main)' }}>100% Quality Assured</div>
+                  <div style={{ fontSize: '0.71rem', color: 'var(--text-muted)' }}>Hygienically packed & certified items</div>
                 </div>
               </div>
             </div>

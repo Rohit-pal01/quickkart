@@ -61,7 +61,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const subtotal = items.reduce((sum, item) => sum + item.product.price * item.qty, 0);
-  const deliveryFee = subtotal >= 200 || subtotal === 0 ? 0 : 25;
+  const deliveryFee = subtotal >= 199 || subtotal === 0 ? 0 : 25;
   const handlingFee = subtotal > 0 ? 4 : 0;
   const totalAmount = subtotal + deliveryFee + handlingFee;
   const itemCount = items.reduce((sum, item) => sum + item.qty, 0);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Trash2, Plus, Minus, ArrowRight, ShieldCheck, Clock, MapPin } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ArrowRight, ShieldCheck, Clock, MapPin, Bike, CheckCircle2, Zap } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 
@@ -80,6 +80,48 @@ export default function CartDrawer({ onProceedToPayment, onOpenAuth }) {
             </div>
           ) : (
             <>
+              {/* Zepto / Rapido Style Free Delivery Progress Tracker */}
+              <div
+                style={{
+                  background: subtotal >= 199 ? 'rgba(16, 185, 129, 0.08)' : 'rgba(81, 226, 245, 0.1)',
+                  border: subtotal >= 199 ? '1px solid #A7F3D0' : '1px solid rgba(81, 226, 245, 0.35)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '0.75rem 0.9rem',
+                  marginBottom: '0.85rem'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.45rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    {subtotal >= 199 ? (
+                      <CheckCircle2 size={16} color="#059669" />
+                    ) : (
+                      <Bike size={16} color="#0b5e54" />
+                    )}
+                    <span style={{ fontSize: '0.82rem', fontWeight: 800, color: subtotal >= 199 ? '#065F46' : '#0b5e54' }}>
+                      {subtotal >= 199
+                        ? 'FREE Delivery Unlocked!'
+                        : `Add items worth ₹${199 - subtotal} more for FREE Delivery`}
+                    </span>
+                  </div>
+                  <span style={{ fontSize: '0.72rem', fontWeight: 700, color: subtotal >= 199 ? '#059669' : 'var(--text-muted)' }}>
+                    {subtotal >= 199 ? 'Saved ₹25' : `₹${subtotal} / ₹199`}
+                  </span>
+                </div>
+                <div style={{ width: '100%', height: '6px', background: '#E2E8F0', borderRadius: '999px', overflow: 'hidden' }}>
+                  <div
+                    style={{
+                      width: `${Math.min(100, Math.round((subtotal / 199) * 100))}%`,
+                      height: '100%',
+                      background: subtotal >= 199
+                        ? 'linear-gradient(90deg, #10B981, #059669)'
+                        : 'linear-gradient(90deg, var(--bright-blue), var(--blue-green))',
+                      borderRadius: '999px',
+                      transition: 'width 0.3s ease'
+                    }}
+                  />
+                </div>
+              </div>
+
               {/* Delivery ETA banner */}
               <div
                 style={{
@@ -204,7 +246,10 @@ export default function CartDrawer({ onProceedToPayment, onOpenAuth }) {
                   <span>Delivery Partner Fee</span>
                   <span>
                     {deliveryFee === 0 ? (
-                      <span style={{ color: '#10B981', fontWeight: 700 }}>FREE</span>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                        <span style={{ textDecoration: 'line-through', color: 'var(--text-subtle)', fontSize: '0.8rem' }}>₹25</span>
+                        <strong style={{ color: '#059669', fontWeight: 800 }}>FREE</strong>
+                      </span>
                     ) : (
                       `₹${deliveryFee}`
                     )}
@@ -214,18 +259,45 @@ export default function CartDrawer({ onProceedToPayment, onOpenAuth }) {
                   <span>Handling Charges</span>
                   <span>₹{handlingFee}</span>
                 </div>
-                {subtotal < 200 && (
+                {subtotal < 199 ? (
                   <div
                     style={{
-                      fontSize: '0.75rem',
-                      color: '#D97706',
-                      background: '#FEF3C7',
-                      padding: '0.4rem 0.6rem',
+                      fontSize: '0.74rem',
+                      color: '#065F46',
+                      background: 'rgba(157, 249, 239, 0.22)',
+                      border: '1px solid var(--blue-green)',
+                      padding: '0.4rem 0.65rem',
                       borderRadius: 'var(--radius-sm)',
-                      marginBottom: '0.5rem'
+                      marginBottom: '0.5rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.35rem'
                     }}
                   >
-                    Add ₹{200 - subtotal} more to get <strong>FREE DELIVERY</strong>!
+                    <Zap size={12} fill="#065F46" color="#065F46" />
+                    <span>
+                      Add items worth <strong>₹{199 - subtotal}</strong> more to unlock <strong>FREE DELIVERY</strong>!
+                    </span>
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      fontSize: '0.74rem',
+                      color: '#065F46',
+                      background: '#ECFDF5',
+                      border: '1px solid #A7F3D0',
+                      padding: '0.4rem 0.65rem',
+                      borderRadius: 'var(--radius-sm)',
+                      marginBottom: '0.5rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.35rem'
+                    }}
+                  >
+                    <CheckCircle2 size={13} color="#059669" />
+                    <span>
+                      <strong>Yay! You saved ₹25</strong> on delivery partner fee!
+                    </span>
                   </div>
                 )}
                 <div className="bill-row total">
