@@ -10,17 +10,32 @@ import LocationModal from './components/LocationModal';
 import OrderTracking from './components/OrderTracking';
 import AdminDashboard from './components/AdminDashboard';
 import { api } from './services/api';
-import { Zap, Clock, ShieldCheck, ShoppingBag, ArrowRight, ShoppingCart } from 'lucide-react';
+import {
+  Zap,
+  Clock,
+  ShieldCheck,
+  ShoppingBag,
+  ArrowRight,
+  ShoppingCart,
+  Layers,
+  Milk,
+  Apple,
+  Cookie,
+  CupSoda,
+  Utensils,
+  Gift,
+  Sparkles
+} from 'lucide-react';
 
 const CATEGORY_ITEMS = [
-  { name: 'All', label: 'All Items', icon: '⚡' },
-  { name: 'Dairy & Breakfast', label: 'Dairy & Bread', icon: '🥛' },
-  { name: 'Fruits & Vegetables', label: 'Fresh Fruits & Veggies', icon: '🍎' },
-  { name: 'Snacks & Munchies', label: 'Chips & Namkeen', icon: '🍟' },
-  { name: 'Beverages', label: 'Drinks & Juices', icon: '🥤' },
-  { name: 'Instant Food', label: 'Maggi & Noodles', icon: '🍜' },
-  { name: 'Chocolates & Sweets', label: 'Chocolates & Sweets', icon: '🍫' },
-  { name: 'Personal & Home', label: 'Home Care & Hygiene', icon: '🧼' }
+  { name: 'All', label: 'All Items', Icon: Layers, color: '#0C831F', bg: '#E8F5E9' },
+  { name: 'Dairy & Breakfast', label: 'Dairy & Bread', Icon: Milk, color: '#0284C7', bg: '#E0F2FE' },
+  { name: 'Fruits & Vegetables', label: 'Fresh Fruits', Icon: Apple, color: '#16A34A', bg: '#DCFCE7' },
+  { name: 'Snacks & Munchies', label: 'Chips & Snacks', Icon: Cookie, color: '#D97706', bg: '#FEF3C7' },
+  { name: 'Beverages', label: 'Cold Drinks', Icon: CupSoda, color: '#EA580C', bg: '#FFEDD5' },
+  { name: 'Instant Food', label: 'Instant Food', Icon: Utensils, color: '#DC2626', bg: '#FEE2E2' },
+  { name: 'Chocolates & Sweets', label: 'Chocolates', Icon: Gift, color: '#9333EA', bg: '#F3E8FF' },
+  { name: 'Personal & Home', label: 'Home Hygiene', Icon: Sparkles, color: '#4F46E5', bg: '#EEF2FF' }
 ];
 
 function StoreContent() {
@@ -202,7 +217,15 @@ function StoreContent() {
                     className={`cat-circle-card ${selectedCategory === cat.name ? 'active' : ''}`}
                     onClick={() => setSelectedCategory(cat.name)}
                   >
-                    <div className="cat-icon-circle">{cat.icon}</div>
+                    <div
+                      className="cat-icon-circle"
+                      style={{
+                        color: selectedCategory === cat.name ? '#FFFFFF' : cat.color,
+                        background: selectedCategory === cat.name ? '#0C831F' : cat.bg
+                      }}
+                    >
+                      <cat.Icon size={25} strokeWidth={2.3} />
+                    </div>
                     <span className="cat-name-label">{cat.label}</span>
                   </div>
                 ))}

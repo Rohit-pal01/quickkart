@@ -355,7 +355,7 @@ const sampleProducts = [
     price: 85,
     unit: '150 g tube',
     stock: 110,
-    imageUrl: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&w=600&q=80',
     isActive: true
   },
   {
