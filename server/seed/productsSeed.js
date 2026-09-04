@@ -224,7 +224,7 @@ const sampleProducts = [
   },
   {
     name: 'Thums Up Charged Carbonated Drink',
-    description: 'India\'s favorite strong and fizzy cola with an intense punch of spice.',
+    description: "India's favorite strong and fizzy cola (Thumbs Up) with an intense punch of spice.",
     category: 'Beverages',
     price: 40,
     unit: '750 ml bottle',
