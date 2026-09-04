@@ -6,6 +6,7 @@ import ProductCard from './components/ProductCard';
 import CartDrawer from './components/CartDrawer';
 import JuspayModal from './components/JuspayModal';
 import AuthModal from './components/AuthModal';
+import LocationModal from './components/LocationModal';
 import OrderTracking from './components/OrderTracking';
 import AdminDashboard from './components/AdminDashboard';
 import { api } from './services/api';
@@ -37,6 +38,7 @@ function StoreContent() {
   const [pendingOrder, setPendingOrder] = useState(null);
   const [isJuspayOpen, setIsJuspayOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isLocationOpen, setIsLocationOpen] = useState(false);
 
   // Load products from API
   const loadCatalog = async () => {
@@ -105,6 +107,7 @@ function StoreContent() {
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenLocation={() => setIsLocationOpen(true)}
         activeView={activeView}
         setActiveView={setActiveView}
       />
@@ -313,6 +316,12 @@ function StoreContent() {
       <AuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
+      />
+
+      {/* Location Selector Modal */}
+      <LocationModal
+        isOpen={isLocationOpen}
+        onClose={() => setIsLocationOpen(false)}
       />
     </div>
   );

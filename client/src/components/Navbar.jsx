@@ -1,5 +1,5 @@
 import React from 'react';
-import { Zap, ShoppingCart, Search, User, MapPin, Shield, LogOut } from 'lucide-react';
+import { Zap, ShoppingCart, Search, User, MapPin, Shield, LogOut, ChevronDown } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 
@@ -7,6 +7,7 @@ export default function Navbar({
   searchTerm,
   setSearchTerm,
   onOpenAuth,
+  onOpenLocation,
   activeView,
   setActiveView
 }) {
@@ -30,17 +31,23 @@ export default function Navbar({
           </span>
         </div>
 
-        {/* Blinkit/Zepto Delivery ETA pill */}
-        <div className="delivery-eta-badge">
+        {/* Blinkit/Zepto Delivery ETA pill with Clickable Location Modal */}
+        <div
+          className="delivery-eta-badge"
+          onClick={onOpenLocation}
+          style={{ cursor: 'pointer', transition: 'var(--transition)' }}
+          title="Click to change your delivery city or address"
+        >
           <div className="eta-time">
             <Zap size={12} fill="#0C831F" color="#0C831F" />
             <span>8 MINS</span>
           </div>
           <div
             className="address-line"
-            title={activeAddress ? activeAddress.line1 : 'Bengaluru Central'}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}
           >
-            {activeAddress ? activeAddress.line1 : 'Bengaluru Central'}
+            <span>{activeAddress ? activeAddress.line1 : 'Select City'}</span>
+            <ChevronDown size={13} color="var(--text-muted)" />
           </div>
         </div>
       </div>
