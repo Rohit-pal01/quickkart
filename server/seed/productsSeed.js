@@ -53,7 +53,7 @@ const sampleProducts = [
     price: 95,
     unit: '6 pcs pack',
     stock: 120,
-    imageUrl: 'https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=600&q=80',
     isActive: true
   },
   {
