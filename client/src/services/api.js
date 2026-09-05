@@ -44,6 +44,13 @@ export const api = {
     return res.json();
   },
 
+  async getAllUsers() {
+    const res = await fetch(`${API_BASE}/auth/users`, {
+      headers: getAuthHeaders()
+    });
+    return res.json();
+  },
+
   // Products
   async getProducts(params = {}) {
     const query = new URLSearchParams();

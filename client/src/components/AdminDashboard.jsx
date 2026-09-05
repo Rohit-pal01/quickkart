@@ -3,9 +3,10 @@ import { Package, TrendingUp, Users, Plus, Edit2, Trash2, CheckCircle2, Clock, A
 import { api } from '../services/api';
 
 export default function AdminDashboard({ onBackToStore }) {
-  const [activeTab, setActiveTab] = useState('orders'); // 'orders' | 'inventory' | 'add_product'
+  const [activeTab, setActiveTab] = useState('orders'); // 'orders' | 'inventory' | 'users' | 'add_product'
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // New product form
@@ -23,12 +24,14 @@ export default function AdminDashboard({ onBackToStore }) {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [ordersRes, productsRes] = await Promise.all([
+      const [ordersRes, productsRes, usersRes] = await Promise.all([
         api.getAllOrders(),
-        api.getProducts({ limit: 100 })
+        api.getProducts({ limit: 100 }),
+        api.getAllUsers()
       ]);
       if (ordersRes.success) setOrders(ordersRes.orders || []);
       if (productsRes.success) setProducts(productsRes.products || []);
+      if (usersRes.success) setUsers(usersRes.users || []);
     } catch (err) {
       console.error('Error fetching admin data:', err);
     } finally {
@@ -108,7 +111,7 @@ export default function AdminDashboard({ onBackToStore }) {
           <h1 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Dark Store & Admin Hub</h1>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           <button
             className={`btn-auth ${activeTab === 'orders' ? 'active' : ''}`}
             style={{
@@ -128,6 +131,17 @@ export default function AdminDashboard({ onBackToStore }) {
             onClick={() => setActiveTab('inventory')}
           >
             Stock Inventory ({products.length})
+          </button>
+          <button
+            className={`btn-auth ${activeTab === 'users' ? 'active' : ''}`}
+            style={{
+              background: activeTab === 'users' ? '#10B981' : 'white',
+              color: activeTab === 'users' ? 'white' : 'var(--text-main)'
+            }}
+            onClick={() => setActiveTab('users')}
+          >
+            <Users size={15} />
+            <span>Customers ({users.length})</span>
           </button>
           <button
             className={`btn-auth ${activeTab === 'add_product' ? 'active' : ''}`}
@@ -170,6 +184,18 @@ export default function AdminDashboard({ onBackToStore }) {
         <div style={{ background: 'white', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-light)' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>ACTIVE SKUs</div>
           <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0F172A', marginTop: '0.3rem' }}>{products.length}</div>
+        </div>
+
+        <div
+          style={{ background: 'white', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-light)', cursor: 'pointer' }}
+          onClick={() => setActiveTab('users')}
+          title="Click to view all registered customers"
+        >
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>REGISTERED CUSTOMERS</span>
+            <Users size={15} color="#EC4899" />
+          </div>
+          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#EC4899', marginTop: '0.3rem' }}>{users.length}</div>
         </div>
       </div>
 
@@ -292,6 +318,83 @@ export default function AdminDashboard({ onBackToStore }) {
                   </td>
                 </tr>
               ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Customers / Users Tab */}
+      {activeTab === 'users' && (
+        <div style={{ background: 'white', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)', overflow: 'hidden' }}>
+          <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <h2 style={{ fontSize: '1.15rem', fontWeight: 800 }}>Registered Users & Customers</h2>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: 0 }}>Total of {users.length} accounts created across QuickKart</p>
+            </div>
+            <span style={{ fontSize: '0.8rem', fontWeight: 700, padding: '0.3rem 0.75rem', background: '#FDF2F8', color: '#EC4899', borderRadius: '9999px' }}>
+              {users.length} Total Users
+            </span>
+          </div>
+
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th style={{ width: '40px' }}>#</th>
+                <th>Full Name</th>
+                <th>Email Address</th>
+                <th>Phone Number</th>
+                <th>Role</th>
+                <th>Default Address</th>
+                <th>Registered On</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.length === 0 ? (
+                <tr>
+                  <td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>
+                    No registered customers found.
+                  </td>
+                </tr>
+              ) : (
+                users.map((u, idx) => (
+                  <tr key={u._id}>
+                    <td><strong>{idx + 1}</strong></td>
+                    <td>
+                      <div style={{ fontWeight: 700, color: 'var(--text-main)' }}>{u.name}</div>
+                    </td>
+                    <td style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{u.email}</td>
+                    <td style={{ fontSize: '0.85rem' }}>{u.phone || 'N/A'}</td>
+                    <td>
+                      <span
+                        style={{
+                          display: 'inline-block',
+                          padding: '0.2rem 0.55rem',
+                          borderRadius: '9999px',
+                          fontSize: '0.72rem',
+                          fontWeight: 700,
+                          textTransform: 'uppercase',
+                          background: u.role === 'admin' ? '#FEF3C7' : '#DCFCE7',
+                          color: u.role === 'admin' ? '#B45309' : '#15803D'
+                        }}
+                      >
+                        {u.role}
+                      </span>
+                    </td>
+                    <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)', maxWidth: '200px' }}>
+                      {u.addresses && u.addresses.length > 0 ? u.addresses[0].line1 : 'No address saved'}
+                    </td>
+                    <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                      {u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      }) : 'N/A'}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

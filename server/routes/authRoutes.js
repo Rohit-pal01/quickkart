@@ -5,14 +5,17 @@ const {
   login,
   getMe,
   addAddress,
-  deleteAddress
+  deleteAddress,
+  getAllUsers
 } = require('../controllers/authController');
-const { protect } = require('../middleware/authMiddleware');
+const { protect, authorize } = require('../middleware/authMiddleware');
 
 router.post('/register', register);
 router.post('/login', login);
 router.get('/me', protect, getMe);
+router.get('/users', protect, authorize('admin'), getAllUsers);
 router.post('/address', protect, addAddress);
 router.delete('/address/:addressId', protect, deleteAddress);
 
 module.exports = router;
+
