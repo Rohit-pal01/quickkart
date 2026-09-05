@@ -159,7 +159,7 @@ export default function Footer({ onSelectCategory, onOpenLocation }) {
 
         {/* Bottom Copyright Line */}
         <div className="footer-copyright">
-          © 2026 QuickKart | Developed by Rohit Pal.
+          © {new Date().getFullYear()} QuickKart | Developed by Rohit Pal.
         </div>
       </div>
     </footer>
