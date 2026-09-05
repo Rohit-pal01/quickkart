@@ -23,7 +23,7 @@ const sampleProducts = [
     price: 58,
     unit: '100 g',
     stock: 90,
-    imageUrl: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '/amul-butter.jpg',
     isActive: true
   },
   {
@@ -33,7 +33,7 @@ const sampleProducts = [
     price: 90,
     unit: '200 g',
     stock: 60,
-    imageUrl: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '/amul-paneer.jpg',
     isActive: true
   },
   {
@@ -43,7 +43,7 @@ const sampleProducts = [
     price: 135,
     unit: '200 g (10 slices)',
     stock: 75,
-    imageUrl: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '/amul-cheese.jpg',
     isActive: true
   },
   {
@@ -73,7 +73,7 @@ const sampleProducts = [
     price: 55,
     unit: '350 g',
     stock: 70,
-    imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '/bread.jpg',
     isActive: true
   },
 
@@ -271,7 +271,7 @@ const sampleProducts = [
     price: 56,
     unit: 'Pack of 4 (280g)',
     stock: 220,
-    imageUrl: 'https://images.unsplash.com/photo-1612927601601-6638404737ce?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '/maggi.jpg',
     isActive: true
   },
   {
