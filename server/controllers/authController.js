@@ -209,6 +209,8 @@ const getAllUsers = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
 // @desc    Delete a user (Admin only)
 // @route   DELETE /api/auth/users/:id
 // @access  Private/Admin
