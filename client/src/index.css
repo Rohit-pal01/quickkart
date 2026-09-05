@@ -275,6 +275,53 @@ body {
   transform: translateY(-1px);
 }
 
+/* Perk Cards (Free Delivery, Express, Quality Assured) */
+.perk-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 0.65rem 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.perk-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.perk-card-delivery {
+  border: 1px solid rgba(157, 249, 239, 0.6);
+}
+
+.perk-icon-wrap {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.perk-icon-delivery {
+  background: rgba(157, 249, 239, 0.28);
+  color: #0b7a6e;
+}
+
+.perk-icon-speed {
+  background: rgba(81, 226, 245, 0.2);
+  color: #0284c7;
+}
+
+.perk-icon-quality {
+  background: rgba(255, 168, 182, 0.28);
+  color: #e11d48;
+}
+
 /* Zepto Style Category Icons Circle Grid */
 .category-visual-grid {
   display: flex;
@@ -628,6 +675,60 @@ body {
   overscroll-behavior: contain;
 }
 
+/* Location Modal City Cards & Icon */
+.location-modal-icon-wrap {
+  width: 34px;
+  height: 34px;
+  background: rgba(12, 131, 31, 0.14);
+  color: #0c831f;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.location-city-card {
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  background: var(--bg-card);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: var(--transition);
+}
+
+.location-city-card:hover {
+  border-color: var(--border-focus);
+  background: var(--bg-subtle);
+  transform: translateY(-1px);
+}
+
+.location-city-card.selected {
+  border: 1.5px solid var(--border-focus);
+  background: var(--primary-light);
+}
+
+.location-city-name {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.location-city-card.selected .location-city-name {
+  color: var(--border-focus);
+}
+
+.location-city-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.location-city-check {
+  color: var(--border-focus);
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -886,10 +987,66 @@ body {
   color: #38BDF8;
 }
 
+[data-theme="dark"] .address-line {
+  color: #E2E8F0;
+}
+
 [data-theme="dark"] .eta-tag-pill {
   background: rgba(19, 27, 46, 0.92);
   border-color: #0284C7;
   color: #38BDF8;
+}
+
+/* Dark mode Free Delivery & Perk Icons */
+[data-theme="dark"] .perk-card-delivery {
+  border-color: rgba(45, 212, 191, 0.35);
+}
+
+[data-theme="dark"] .perk-icon-delivery {
+  background: rgba(45, 212, 191, 0.2);
+  color: #2dd4bf;
+  box-shadow: 0 0 12px rgba(45, 212, 191, 0.25);
+}
+
+[data-theme="dark"] .perk-icon-speed {
+  background: rgba(56, 189, 248, 0.2);
+  color: #38bdf8;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+}
+
+[data-theme="dark"] .perk-icon-quality {
+  background: rgba(251, 113, 133, 0.2);
+  color: #fb7185;
+  box-shadow: 0 0 12px rgba(251, 113, 133, 0.2);
+}
+
+/* Dark mode Location Modal */
+[data-theme="dark"] .location-modal-icon-wrap {
+  background: rgba(16, 185, 129, 0.22);
+  color: #34d399;
+}
+
+[data-theme="dark"] .location-city-card {
+  background: var(--bg-subtle);
+  border-color: var(--border-light);
+}
+
+[data-theme="dark"] .location-city-card:hover {
+  background: var(--bg-card);
+  border-color: #34d399;
+}
+
+[data-theme="dark"] .location-city-card.selected {
+  background: rgba(16, 185, 129, 0.18);
+  border-color: #34d399;
+}
+
+[data-theme="dark"] .location-city-card.selected .location-city-name {
+  color: #34d399;
+}
+
+[data-theme="dark"] .location-city-check {
+  color: #34d399;
 }
 
 [data-theme="dark"] select,

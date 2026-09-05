@@ -83,8 +83,8 @@ export default function CartDrawer({ onProceedToPayment, onOpenAuth }) {
               {/* Zepto / Rapido Style Free Delivery Progress Tracker */}
               <div
                 style={{
-                  background: subtotal >= 199 ? 'rgba(16, 185, 129, 0.08)' : 'rgba(81, 226, 245, 0.1)',
-                  border: subtotal >= 199 ? '1px solid #A7F3D0' : '1px solid rgba(81, 226, 245, 0.35)',
+                  background: subtotal >= 199 ? 'var(--primary-light)' : 'rgba(81, 226, 245, 0.12)',
+                  border: subtotal >= 199 ? '1px solid var(--border-focus)' : '1px solid var(--border-light)',
                   borderRadius: 'var(--radius-md)',
                   padding: '0.75rem 0.9rem',
                   marginBottom: '0.85rem'
@@ -93,17 +93,17 @@ export default function CartDrawer({ onProceedToPayment, onOpenAuth }) {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.45rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                     {subtotal >= 199 ? (
-                      <CheckCircle2 size={16} color="#059669" />
+                      <CheckCircle2 size={16} color="var(--border-focus)" />
                     ) : (
-                      <Bike size={16} color="#0b5e54" />
+                      <Bike size={16} color="var(--border-focus)" />
                     )}
-                    <span style={{ fontSize: '0.82rem', fontWeight: 800, color: subtotal >= 199 ? '#065F46' : '#0b5e54' }}>
+                    <span style={{ fontSize: '0.82rem', fontWeight: 800, color: subtotal >= 199 ? 'var(--border-focus)' : 'var(--text-main)' }}>
                       {subtotal >= 199
                         ? 'FREE Delivery Unlocked!'
                         : `Add items worth ₹${199 - subtotal} more for FREE Delivery`}
                     </span>
                   </div>
-                  <span style={{ fontSize: '0.72rem', fontWeight: 700, color: subtotal >= 199 ? '#059669' : 'var(--text-muted)' }}>
+                  <span style={{ fontSize: '0.72rem', fontWeight: 700, color: subtotal >= 199 ? 'var(--border-focus)' : 'var(--text-muted)' }}>
                     {subtotal >= 199 ? 'Saved ₹25' : `₹${subtotal} / ₹199`}
                   </span>
                 </div>

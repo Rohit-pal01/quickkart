@@ -57,18 +57,7 @@ export default function LocationModal({ isOpen, onClose }) {
         {/* Header */}
         <div className="modal-card-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <div
-              style={{
-                width: '34px',
-                height: '34px',
-                background: 'rgba(157, 249, 239, 0.3)',
-                color: '#086616',
-                borderRadius: 'var(--radius-sm)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
+            <div className="location-modal-icon-wrap">
               <MapPin size={18} />
             </div>
             <div>
@@ -134,28 +123,18 @@ export default function LocationModal({ isOpen, onClose }) {
                 return (
                   <div
                     key={city.name}
+                    className={`location-city-card ${isSelected ? 'selected' : ''}`}
                     onClick={() => handleSelectCity(city.label)}
-                    style={{
-                      padding: '0.65rem 0.85rem',
-                      borderRadius: 'var(--radius-md)',
-                      border: isSelected ? '1.5px solid #0C831F' : '1px solid var(--border-light)',
-                      background: isSelected ? '#E8F5E9' : 'white',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      transition: 'var(--transition)'
-                    }}
                   >
                     <div>
-                      <div style={{ fontSize: '0.85rem', fontWeight: 800, color: isSelected ? '#0C831F' : 'var(--text-main)' }}>
+                      <div className="location-city-name">
                         {city.name}
                       </div>
-                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                      <div className="location-city-sub">
                         8-10 min delivery
                       </div>
                     </div>
-                    {isSelected && <Check size={16} color="#0C831F" />}
+                    {isSelected && <Check size={16} className="location-city-check" />}
                   </div>
                 );
               })}

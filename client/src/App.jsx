@@ -304,19 +304,8 @@ function StoreContent() {
                 marginBottom: '1.35rem'
               }}
             >
-              <div
-                style={{
-                  background: 'var(--bg-card)',
-                  border: '1px solid rgba(157, 249, 239, 0.7)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '0.65rem 0.9rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.65rem',
-                  boxShadow: 'var(--shadow-sm)'
-                }}
-              >
-                <div style={{ width: '34px', height: '34px', borderRadius: '50%', background: 'rgba(157, 249, 239, 0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0b5e54', flexShrink: 0 }}>
+              <div className="perk-card perk-card-delivery">
+                <div className="perk-icon-wrap perk-icon-delivery">
                   <Bike size={18} />
                 </div>
                 <div>
@@ -325,19 +314,8 @@ function StoreContent() {
                 </div>
               </div>
 
-              <div
-                style={{
-                  background: 'var(--bg-card)',
-                  border: '1px solid var(--border-light)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '0.65rem 0.9rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.65rem',
-                  boxShadow: 'var(--shadow-sm)'
-                }}
-              >
-                <div style={{ width: '34px', height: '34px', borderRadius: '50%', background: 'rgba(81, 226, 245, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0284C7', flexShrink: 0 }}>
+              <div className="perk-card">
+                <div className="perk-icon-wrap perk-icon-speed">
                   <Clock size={18} />
                 </div>
                 <div>
@@ -346,19 +324,8 @@ function StoreContent() {
                 </div>
               </div>
 
-              <div
-                style={{
-                  background: 'var(--bg-card)',
-                  border: '1px solid var(--border-light)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '0.65rem 0.9rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.65rem',
-                  boxShadow: 'var(--shadow-sm)'
-                }}
-              >
-                <div style={{ width: '34px', height: '34px', borderRadius: '50%', background: 'rgba(255, 168, 182, 0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#a83256', flexShrink: 0 }}>
+              <div className="perk-card">
+                <div className="perk-icon-wrap perk-icon-quality">
                   <ShieldCheck size={18} />
                 </div>
                 <div>
