@@ -13,7 +13,7 @@ const sampleProducts = [
     price: 54,
     unit: '1 L',
     stock: 150,
-    imageUrl: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '/amul-milk.jpg',
     isActive: true
   },
   {
@@ -63,7 +63,7 @@ const sampleProducts = [
     price: 35,
     unit: '400 g cup',
     stock: 80,
-    imageUrl: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '/dahi.jpg',
     isActive: true
   },
   {
@@ -281,7 +281,7 @@ const sampleProducts = [
     price: 50,
     unit: '70 g cup',
     stock: 80,
-    imageUrl: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '/nissin-noodles.jpg',
     isActive: true
   },
   {
@@ -291,7 +291,7 @@ const sampleProducts = [
     price: 125,
     unit: '420 g pack',
     stock: 65,
-    imageUrl: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '/mccain-fries.jpg',
     isActive: true
   },
   {
@@ -301,7 +301,7 @@ const sampleProducts = [
     price: 85,
     unit: '500 g pack',
     stock: 90,
-    imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '/safal-peas.jpg',
     isActive: true
   },
 
