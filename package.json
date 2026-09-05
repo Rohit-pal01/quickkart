@@ -1,0 +1,9 @@
+{
+  "name": "quickkart",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "npm --prefix server install",
+    "start": "npm --prefix server start"
+  }
+}
