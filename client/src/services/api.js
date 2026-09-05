@@ -51,6 +51,14 @@ export const api = {
     return res.json();
   },
 
+  async deleteUser(userId) {
+    const res = await fetch(`${API_BASE}/auth/users/${userId}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders()
+    });
+    return res.json();
+  },
+
   // Products
   async getProducts(params = {}) {
     const query = new URLSearchParams();

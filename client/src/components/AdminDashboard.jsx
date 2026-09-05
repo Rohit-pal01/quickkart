@@ -56,6 +56,26 @@ export default function AdminDashboard({ onBackToStore }) {
     }
   };
 
+  const handleDeleteUser = async (userId, userName, userRole) => {
+    if (userRole === 'admin') {
+      alert('Admin accounts cannot be deleted directly from this button for security.');
+      return;
+    }
+    if (!window.confirm(`Are you sure you want to permanently delete user "${userName}"?`)) {
+      return;
+    }
+    try {
+      const res = await api.deleteUser(userId);
+      if (res.success) {
+        setUsers(prev => prev.filter(u => u._id !== userId));
+      } else {
+        alert(res.message || 'Failed to delete user');
+      }
+    } catch (err) {
+      alert('Server error deleting user');
+    }
+  };
+
   const handleAddProduct = async (e) => {
     e.preventDefault();
     setFormMsg(null);
@@ -346,12 +366,13 @@ export default function AdminDashboard({ onBackToStore }) {
                 <th>Role</th>
                 <th>Default Address</th>
                 <th>Registered On</th>
+                <th style={{ textAlign: 'center' }}>Action</th>
               </tr>
             </thead>
             <tbody>
               {users.length === 0 ? (
                 <tr>
-                  <td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>
+                  <td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>
                     No registered customers found.
                   </td>
                 </tr>
@@ -391,6 +412,33 @@ export default function AdminDashboard({ onBackToStore }) {
                         hour: '2-digit',
                         minute: '2-digit'
                       }) : 'N/A'}
+                    </td>
+                    <td style={{ textAlign: 'center' }}>
+                      {u.role !== 'admin' ? (
+                        <button
+                          onClick={() => handleDeleteUser(u._id, u.name, u.role)}
+                          title={`Delete account for ${u.name}`}
+                          style={{
+                            background: '#FEF2F2',
+                            border: '1px solid #FECACA',
+                            color: '#DC2626',
+                            borderRadius: 'var(--radius-sm)',
+                            padding: '0.35rem 0.65rem',
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.3rem',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            transition: 'var(--transition)'
+                          }}
+                        >
+                          <Trash2 size={13} />
+                          <span>Delete</span>
+                        </button>
+                      ) : (
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>Protected</span>
+                      )}
                     </td>
                   </tr>
                 ))
