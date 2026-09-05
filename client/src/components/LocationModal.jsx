@@ -48,7 +48,7 @@ export default function LocationModal({ isOpen, onClose }) {
     <div className="modal-overlay" style={{ alignItems: 'center', justifyContent: 'center' }}>
       <div
         style={{
-          background: 'white',
+          background: 'var(--bg-card)',
           width: '92%',
           maxWidth: '460px',
           borderRadius: 'var(--radius-lg)',

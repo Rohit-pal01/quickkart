@@ -135,7 +135,7 @@ export default function AdminDashboard({ onBackToStore }) {
           <button
             className={`btn-auth ${activeTab === 'orders' ? 'active' : ''}`}
             style={{
-              background: activeTab === 'orders' ? '#10B981' : 'white',
+              background: activeTab === 'orders' ? '#10B981' : 'var(--bg-card)',
               color: activeTab === 'orders' ? 'white' : 'var(--text-main)'
             }}
             onClick={() => setActiveTab('orders')}
@@ -145,7 +145,7 @@ export default function AdminDashboard({ onBackToStore }) {
           <button
             className={`btn-auth ${activeTab === 'inventory' ? 'active' : ''}`}
             style={{
-              background: activeTab === 'inventory' ? '#10B981' : 'white',
+              background: activeTab === 'inventory' ? '#10B981' : 'var(--bg-card)',
               color: activeTab === 'inventory' ? 'white' : 'var(--text-main)'
             }}
             onClick={() => setActiveTab('inventory')}
@@ -155,7 +155,7 @@ export default function AdminDashboard({ onBackToStore }) {
           <button
             className={`btn-auth ${activeTab === 'users' ? 'active' : ''}`}
             style={{
-              background: activeTab === 'users' ? '#10B981' : 'white',
+              background: activeTab === 'users' ? '#10B981' : 'var(--bg-card)',
               color: activeTab === 'users' ? 'white' : 'var(--text-main)'
             }}
             onClick={() => setActiveTab('users')}
@@ -166,7 +166,7 @@ export default function AdminDashboard({ onBackToStore }) {
           <button
             className={`btn-auth ${activeTab === 'add_product' ? 'active' : ''}`}
             style={{
-              background: activeTab === 'add_product' ? '#10B981' : 'white',
+              background: activeTab === 'add_product' ? '#10B981' : 'var(--bg-card)',
               color: activeTab === 'add_product' ? 'white' : 'var(--text-main)'
             }}
             onClick={() => setActiveTab('add_product')}
@@ -186,28 +186,28 @@ export default function AdminDashboard({ onBackToStore }) {
           marginBottom: '1.5rem'
         }}
       >
-        <div style={{ background: 'white', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-light)' }}>
+        <div style={{ background: 'var(--bg-card)', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-light)' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>TOTAL REVENUE</div>
           <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#10B981', marginTop: '0.3rem' }}>₹{totalRevenue}</div>
         </div>
 
-        <div style={{ background: 'white', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-light)' }}>
+        <div style={{ background: 'var(--bg-card)', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-light)' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>ACTIVE DELIVERIES</div>
           <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#F59E0B', marginTop: '0.3rem' }}>{activeDeliveries}</div>
         </div>
 
-        <div style={{ background: 'white', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-light)' }}>
+        <div style={{ background: 'var(--bg-card)', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-light)' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>TOTAL ORDERS</div>
           <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#6366F1', marginTop: '0.3rem' }}>{orders.length}</div>
         </div>
 
-        <div style={{ background: 'white', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-light)' }}>
+        <div style={{ background: 'var(--bg-card)', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-light)' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>ACTIVE SKUs</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0F172A', marginTop: '0.3rem' }}>{products.length}</div>
+          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-main)', marginTop: '0.3rem' }}>{products.length}</div>
         </div>
 
         <div
-          style={{ background: 'white', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-light)', cursor: 'pointer' }}
+          style={{ background: 'var(--bg-card)', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-light)', cursor: 'pointer' }}
           onClick={() => setActiveTab('users')}
           title="Click to view all registered customers"
         >
@@ -221,7 +221,7 @@ export default function AdminDashboard({ onBackToStore }) {
 
       {/* Live Orders Tab */}
       {activeTab === 'orders' && (
-        <div style={{ background: 'white', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)', overflow: 'hidden' }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)', overflow: 'hidden' }}>
           <table className="admin-table">
             <thead>
               <tr>
@@ -295,7 +295,7 @@ export default function AdminDashboard({ onBackToStore }) {
 
       {/* Stock Inventory Tab */}
       {activeTab === 'inventory' && (
-        <div style={{ background: 'white', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)', overflow: 'hidden' }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)', overflow: 'hidden' }}>
           <table className="admin-table">
             <thead>
               <tr>
@@ -345,7 +345,7 @@ export default function AdminDashboard({ onBackToStore }) {
 
       {/* Customers / Users Tab */}
       {activeTab === 'users' && (
-        <div style={{ background: 'white', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)', overflow: 'hidden' }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)', overflow: 'hidden' }}>
           <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
               <h2 style={{ fontSize: '1.15rem', fontWeight: 800 }}>Registered Users & Customers</h2>
@@ -450,7 +450,7 @@ export default function AdminDashboard({ onBackToStore }) {
 
       {/* Add Product Form Tab */}
       {activeTab === 'add_product' && (
-        <div style={{ background: 'white', padding: '1.5rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)', maxWidth: '600px' }}>
+        <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)', maxWidth: '600px' }}>
           <h2 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '1rem' }}>Add New Product to Dark Store</h2>
 
           {formMsg && (

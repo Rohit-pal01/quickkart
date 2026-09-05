@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider, useCart } from './context/CartContext';
 import Navbar from './components/Navbar';
@@ -305,7 +306,7 @@ function StoreContent() {
             >
               <div
                 style={{
-                  background: 'white',
+                  background: 'var(--bg-card)',
                   border: '1px solid rgba(157, 249, 239, 0.7)',
                   borderRadius: 'var(--radius-md)',
                   padding: '0.65rem 0.9rem',
@@ -326,7 +327,7 @@ function StoreContent() {
 
               <div
                 style={{
-                  background: 'white',
+                  background: 'var(--bg-card)',
                   border: '1px solid var(--border-light)',
                   borderRadius: 'var(--radius-md)',
                   padding: '0.65rem 0.9rem',
@@ -347,7 +348,7 @@ function StoreContent() {
 
               <div
                 style={{
-                  background: 'white',
+                  background: 'var(--bg-card)',
                   border: '1px solid var(--border-light)',
                   borderRadius: 'var(--radius-md)',
                   padding: '0.65rem 0.9rem',
@@ -433,7 +434,7 @@ function StoreContent() {
                 style={{
                   textAlign: 'center',
                   padding: '4rem 1rem',
-                  background: 'white',
+                  background: 'var(--bg-card)',
                   borderRadius: 'var(--radius-lg)',
                   border: '1px solid var(--border-light)'
                 }}
@@ -522,10 +523,12 @@ function StoreContent() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <StoreContent />
-      </CartProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <CartProvider>
+          <StoreContent />
+        </CartProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

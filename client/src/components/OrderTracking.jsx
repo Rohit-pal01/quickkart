@@ -98,7 +98,7 @@ export default function OrderTracking({ orderId, onBackToStore }) {
       {/* Header Card */}
       <div
         style={{
-          background: 'white',
+          background: 'var(--bg-card)',
           borderRadius: 'var(--radius-lg)',
           border: '1px solid var(--border-light)',
           padding: '1.5rem',
@@ -233,7 +233,7 @@ export default function OrderTracking({ orderId, onBackToStore }) {
       {/* Items Summary & Payment Breakdown */}
       <div
         style={{
-          background: 'white',
+          background: 'var(--bg-card)',
           borderRadius: 'var(--radius-lg)',
           border: '1px solid var(--border-light)',
           padding: '1.5rem',

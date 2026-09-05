@@ -205,7 +205,7 @@ export default function CartDrawer({ onProceedToPayment, onOpenAuth }) {
               {/* Delivery Address Pill */}
               <div
                 style={{
-                  background: 'white',
+                  background: 'var(--bg-card)',
                   border: '1px solid var(--border-light)',
                   borderRadius: 'var(--radius-md)',
                   padding: '0.85rem',

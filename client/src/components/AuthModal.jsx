@@ -76,7 +76,7 @@ export default function AuthModal({ isOpen, onClose }) {
     <div className="modal-overlay" style={{ alignItems: 'center', justifyContent: 'center' }}>
       <div
         style={{
-          background: 'white',
+          background: 'var(--bg-card)',
           width: '92%',
           maxWidth: '430px',
           borderRadius: 'var(--radius-lg)',

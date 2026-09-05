@@ -1,7 +1,8 @@
 import React from 'react';
-import { Zap, ShoppingCart, Search, User, MapPin, Shield, LogOut, ChevronDown } from 'lucide-react';
+import { Zap, ShoppingCart, Search, User, MapPin, Shield, LogOut, ChevronDown, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Navbar({
   searchTerm,
@@ -13,6 +14,7 @@ export default function Navbar({
 }) {
   const { user, isAuthenticated, logout, activeAddress } = useAuth();
   const { itemCount, totalAmount, setIsCartOpen } = useCart();
+  const { theme, toggleTheme, isDark } = useTheme();
 
   return (
     <header className="navbar">
@@ -68,12 +70,22 @@ export default function Navbar({
 
       {/* Navigation Actions */}
       <div className="nav-actions">
+        {/* Dark / Light Mode Toggle */}
+        <button
+          className="theme-toggle-btn"
+          onClick={toggleTheme}
+          title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          aria-label="Toggle theme"
+        >
+          {isDark ? <Sun size={17} color="#FBBF24" /> : <Moon size={17} color="#64748B" />}
+        </button>
+
         {isAuthenticated && user?.role === 'admin' && (
           <button
             className="btn-auth"
             style={{
               borderColor: activeView === 'admin' ? '#0C831F' : undefined,
-              background: activeView === 'admin' ? '#E8F5E9' : 'white',
+              background: activeView === 'admin' ? 'var(--primary-light)' : 'var(--bg-card)',
               color: activeView === 'admin' ? '#0C831F' : undefined
             }}
             onClick={() => setActiveView(activeView === 'admin' ? 'store' : 'admin')}
@@ -89,7 +101,7 @@ export default function Navbar({
               className="btn-auth"
               onClick={() => setActiveView('orders')}
               style={{
-                background: activeView === 'orders' ? '#E8F5E9' : 'white',
+                background: activeView === 'orders' ? 'var(--primary-light)' : 'var(--bg-card)',
                 borderColor: activeView === 'orders' ? '#0C831F' : undefined
               }}
             >
@@ -123,3 +135,4 @@ export default function Navbar({
     </header>
   );
 }
+
