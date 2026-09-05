@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, User, Mail, Phone, Lock, Sparkles, AlertCircle, UserPlus, LogIn, ArrowRight } from 'lucide-react';
+import { X, User, Mail, Phone, Lock, Sparkles, AlertCircle, UserPlus, LogIn, ArrowRight, MapPin } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function AuthModal({ isOpen, onClose }) {
@@ -9,6 +9,7 @@ export default function AuthModal({ isOpen, onClose }) {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -38,7 +39,18 @@ export default function AuthModal({ isOpen, onClose }) {
           setLoading(false);
           return;
         }
-        const res = await register({ name: name.trim(), email: email.trim(), phone: phone.trim(), password });
+        if (!address.trim()) {
+          setError('Please enter your delivery address');
+          setLoading(false);
+          return;
+        }
+        const res = await register({
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+          password,
+          address: address.trim()
+        });
         if (res.success) {
           onClose();
         } else {
@@ -250,6 +262,26 @@ export default function AuthModal({ isOpen, onClose }) {
                     placeholder="10-digit phone number"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
+              </div>
+            )}
+
+            {!isLogin && (
+              <div>
+                <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, marginBottom: '0.3rem' }}>
+                  DELIVERY ADDRESS (FLAT, STREET, AREA, CITY)
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <MapPin size={16} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                  <input
+                    type="text"
+                    required
+                    className="search-input"
+                    style={{ borderRadius: 'var(--radius-md)', paddingLeft: '2.5rem' }}
+                    placeholder="e.g. Flat 302, Green Glen Layout, Bengaluru"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
                   />
                 </div>
               </div>

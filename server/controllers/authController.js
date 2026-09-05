@@ -14,7 +14,7 @@ const generateToken = (id) => {
 // @access  Public
 const register = async (req, res, next) => {
   try {
-    const { name, email, phone, password, role } = req.body;
+    const { name, email, phone, password, role, address } = req.body;
 
     if (!name || !email || !phone || !password) {
       return res.status(400).json({
@@ -31,12 +31,26 @@ const register = async (req, res, next) => {
       });
     }
 
+    const userAddresses = [];
+    if (address && typeof address === 'string' && address.trim()) {
+      userAddresses.push({
+        label: 'Home',
+        line1: address.trim()
+      });
+    } else if (address && typeof address === 'object' && address.line1) {
+      userAddresses.push({
+        label: address.label || 'Home',
+        line1: address.line1.trim()
+      });
+    }
+
     const user = await User.create({
       name,
       email: email.toLowerCase(),
       phone,
       passwordHash: password, // Will be hashed in pre-save hook
-      role: role && ['customer', 'admin', 'delivery'].includes(role) ? role : 'customer'
+      role: role && ['customer', 'admin', 'delivery'].includes(role) ? role : 'customer',
+      addresses: userAddresses
     });
 
     const token = generateToken(user._id);

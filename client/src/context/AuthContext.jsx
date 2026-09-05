@@ -56,6 +56,9 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('quickkart_token', res.token);
       setToken(res.token);
       setUser(res.user);
+      if (res.user.addresses && res.user.addresses.length > 0) {
+        setActiveAddress(res.user.addresses[0]);
+      }
       return { success: true };
     }
     return { success: false, message: res.message || 'Registration failed' };
