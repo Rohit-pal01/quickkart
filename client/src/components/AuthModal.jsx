@@ -85,27 +85,41 @@ export default function AuthModal({ isOpen, onClose }) {
   };
 
   return (
-    <div className="modal-overlay" style={{ alignItems: 'center', justifyContent: 'center' }}>
+    <div
+      className="modal-overlay"
+      style={{
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '1rem',
+        overflowY: 'auto'
+      }}
+      onClick={onClose}
+    >
       <div
         style={{
           background: 'var(--bg-card)',
-          width: '92%',
+          width: '100%',
           maxWidth: '430px',
+          maxHeight: 'min(92vh, 680px)',
           borderRadius: 'var(--radius-lg)',
           boxShadow: 'var(--shadow-xl)',
+          border: '1px solid var(--border-light)',
+          display: 'flex',
+          flexDirection: 'column',
           overflow: 'hidden',
-          border: '1px solid var(--border-light)'
+          margin: 'auto'
         }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div
           style={{
-            padding: '1.25rem',
+            padding: '1rem 1.25rem',
             borderBottom: '1px solid var(--border-light)',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            flexShrink: 0
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
@@ -141,7 +155,8 @@ export default function AuthModal({ isOpen, onClose }) {
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
             borderBottom: '1px solid var(--border-light)',
-            background: 'var(--bg-subtle)'
+            background: 'var(--bg-subtle)',
+            flexShrink: 0
           }}
         >
           <button
@@ -153,7 +168,7 @@ export default function AuthModal({ isOpen, onClose }) {
             style={{
               padding: '0.75rem',
               border: 'none',
-              background: isLogin ? 'white' : 'transparent',
+              background: isLogin ? 'var(--bg-card)' : 'transparent',
               fontWeight: 800,
               fontSize: '0.88rem',
               color: isLogin ? '#0C831F' : 'var(--text-muted)',
@@ -173,7 +188,7 @@ export default function AuthModal({ isOpen, onClose }) {
             style={{
               padding: '0.75rem',
               border: 'none',
-              background: !isLogin ? 'white' : 'transparent',
+              background: !isLogin ? 'var(--bg-card)' : 'transparent',
               fontWeight: 800,
               fontSize: '0.88rem',
               color: !isLogin ? '#0C831F' : 'var(--text-muted)',
@@ -186,7 +201,7 @@ export default function AuthModal({ isOpen, onClose }) {
           </button>
         </div>
 
-        <div style={{ padding: '1.25rem' }}>
+        <div style={{ padding: '1.15rem 1.25rem', overflowY: 'auto', flex: 1 }}>
           {error && (
             <div
               style={{
@@ -208,7 +223,7 @@ export default function AuthModal({ isOpen, onClose }) {
           )}
 
           {/* User Form */}
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
             {!isLogin && (
               <div>
                 <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, marginBottom: '0.3rem' }}>
@@ -374,7 +389,7 @@ export default function AuthModal({ isOpen, onClose }) {
                   gap: '0.1rem',
                   borderColor: '#0C831F',
                   color: '#0C831F',
-                  background: '#E8F5E9'
+                  background: 'var(--primary-light)'
                 }}
                 onClick={() => handleDemoLogin('admin')}
                 disabled={loading}
