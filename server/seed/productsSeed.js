@@ -207,7 +207,7 @@ const sampleProducts = [
     price: 115,
     unit: '107 g can',
     stock: 65,
-    imageUrl: 'https://images.unsplash.com/photo-1582293041079-7814c2f12063?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '/pringles.jpg',
     isActive: true
   },
 
@@ -259,7 +259,7 @@ const sampleProducts = [
     price: 125,
     unit: '250 ml can',
     stock: 70,
-    imageUrl: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '/redbull.jpg',
     isActive: true
   },
 
@@ -323,7 +323,7 @@ const sampleProducts = [
     price: 30,
     unit: '38.5 g',
     stock: 180,
-    imageUrl: 'https://images.unsplash.com/photo-1582293041079-7814c2f12063?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '/kitkat.jpg',
     isActive: true
   },
   {
@@ -345,7 +345,7 @@ const sampleProducts = [
     price: 99,
     unit: '200 ml pump bottle',
     stock: 80,
-    imageUrl: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '/dettol.jpg',
     isActive: true
   },
   {
@@ -365,7 +365,7 @@ const sampleProducts = [
     price: 145,
     unit: '1 kg pack',
     stock: 75,
-    imageUrl: 'https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?auto=format&fit=crop&w=600&q=80',
+    imageUrl: '/surf-excel.jpg',
     isActive: true
   }
 ];
