@@ -198,12 +198,12 @@ const updateProduct = async (req, res, next) => {
   }
 };
 
-// @desc    Delete a product (Soft delete by default)
+// @desc    Delete a product
 // @route   DELETE /api/products/:id
 // @access  Private (Admin only)
 const deleteProduct = async (req, res, next) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findByIdAndDelete(req.params.id);
 
     if (!product) {
       return res.status(404).json({
@@ -212,13 +212,9 @@ const deleteProduct = async (req, res, next) => {
       });
     }
 
-    // Soft delete to maintain order history referential integrity
-    product.isActive = false;
-    await product.save();
-
     res.status(200).json({
       success: true,
-      message: 'Product deactivated successfully'
+      message: 'Product deleted successfully'
     });
   } catch (error) {
     next(error);

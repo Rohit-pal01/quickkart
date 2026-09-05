@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Package, TrendingUp, Users, Plus, Edit2, Trash2, CheckCircle2, Clock, AlertTriangle, ArrowLeft } from 'lucide-react';
+import { Package, TrendingUp, Users, Plus, Edit2, Trash2, CheckCircle2, Clock, AlertTriangle, ArrowLeft, Search, X } from 'lucide-react';
 import { api } from '../services/api';
 import { useTheme } from '../context/ThemeContext';
 
@@ -22,6 +22,12 @@ export default function AdminDashboard({ onBackToStore }) {
     imageUrl: ''
   });
   const [formMsg, setFormMsg] = useState(null);
+
+  // Edit product state & modal
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [editLoading, setEditLoading] = useState(false);
+  const [inventorySearch, setInventorySearch] = useState('');
+  const [inventoryCategory, setInventoryCategory] = useState('All');
 
   const getStatusStyle = (status) => {
     const styles = {
@@ -146,6 +152,74 @@ export default function AdminDashboard({ onBackToStore }) {
       setFormMsg({ type: 'error', text: 'Server error adding product' });
     }
   };
+
+  const handleDeleteProduct = async (productId, productName) => {
+    if (!window.confirm(`Are you sure you want to permanently delete "${productName}" from the store inventory?`)) {
+      return;
+    }
+    try {
+      const res = await api.deleteProduct(productId);
+      if (res.success) {
+        setProducts(prev => prev.filter(p => p._id !== productId));
+      } else {
+        alert(res.message || 'Failed to delete product');
+      }
+    } catch (err) {
+      console.error('Error deleting product:', err);
+      alert('Server error deleting product');
+    }
+  };
+
+  const handleUpdateProduct = async (e) => {
+    e.preventDefault();
+    if (!editingProduct) return;
+    setEditLoading(true);
+    try {
+      const res = await api.updateProduct(editingProduct._id, {
+        name: editingProduct.name,
+        category: editingProduct.category,
+        price: Number(editingProduct.price),
+        unit: editingProduct.unit,
+        stock: Number(editingProduct.stock),
+        description: editingProduct.description,
+        imageUrl: editingProduct.imageUrl,
+        isActive: editingProduct.isActive !== undefined ? editingProduct.isActive : true
+      });
+      if (res.success) {
+        setProducts(prev =>
+          prev.map(p => (p._id === editingProduct._id ? (res.product || { ...p, ...editingProduct }) : p))
+        );
+        setEditingProduct(null);
+      } else {
+        alert(res.message || 'Failed to update product specifications');
+      }
+    } catch (err) {
+      console.error('Error updating product:', err);
+      alert('Server error updating product specifications');
+    } finally {
+      setEditLoading(false);
+    }
+  };
+
+  const availableCategories = Array.from(
+    new Set([
+      'Dairy & Breakfast',
+      'Fruits & Vegetables',
+      'Snacks & Munchies',
+      'Beverages',
+      'Instant Food',
+      'Bakery',
+      ...products.map(p => p.category).filter(Boolean)
+    ])
+  );
+
+  const filteredProducts = products.filter(p => {
+    const matchesSearch = !inventorySearch ||
+      p.name?.toLowerCase().includes(inventorySearch.toLowerCase()) ||
+      p.category?.toLowerCase().includes(inventorySearch.toLowerCase());
+    const matchesCat = inventoryCategory === 'All' || p.category === inventoryCategory;
+    return matchesSearch && matchesCat;
+  });
 
   const totalRevenue = orders
     .filter(o => o.status !== 'CANCELLED' && o.status !== 'PAYMENT_FAILED')
@@ -341,50 +415,176 @@ export default function AdminDashboard({ onBackToStore }) {
       {/* Stock Inventory Tab */}
       {activeTab === 'inventory' && (
         <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)', overflow: 'hidden' }}>
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Unit</th>
-                <th>Available Stock</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((p) => (
-                <tr key={p._id}>
-                  <td style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <img src={p.imageUrl} alt="" style={{ width: '38px', height: '38px', borderRadius: 'var(--radius-sm)', objectFit: 'cover' }} />
-                    <span style={{ fontWeight: 700 }}>{p.name}</span>
-                  </td>
-                  <td>{p.category}</td>
-                  <td style={{ fontWeight: 800 }}>₹{p.price}</td>
-                  <td>{p.unit}</td>
-                  <td>
-                    <span
-                      style={{
-                        padding: '0.2rem 0.6rem',
-                        borderRadius: 'var(--radius-full)',
-                        fontSize: '0.78rem',
-                        fontWeight: 700,
-                        background: p.stock > 10 ? '#ECFDF5' : '#FEF3C7',
-                        color: p.stock > 10 ? '#059669' : '#D97706'
-                      }}
-                    >
-                      {p.stock} units
-                    </span>
-                  </td>
-                  <td>
-                    <span style={{ color: p.isActive ? '#10B981' : '#EF4444', fontWeight: 700, fontSize: '0.8rem' }}>
-                      {p.isActive ? 'Active' : 'Inactive'}
-                    </span>
-                  </td>
+          {/* Inventory Controls Header */}
+          <div
+            style={{
+              padding: '1.25rem 1.5rem',
+              borderBottom: '1px solid var(--border-light)',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '1rem'
+            }}
+          >
+            <div>
+              <h2 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0 }}>Live Stock Inventory & Catalog</h2>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: '0.2rem 0 0 0' }}>
+                Showing {filteredProducts.length} of {products.length} products. Edit specs, update image links, or delete items.
+              </p>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+              <div style={{ position: 'relative', width: '220px' }}>
+                <Search size={15} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={inventorySearch}
+                  onChange={(e) => setInventorySearch(e.target.value)}
+                  className="search-input"
+                  style={{ width: '100%', paddingLeft: '2.2rem', paddingRight: '0.75rem', fontSize: '0.82rem', height: '36px', borderRadius: 'var(--radius-md)' }}
+                />
+              </div>
+
+              <select
+                value={inventoryCategory}
+                onChange={(e) => setInventoryCategory(e.target.value)}
+                className="search-input"
+                style={{ height: '36px', fontSize: '0.82rem', borderRadius: 'var(--radius-md)', padding: '0 0.75rem' }}
+              >
+                <option value="All">All Categories</option>
+                {availableCategories.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+
+              <button
+                className="btn-checkout"
+                style={{ padding: '0.45rem 0.9rem', fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}
+                onClick={() => setActiveTab('add_product')}
+              >
+                <Plus size={15} />
+                <span>Add Item</span>
+              </button>
+            </div>
+          </div>
+
+          <div style={{ overflowX: 'auto' }}>
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Unit</th>
+                  <th>Available Stock</th>
+                  <th>Status</th>
+                  <th style={{ textAlign: 'center' }}>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filteredProducts.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--text-muted)' }}>
+                      No items found matching your filter criteria.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredProducts.map((p) => (
+                    <tr key={p._id}>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                          <img
+                            src={p.imageUrl}
+                            alt=""
+                            onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=100'; }}
+                            style={{ width: '42px', height: '42px', borderRadius: 'var(--radius-sm)', objectFit: 'cover', flexShrink: 0, border: '1px solid var(--border-light)' }}
+                          />
+                          <div>
+                            <span style={{ fontWeight: 700, display: 'block' }}>{p.name}</span>
+                            {p.description && (
+                              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', maxWidth: '240px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                {p.description}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                      <td>{p.category}</td>
+                      <td style={{ fontWeight: 800 }}>₹{p.price}</td>
+                      <td>{p.unit}</td>
+                      <td>
+                        <span
+                          style={{
+                            padding: '0.2rem 0.6rem',
+                            borderRadius: 'var(--radius-full)',
+                            fontSize: '0.78rem',
+                            fontWeight: 700,
+                            background: p.stock > 10 ? '#ECFDF5' : '#FEF3C7',
+                            color: p.stock > 10 ? '#059669' : '#D97706'
+                          }}
+                        >
+                          {p.stock} units
+                        </span>
+                      </td>
+                      <td>
+                        <span style={{ color: p.isActive ? '#10B981' : '#EF4444', fontWeight: 700, fontSize: '0.8rem' }}>
+                          {p.isActive ? 'Active' : 'Inactive'}
+                        </span>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <div style={{ display: 'flex', gap: '0.45rem', justifyContent: 'center' }}>
+                          <button
+                            type="button"
+                            title="Edit product specifications and image link"
+                            onClick={() => setEditingProduct({ ...p })}
+                            style={{
+                              background: isDark ? 'rgba(59, 130, 246, 0.18)' : '#EFF6FF',
+                              border: '1px solid rgba(59, 130, 246, 0.35)',
+                              color: '#3B82F6',
+                              borderRadius: 'var(--radius-sm)',
+                              padding: '0.35rem 0.65rem',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.35rem',
+                              cursor: 'pointer',
+                              fontWeight: 600,
+                              fontSize: '0.76rem'
+                            }}
+                          >
+                            <Edit2 size={13} />
+                            <span>Edit</span>
+                          </button>
+                          <button
+                            type="button"
+                            title="Permanently delete item"
+                            onClick={() => handleDeleteProduct(p._id, p.name)}
+                            style={{
+                              background: isDark ? 'rgba(239, 68, 68, 0.18)' : '#FEF2F2',
+                              border: '1px solid rgba(239, 68, 68, 0.35)',
+                              color: '#EF4444',
+                              borderRadius: 'var(--radius-sm)',
+                              padding: '0.35rem 0.65rem',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.35rem',
+                              cursor: 'pointer',
+                              fontWeight: 600,
+                              fontSize: '0.76rem'
+                            }}
+                          >
+                            <Trash2 size={13} />
+                            <span>Delete</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
@@ -614,6 +814,216 @@ export default function AdminDashboard({ onBackToStore }) {
               Add Product to Catalog
             </button>
           </form>
+        </div>
+      )}
+
+      {/* Edit Product Modal */}
+      {editingProduct && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.65)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            padding: '1rem'
+          }}
+          onClick={() => setEditingProduct(null)}
+        >
+          <div
+            style={{
+              background: 'var(--bg-card)',
+              borderRadius: 'var(--radius-lg)',
+              border: '1px solid var(--border-light)',
+              width: '100%',
+              maxWidth: '560px',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+              padding: '1.5rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.75rem' }}>
+              <div>
+                <h2 style={{ fontSize: '1.2rem', fontWeight: 800, margin: 0 }}>Edit Product Specifications</h2>
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: '0.2rem 0 0 0' }}>
+                  Update name, pricing, stock, description, or image link
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditingProduct(null)}
+                style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: '0.3rem', display: 'flex' }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateProduct} style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
+              {/* Product Name */}
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Product Name</label>
+                <input
+                  type="text"
+                  required
+                  className="search-input"
+                  style={{ borderRadius: 'var(--radius-md)', paddingLeft: '1rem', width: '100%' }}
+                  value={editingProduct.name || ''}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
+                />
+              </div>
+
+              {/* Category & Price */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.9rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Category</label>
+                  <select
+                    className="search-input"
+                    style={{ borderRadius: 'var(--radius-md)', paddingLeft: '0.75rem', width: '100%' }}
+                    value={editingProduct.category || ''}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })}
+                  >
+                    {availableCategories.map(cat => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Price (₹)</label>
+                  <input
+                    type="number"
+                    required
+                    min="0"
+                    step="any"
+                    className="search-input"
+                    style={{ borderRadius: 'var(--radius-md)', paddingLeft: '1rem', width: '100%' }}
+                    value={editingProduct.price ?? ''}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              {/* Unit & Stock */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.9rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Unit / Weight</label>
+                  <input
+                    type="text"
+                    className="search-input"
+                    style={{ borderRadius: 'var(--radius-md)', paddingLeft: '1rem', width: '100%' }}
+                    placeholder="e.g. 500 ml / 1 kg"
+                    value={editingProduct.unit || ''}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, unit: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Available Stock</label>
+                  <input
+                    type="number"
+                    required
+                    min="0"
+                    className="search-input"
+                    style={{ borderRadius: 'var(--radius-md)', paddingLeft: '1rem', width: '100%' }}
+                    value={editingProduct.stock ?? ''}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, stock: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              {/* Image URL with live preview */}
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>
+                  Product Image Link / URL
+                </label>
+                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                  <input
+                    type="text"
+                    className="search-input"
+                    style={{ borderRadius: 'var(--radius-md)', paddingLeft: '1rem', flex: 1 }}
+                    placeholder="Image URL or local path e.g. /dahi.jpg or https://..."
+                    value={editingProduct.imageUrl || ''}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, imageUrl: e.target.value })}
+                  />
+                  {editingProduct.imageUrl && (
+                    <img
+                      src={editingProduct.imageUrl}
+                      alt="Preview"
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                      onLoad={(e) => { e.target.style.display = 'block'; }}
+                      style={{
+                        width: '44px',
+                        height: '44px',
+                        borderRadius: 'var(--radius-md)',
+                        objectFit: 'cover',
+                        border: '2px solid var(--border-light)',
+                        flexShrink: 0
+                      }}
+                    />
+                  )}
+                </div>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.25rem', display: 'block' }}>
+                  Paste any direct image URL (Unsplash, Cloudinary, etc.) or local file path
+                </span>
+              </div>
+
+              {/* Description */}
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Description</label>
+                <textarea
+                  className="search-input"
+                  style={{ borderRadius: 'var(--radius-md)', paddingLeft: '1rem', minHeight: '65px', resize: 'vertical', width: '100%' }}
+                  placeholder="Product details & specifications..."
+                  value={editingProduct.description || ''}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
+                />
+              </div>
+
+              {/* Status Select */}
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Status</label>
+                <select
+                  className="search-input"
+                  style={{ borderRadius: 'var(--radius-md)', paddingLeft: '0.75rem', width: '100%' }}
+                  value={editingProduct.isActive !== false ? 'true' : 'false'}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, isActive: e.target.value === 'true' })}
+                >
+                  <option value="true">Active (Visible in Store)</option>
+                  <option value="false">Inactive (Hidden from Store)</option>
+                </select>
+              </div>
+
+              {/* Action Buttons */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.5rem' }}>
+                <button
+                  type="button"
+                  className="btn-auth"
+                  style={{ padding: '0.6rem 1.2rem' }}
+                  onClick={() => setEditingProduct(null)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn-checkout"
+                  style={{ padding: '0.6rem 1.5rem', justifyContent: 'center' }}
+                  disabled={editLoading}
+                >
+                  {editLoading ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </div>
