@@ -10,6 +10,7 @@ import AuthModal from './components/AuthModal';
 import LocationModal from './components/LocationModal';
 import OrderTracking from './components/OrderTracking';
 import AdminDashboard from './components/AdminDashboard';
+import Footer from './components/Footer';
 import { api } from './services/api';
 import {
   Zap,
@@ -422,6 +423,16 @@ function StoreContent() {
           </>
         )}
       </main>
+
+      {/* Footer */}
+      <Footer
+        onSelectCategory={(cat) => {
+          setSelectedCategory(cat);
+          setActiveView('store');
+          window.scrollTo({ top: 320, behavior: 'smooth' });
+        }}
+        onOpenLocation={() => setIsLocationOpen(true)}
+      />
 
       {/* Floating Bottom Cart Bar (Zepto & Blinkit Iconic Mobile UX) */}
       {itemCount > 0 && activeView === 'store' && (
