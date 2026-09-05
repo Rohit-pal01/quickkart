@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Package, TrendingUp, Users, Plus, Edit2, Trash2, CheckCircle2, Clock, AlertTriangle, ArrowLeft } from 'lucide-react';
 import { api } from '../services/api';
+import { useTheme } from '../context/ThemeContext';
 
 export default function AdminDashboard({ onBackToStore }) {
+  const { isDark } = useTheme();
   const [activeTab, setActiveTab] = useState('orders'); // 'orders' | 'inventory' | 'users' | 'add_product'
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
@@ -20,6 +22,46 @@ export default function AdminDashboard({ onBackToStore }) {
     imageUrl: ''
   });
   const [formMsg, setFormMsg] = useState(null);
+
+  const getStatusStyle = (status) => {
+    const styles = {
+      CONFIRMED: {
+        bg: isDark ? 'rgba(16, 185, 129, 0.22)' : '#ECFDF5',
+        text: isDark ? '#34D399' : '#065F46',
+        border: isDark ? '#059669' : '#A7F3D0'
+      },
+      PACKED: {
+        bg: isDark ? 'rgba(245, 158, 11, 0.22)' : '#FEF3C7',
+        text: isDark ? '#FBBF24' : '#92400E',
+        border: isDark ? '#D97706' : '#FDE68A'
+      },
+      OUT_FOR_DELIVERY: {
+        bg: isDark ? 'rgba(99, 102, 241, 0.25)' : '#EEF2FF',
+        text: isDark ? '#A5B4FC' : '#3730A3',
+        border: isDark ? '#6366F1' : '#C7D2FE'
+      },
+      DELIVERED: {
+        bg: isDark ? 'rgba(14, 165, 233, 0.22)' : '#E0F2FE',
+        text: isDark ? '#38BDF8' : '#075985',
+        border: isDark ? '#0284C7' : '#BAE6FD'
+      },
+      CANCELLED: {
+        bg: isDark ? 'rgba(239, 68, 68, 0.22)' : '#FEE2E2',
+        text: isDark ? '#F87171' : '#991B1B',
+        border: isDark ? '#DC2626' : '#FECACA'
+      },
+      PENDING_PAYMENT: {
+        bg: isDark ? 'rgba(148, 163, 184, 0.18)' : '#F1F5F9',
+        text: isDark ? '#CBD5E1' : '#334155',
+        border: isDark ? '#475569' : '#CBD5E1'
+      }
+    };
+    return styles[status] || {
+      bg: isDark ? '#1E293B' : '#F1F5F9',
+      text: isDark ? '#F8FAFC' : '#1C1C1C',
+      border: isDark ? '#334155' : '#E2E8F0'
+    };
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -255,32 +297,35 @@ export default function AdminDashboard({ onBackToStore }) {
                     </td>
                     <td style={{ fontWeight: 800 }}>₹{o.totalAmount}</td>
                     <td>
-                      <select
-                        value={o.status}
-                        onChange={(e) => handleStatusChange(o._id, e.target.value)}
-                        style={{
-                          padding: '0.35rem 0.6rem',
-                          borderRadius: 'var(--radius-sm)',
-                          border: '1.5px solid var(--border-light)',
-                          fontWeight: 700,
-                          fontSize: '0.82rem',
-                          background:
-                            o.status === 'CONFIRMED'
-                              ? '#ECFDF5'
-                              : o.status === 'DELIVERED'
-                              ? '#E0F2FE'
-                              : o.status === 'CANCELLED'
-                              ? '#FEE2E2'
-                              : 'white'
-                        }}
-                      >
-                        <option value="PENDING_PAYMENT">PENDING_PAYMENT</option>
-                        <option value="CONFIRMED">CONFIRMED (Placed)</option>
-                        <option value="PACKED">PACKED</option>
-                        <option value="OUT_FOR_DELIVERY">OUT_FOR_DELIVERY</option>
-                        <option value="DELIVERED">DELIVERED</option>
-                        <option value="CANCELLED">CANCELLED</option>
-                      </select>
+                      {(() => {
+                        const sStyle = getStatusStyle(o.status);
+                        return (
+                          <select
+                            value={o.status}
+                            onChange={(e) => handleStatusChange(o._id, e.target.value)}
+                            style={{
+                              padding: '0.4rem 0.65rem',
+                              borderRadius: 'var(--radius-sm)',
+                              border: `1.5px solid ${sStyle.border}`,
+                              background: sStyle.bg,
+                              color: sStyle.text,
+                              fontWeight: 800,
+                              fontSize: '0.78rem',
+                              cursor: 'pointer',
+                              outline: 'none',
+                              letterSpacing: '0.3px',
+                              transition: 'var(--transition)'
+                            }}
+                          >
+                            <option value="PENDING_PAYMENT" style={{ background: isDark ? '#131B2E' : '#FFFFFF', color: isDark ? '#F8FAFC' : '#1C1C1C' }}>PENDING_PAYMENT</option>
+                            <option value="CONFIRMED" style={{ background: isDark ? '#131B2E' : '#FFFFFF', color: isDark ? '#F8FAFC' : '#1C1C1C' }}>CONFIRMED (Placed)</option>
+                            <option value="PACKED" style={{ background: isDark ? '#131B2E' : '#FFFFFF', color: isDark ? '#F8FAFC' : '#1C1C1C' }}>PACKED</option>
+                            <option value="OUT_FOR_DELIVERY" style={{ background: isDark ? '#131B2E' : '#FFFFFF', color: isDark ? '#F8FAFC' : '#1C1C1C' }}>OUT_FOR_DELIVERY</option>
+                            <option value="DELIVERED" style={{ background: isDark ? '#131B2E' : '#FFFFFF', color: isDark ? '#F8FAFC' : '#1C1C1C' }}>DELIVERED</option>
+                            <option value="CANCELLED" style={{ background: isDark ? '#131B2E' : '#FFFFFF', color: isDark ? '#F8FAFC' : '#1C1C1C' }}>CANCELLED</option>
+                          </select>
+                        );
+                      })()}
                     </td>
                     <td style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                       {new Date(o.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
