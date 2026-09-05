@@ -46,42 +46,16 @@ export default function LocationModal({ isOpen, onClose }) {
 
   return (
     <div
-      className="modal-overlay"
-      style={{
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '1rem',
-        overflowY: 'auto'
-      }}
+      className="modal-center-backdrop"
       onClick={onClose}
     >
       <div
-        style={{
-          background: 'var(--bg-card)',
-          width: '100%',
-          maxWidth: '460px',
-          maxHeight: 'min(90vh, 620px)',
-          borderRadius: 'var(--radius-lg)',
-          boxShadow: 'var(--shadow-xl)',
-          border: '1px solid var(--border-light)',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden',
-          margin: 'auto'
-        }}
+        className="modal-center-card"
+        style={{ maxWidth: '460px' }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div
-          style={{
-            padding: '1rem 1.25rem',
-            borderBottom: '1px solid var(--border-light)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexShrink: 0
-          }}
-        >
+        <div className="modal-card-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
             <div
               style={{
@@ -106,13 +80,14 @@ export default function LocationModal({ isOpen, onClose }) {
           </div>
           <button
             onClick={onClose}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.2rem' }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.25rem', display: 'flex', alignItems: 'center' }}
+            aria-label="Close modal"
           >
             <X size={20} color="var(--text-muted)" />
           </button>
         </div>
 
-        <div style={{ padding: '1.15rem 1.25rem', overflowY: 'auto', flex: 1 }}>
+        <div className="modal-card-scroll-body">
           {/* Custom Address Input */}
           <form onSubmit={handleCustomSubmit} style={{ marginBottom: '1.25rem' }}>
             <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, marginBottom: '0.4rem' }}>
