@@ -26,12 +26,17 @@ export default function AdminDashboard({ onBackToStore }) {
   // Edit product state & modal
   const [editingProduct, setEditingProduct] = useState(null);
   const [editLoading, setEditLoading] = useState(false);
+  // Inventory search, filter & pagination state
   const [inventorySearch, setInventorySearch] = useState('');
   const [inventoryCategory, setInventoryCategory] = useState('All');
+  const [inventoryPage, setInventoryPage] = useState(1);
+  const [inventoryPageSize, setInventoryPageSize] = useState(10);
 
-  // Orders search & filter state
+  // Orders search, filter & pagination state
   const [orderSearch, setOrderSearch] = useState('');
   const [orderStatusFilter, setOrderStatusFilter] = useState('ALL');
+  const [orderPage, setOrderPage] = useState(1);
+  const [orderPageSize, setOrderPageSize] = useState(10);
 
   // Customers search, filter & pagination state
   const [userSearch, setUserSearch] = useState('');
@@ -258,6 +263,17 @@ export default function AdminDashboard({ onBackToStore }) {
     return matchesSearch && matchesRole;
   });
 
+  // Orders pagination
+  const totalOrderPages = Math.max(1, Math.ceil(filteredOrders.length / orderPageSize));
+  const currentOrderPage = Math.min(orderPage, totalOrderPages);
+  const paginatedOrders = filteredOrders.slice((currentOrderPage - 1) * orderPageSize, currentOrderPage * orderPageSize);
+
+  // Products / Inventory pagination
+  const totalInventoryPages = Math.max(1, Math.ceil(filteredProducts.length / inventoryPageSize));
+  const currentInventoryPage = Math.min(inventoryPage, totalInventoryPages);
+  const paginatedProducts = filteredProducts.slice((currentInventoryPage - 1) * inventoryPageSize, currentInventoryPage * inventoryPageSize);
+
+  // Users pagination
   const totalUserPages = Math.max(1, Math.ceil(filteredUsers.length / userPageSize));
   const currentUserPage = Math.min(userPage, totalUserPages);
   const paginatedUsers = filteredUsers.slice((currentUserPage - 1) * userPageSize, currentUserPage * userPageSize);
@@ -267,6 +283,128 @@ export default function AdminDashboard({ onBackToStore }) {
     .reduce((sum, o) => sum + (o.totalAmount || 0), 0);
 
   const activeDeliveries = orders.filter(o => ['CONFIRMED', 'PACKED', 'OUT_FOR_DELIVERY'].includes(o.status)).length;
+
+  // Reusable pagination bar for Orders, Inventory, and Customers
+  const renderPagination = (currentPage, totalPages, pageSize, setPageSize, setPage, totalItems, label) => {
+    if (totalItems === 0) return null;
+    return (
+      <div
+        style={{
+          padding: '0.9rem 1.5rem',
+          borderTop: '1px solid var(--border-light)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '1rem',
+          fontSize: '0.82rem',
+          color: 'var(--text-muted)'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
+          <span>
+            Showing <strong>{(currentPage - 1) * pageSize + 1}</strong> -{' '}
+            <strong>{Math.min(currentPage * pageSize, totalItems)}</strong> of{' '}
+            <strong>{totalItems}</strong> {label}
+          </span>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <span>Per page:</span>
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(Number(e.target.value));
+                setPage(1);
+              }}
+              className="search-input"
+              style={{
+                height: '28px',
+                padding: '0 0.5rem',
+                fontSize: '0.8rem',
+                borderRadius: 'var(--radius-sm)',
+                cursor: 'pointer'
+              }}
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+            </select>
+          </div>
+        </div>
+
+        {totalPages > 1 && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <button
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              disabled={currentPage <= 1}
+              className="btn-auth"
+              style={{
+                padding: '0.35rem 0.65rem',
+                fontSize: '0.78rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.2rem',
+                opacity: currentPage <= 1 ? 0.4 : 1,
+                cursor: currentPage <= 1 ? 'not-allowed' : 'pointer'
+              }}
+            >
+              <ChevronLeft size={14} />
+              <span>Prev</span>
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter(p => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
+              .map((p, i, arr) => {
+                const prev = arr[i - 1];
+                return (
+                  <React.Fragment key={p}>
+                    {prev && p - prev > 1 && <span style={{ padding: '0 0.2rem' }}>...</span>}
+                    <button
+                      onClick={() => setPage(p)}
+                      style={{
+                        minWidth: '30px',
+                        height: '30px',
+                        padding: '0 0.45rem',
+                        borderRadius: 'var(--radius-sm)',
+                        border: currentPage === p ? '1px solid #10B981' : '1px solid var(--border-light)',
+                        background: currentPage === p ? '#10B981' : 'var(--bg-card)',
+                        color: currentPage === p ? '#FFF' : 'var(--text-main)',
+                        fontWeight: currentPage === p ? 700 : 500,
+                        fontSize: '0.78rem',
+                        cursor: 'pointer',
+                        transition: 'var(--transition)'
+                      }}
+                    >
+                      {p}
+                    </button>
+                  </React.Fragment>
+                );
+              })}
+
+            <button
+              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage >= totalPages}
+              className="btn-auth"
+              style={{
+                padding: '0.35rem 0.65rem',
+                fontSize: '0.78rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.2rem',
+                opacity: currentPage >= totalPages ? 0.4 : 1,
+                cursor: currentPage >= totalPages ? 'not-allowed' : 'pointer'
+              }}
+            >
+              <span>Next</span>
+              <ChevronRight size={14} />
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
@@ -405,13 +543,19 @@ export default function AdminDashboard({ onBackToStore }) {
                   type="text"
                   placeholder="Search order ID, name, phone..."
                   value={orderSearch}
-                  onChange={(e) => setOrderSearch(e.target.value)}
+                  onChange={(e) => {
+                    setOrderSearch(e.target.value);
+                    setOrderPage(1);
+                  }}
                   className="search-input"
                   style={{ width: '100%', paddingLeft: '2.2rem', paddingRight: orderSearch ? '2rem' : '0.75rem', fontSize: '0.82rem', height: '36px', borderRadius: 'var(--radius-md)' }}
                 />
                 {orderSearch && (
                   <button
-                    onClick={() => setOrderSearch('')}
+                    onClick={() => {
+                      setOrderSearch('');
+                      setOrderPage(1);
+                    }}
                     style={{ position: 'absolute', right: '0.6rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
                     aria-label="Clear search"
                   >
@@ -422,7 +566,10 @@ export default function AdminDashboard({ onBackToStore }) {
 
               <select
                 value={orderStatusFilter}
-                onChange={(e) => setOrderStatusFilter(e.target.value)}
+                onChange={(e) => {
+                  setOrderStatusFilter(e.target.value);
+                  setOrderPage(1);
+                }}
                 className="search-input"
                 style={{ height: '36px', fontSize: '0.82rem', padding: '0 0.85rem', borderRadius: 'var(--radius-md)', minWidth: '150px' }}
               >
@@ -458,7 +605,7 @@ export default function AdminDashboard({ onBackToStore }) {
                   </td>
                 </tr>
               ) : (
-                filteredOrders.map((o) => (
+                paginatedOrders.map((o) => (
                   <tr key={o._id}>
                     <td>
                       <strong>#{o.orderId}</strong>
@@ -510,6 +657,8 @@ export default function AdminDashboard({ onBackToStore }) {
               )}
             </tbody>
           </table>
+
+          {renderPagination(currentOrderPage, totalOrderPages, orderPageSize, setOrderPageSize, setOrderPage, filteredOrders.length, 'orders')}
         </div>
       )}
 
@@ -542,15 +691,33 @@ export default function AdminDashboard({ onBackToStore }) {
                   type="text"
                   placeholder="Search products..."
                   value={inventorySearch}
-                  onChange={(e) => setInventorySearch(e.target.value)}
+                  onChange={(e) => {
+                    setInventorySearch(e.target.value);
+                    setInventoryPage(1);
+                  }}
                   className="search-input"
-                  style={{ width: '100%', paddingLeft: '2.2rem', paddingRight: '0.75rem', fontSize: '0.82rem', height: '36px', borderRadius: 'var(--radius-md)' }}
+                  style={{ width: '100%', paddingLeft: '2.2rem', paddingRight: inventorySearch ? '2rem' : '0.75rem', fontSize: '0.82rem', height: '36px', borderRadius: 'var(--radius-md)' }}
                 />
+                {inventorySearch && (
+                  <button
+                    onClick={() => {
+                      setInventorySearch('');
+                      setInventoryPage(1);
+                    }}
+                    style={{ position: 'absolute', right: '0.6rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                    aria-label="Clear search"
+                  >
+                    <X size={14} color="var(--text-muted)" />
+                  </button>
+                )}
               </div>
 
               <select
                 value={inventoryCategory}
-                onChange={(e) => setInventoryCategory(e.target.value)}
+                onChange={(e) => {
+                  setInventoryCategory(e.target.value);
+                  setInventoryPage(1);
+                }}
                 className="search-input"
                 style={{ height: '36px', fontSize: '0.82rem', borderRadius: 'var(--radius-md)', padding: '0 0.75rem' }}
               >
@@ -592,7 +759,7 @@ export default function AdminDashboard({ onBackToStore }) {
                     </td>
                   </tr>
                 ) : (
-                  filteredProducts.map((p) => (
+                  paginatedProducts.map((p) => (
                     <tr key={p._id}>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -686,6 +853,8 @@ export default function AdminDashboard({ onBackToStore }) {
               </tbody>
             </table>
           </div>
+
+          {renderPagination(currentInventoryPage, totalInventoryPages, inventoryPageSize, setInventoryPageSize, setInventoryPage, filteredProducts.length, 'products')}
         </div>
       )}
 
@@ -927,124 +1096,7 @@ export default function AdminDashboard({ onBackToStore }) {
             </tbody>
           </table>
 
-          {/* Pagination and page size bar */}
-          {filteredUsers.length > 0 && (
-            <div
-              style={{
-                padding: '0.9rem 1.5rem',
-                borderTop: '1px solid var(--border-light)',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                gap: '1rem',
-                fontSize: '0.82rem',
-                color: 'var(--text-muted)'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
-                <span>
-                  Showing <strong>{(currentUserPage - 1) * userPageSize + 1}</strong> -{' '}
-                  <strong>{Math.min(currentUserPage * userPageSize, filteredUsers.length)}</strong> of{' '}
-                  <strong>{filteredUsers.length}</strong> customers
-                </span>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <span>Per page:</span>
-                  <select
-                    value={userPageSize}
-                    onChange={(e) => {
-                      setUserPageSize(Number(e.target.value));
-                      setUserPage(1);
-                    }}
-                    className="search-input"
-                    style={{
-                      height: '28px',
-                      padding: '0 0.5rem',
-                      fontSize: '0.8rem',
-                      borderRadius: 'var(--radius-sm)',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    <option value={5}>5</option>
-                    <option value={10}>10</option>
-                    <option value={25}>25</option>
-                    <option value={50}>50</option>
-                    <option value={100}>100</option>
-                  </select>
-                </div>
-              </div>
-
-              {totalUserPages > 1 && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                  <button
-                    onClick={() => setUserPage(p => Math.max(1, p - 1))}
-                    disabled={currentUserPage <= 1}
-                    className="btn-auth"
-                    style={{
-                      padding: '0.35rem 0.65rem',
-                      fontSize: '0.78rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.2rem',
-                      opacity: currentUserPage <= 1 ? 0.4 : 1,
-                      cursor: currentUserPage <= 1 ? 'not-allowed' : 'pointer'
-                    }}
-                  >
-                    <ChevronLeft size={14} />
-                    <span>Prev</span>
-                  </button>
-
-                  {Array.from({ length: totalUserPages }, (_, i) => i + 1)
-                    .filter(p => p === 1 || p === totalUserPages || Math.abs(p - currentUserPage) <= 1)
-                    .map((p, i, arr) => {
-                      const prev = arr[i - 1];
-                      return (
-                        <React.Fragment key={p}>
-                          {prev && p - prev > 1 && <span style={{ padding: '0 0.2rem' }}>...</span>}
-                          <button
-                            onClick={() => setUserPage(p)}
-                            style={{
-                              minWidth: '30px',
-                              height: '30px',
-                              padding: '0 0.45rem',
-                              borderRadius: 'var(--radius-sm)',
-                              border: currentUserPage === p ? '1px solid #10B981' : '1px solid var(--border-light)',
-                              background: currentUserPage === p ? '#10B981' : 'var(--bg-card)',
-                              color: currentUserPage === p ? '#FFF' : 'var(--text-main)',
-                              fontWeight: currentUserPage === p ? 700 : 500,
-                              fontSize: '0.78rem',
-                              cursor: 'pointer',
-                              transition: 'var(--transition)'
-                            }}
-                          >
-                            {p}
-                          </button>
-                        </React.Fragment>
-                      );
-                    })}
-
-                  <button
-                    onClick={() => setUserPage(p => Math.min(totalUserPages, p + 1))}
-                    disabled={currentUserPage >= totalUserPages}
-                    className="btn-auth"
-                    style={{
-                      padding: '0.35rem 0.65rem',
-                      fontSize: '0.78rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.2rem',
-                      opacity: currentUserPage >= totalUserPages ? 0.4 : 1,
-                      cursor: currentUserPage >= totalUserPages ? 'not-allowed' : 'pointer'
-                    }}
-                  >
-                    <span>Next</span>
-                    <ChevronRight size={14} />
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
+          {renderPagination(currentUserPage, totalUserPages, userPageSize, setUserPageSize, setUserPage, filteredUsers.length, 'customers')}
         </div>
       )}
 
