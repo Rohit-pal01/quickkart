@@ -132,7 +132,7 @@ export default function Navbar({
               {itemCount > 0 ? `${itemCount} items • ₹${totalAmount}` : 'My Cart'}
             </span>
             <span className="cart-label-mobile">
-              {itemCount > 0 ? `₹${totalAmount}` : 'My Cart'}
+              {itemCount > 0 ? `₹${totalAmount}` : 'Cart'}
             </span>
           </button>
         </div>
