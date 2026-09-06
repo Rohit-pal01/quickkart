@@ -1,8 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import { Package, TrendingUp, Users, Plus, Edit2, Trash2, CheckCircle2, Clock, AlertTriangle, ArrowLeft, Search, X, ChevronLeft, ChevronRight, LogIn } from 'lucide-react';
+import {
+  Package,
+  TrendingUp,
+  Users,
+  Plus,
+  Edit2,
+  Trash2,
+  CheckCircle2,
+  Clock,
+  AlertTriangle,
+  ArrowLeft,
+  Search,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  LogIn,
+  Mail,
+  Phone,
+  MapPin,
+  Shield,
+  RefreshCw
+} from 'lucide-react';
 import { api } from '../services/api';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
+
+const AVATAR_GRADIENTS = [
+  'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+  'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
+  'linear-gradient(135deg, #EC4899 0%, #BE185D 100%)',
+  'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+  'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)',
+  'linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)',
+  'linear-gradient(135deg, #14B8A6 0%, #0D9488 100%)'
+];
+
+const getAvatarGradient = (name = '') => {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return AVATAR_GRADIENTS[Math.abs(hash) % AVATAR_GRADIENTS.length];
+};
 
 export default function AdminDashboard({ onBackToStore, onViewOrder }) {
   const { isDark } = useTheme();
@@ -897,11 +936,11 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
 
       {/* Customers / Users Tab */}
       {activeTab === 'users' && (
-        <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)', overflow: 'hidden' }}>
-          {/* Customers Search & Filter Controls Header */}
+        <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)', overflow: 'hidden', boxShadow: 'var(--shadow-sm)' }}>
+          {/* Customers Header & Stats */}
           <div
             style={{
-              padding: '1.25rem 1.5rem',
+              padding: '1.35rem 1.75rem',
               borderBottom: '1px solid var(--border-light)',
               display: 'flex',
               justifyContent: 'space-between',
@@ -911,109 +950,173 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
             }}
           >
             <div>
-              <h2 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0 }}>Registered Users & Customers</h2>
-              <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: '0.2rem 0 0 0' }}>
-                Showing {filteredUsers.length} of {users.length} accounts. Search by Name, Email, Phone, or Address.
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                <div
+                  style={{
+                    width: '34px',
+                    height: '34px',
+                    borderRadius: 'var(--radius-sm)',
+                    background: isDark ? 'rgba(16, 185, 129, 0.18)' : '#ECFDF5',
+                    color: '#10B981',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <Users size={18} />
+                </div>
+                <h2 style={{ fontSize: '1.2rem', fontWeight: 800, margin: 0 }}>Registered Users & Directory</h2>
+              </div>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: '0.25rem 0 0 0' }}>
+                Customer profiles, delivery addresses, and one-click session impersonation.
               </p>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-              {/* Search customer input */}
-              <div style={{ position: 'relative', width: '260px' }}>
-                <Search size={15} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-                <input
-                  type="text"
-                  placeholder="Search name, email, phone, address..."
-                  value={userSearch}
-                  onChange={(e) => {
-                    setUserSearch(e.target.value);
-                    setUserPage(1);
-                  }}
-                  className="search-input"
-                  style={{
-                    width: '100%',
-                    paddingLeft: '2.2rem',
-                    paddingRight: userSearch ? '2rem' : '0.75rem',
-                    fontSize: '0.82rem',
-                    height: '36px',
-                    borderRadius: 'var(--radius-md)'
-                  }}
-                />
-                {userSearch && (
-                  <button
-                    onClick={() => {
-                      setUserSearch('');
-                      setUserPage(1);
-                    }}
-                    style={{ position: 'absolute', right: '0.6rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-                    aria-label="Clear search"
-                  >
-                    <X size={14} color="var(--text-muted)" />
-                  </button>
-                )}
-              </div>
-
-              {/* Role filter dropdown */}
-              <select
-                value={userRoleFilter}
-                onChange={(e) => {
-                  setUserRoleFilter(e.target.value);
-                  setUserPage(1);
-                }}
-                className="search-input"
-                style={{ height: '36px', fontSize: '0.82rem', padding: '0 0.85rem', borderRadius: 'var(--radius-md)', minWidth: '140px' }}
-              >
-                <option value="ALL">All Roles ({users.length})</option>
-                <option value="customer">Customers ({users.filter(u => u.role === 'customer').length})</option>
-                <option value="admin">Admins ({users.filter(u => u.role === 'admin').length})</option>
-                <option value="delivery">Delivery ({users.filter(u => u.role === 'delivery').length})</option>
-              </select>
-
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
               <span
                 style={{
                   fontSize: '0.8rem',
                   fontWeight: 700,
                   padding: '0.35rem 0.85rem',
-                  background: isDark ? 'rgba(236, 72, 153, 0.18)' : '#FDF2F8',
-                  color: isDark ? '#F472B6' : '#EC4899',
-                  border: isDark ? '1px solid rgba(236, 72, 153, 0.3)' : '1px solid #FBCFE8',
-                  borderRadius: '9999px',
-                  whiteSpace: 'nowrap'
+                  background: isDark ? 'rgba(16, 185, 129, 0.15)' : '#ECFDF5',
+                  color: isDark ? '#34D399' : '#047857',
+                  border: isDark ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid #A7F3D0',
+                  borderRadius: '9999px'
                 }}
               >
-                {filteredUsers.length} {filteredUsers.length === 1 ? 'Customer' : 'Customers'}
+                {users.length} Total Accounts
               </span>
+            </div>
+          </div>
+
+          {/* Dedicated Filter & Search Toolbar */}
+          <div
+            style={{
+              padding: '0.85rem 1.75rem',
+              background: isDark ? 'rgba(255, 255, 255, 0.02)' : 'var(--bg-subtle)',
+              borderBottom: '1px solid var(--border-light)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '0.85rem'
+            }}
+          >
+            {/* Search customer input */}
+            <div style={{ position: 'relative', flex: '1', minWidth: '260px', maxWidth: '420px' }}>
+              <Search
+                size={15}
+                style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}
+              />
+              <input
+                type="text"
+                placeholder="Search by name, email, phone, or address..."
+                value={userSearch}
+                onChange={(e) => {
+                  setUserSearch(e.target.value);
+                  setUserPage(1);
+                }}
+                className="search-input"
+                style={{
+                  width: '100%',
+                  paddingLeft: '2.4rem',
+                  paddingRight: userSearch ? '2.2rem' : '0.85rem',
+                  fontSize: '0.84rem',
+                  height: '38px',
+                  borderRadius: 'var(--radius-md)',
+                  background: 'var(--bg-card)'
+                }}
+              />
+              {userSearch && (
+                <button
+                  onClick={() => {
+                    setUserSearch('');
+                    setUserPage(1);
+                  }}
+                  style={{ position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                  aria-label="Clear search"
+                >
+                  <X size={14} color="var(--text-muted)" />
+                </button>
+              )}
+            </div>
+
+            {/* Filter Pills */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
+              {[
+                { key: 'ALL', label: 'All', count: users.length },
+                { key: 'customer', label: 'Customers', count: users.filter(u => u.role === 'customer').length },
+                { key: 'admin', label: 'Admins', count: users.filter(u => u.role === 'admin').length },
+                { key: 'delivery', label: 'Riders', count: users.filter(u => u.role === 'delivery').length }
+              ].map((tab) => {
+                const isActive = userRoleFilter === tab.key;
+                return (
+                  <button
+                    key={tab.key}
+                    onClick={() => {
+                      setUserRoleFilter(tab.key);
+                      setUserPage(1);
+                    }}
+                    style={{
+                      border: isActive ? '1px solid #10B981' : '1px solid var(--border-light)',
+                      background: isActive ? '#10B981' : 'var(--bg-card)',
+                      color: isActive ? '#FFFFFF' : 'var(--text-main)',
+                      padding: '0.35rem 0.75rem',
+                      borderRadius: 'var(--radius-full)',
+                      fontSize: '0.78rem',
+                      fontWeight: isActive ? 700 : 500,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                      transition: 'all 0.15s ease'
+                    }}
+                  >
+                    <span>{tab.label}</span>
+                    <span
+                      style={{
+                        fontSize: '0.7rem',
+                        padding: '0.1rem 0.4rem',
+                        borderRadius: '9999px',
+                        background: isActive ? 'rgba(255, 255, 255, 0.25)' : 'var(--bg-subtle)',
+                        color: isActive ? '#FFFFFF' : 'var(--text-muted)'
+                      }}
+                    >
+                      {tab.count}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
           <table className="admin-table">
             <thead>
               <tr>
-                <th style={{ width: '40px' }}>#</th>
-                <th>Full Name</th>
-                <th>Email Address</th>
-                <th>Phone Number</th>
+                <th style={{ width: '45px', textAlign: 'center' }}>#</th>
+                <th>Customer</th>
+                <th>Contact Details</th>
                 <th>Role</th>
                 <th>Default Address</th>
                 <th>Registered On</th>
-                <th style={{ textAlign: 'center' }}>Action</th>
+                <th style={{ textAlign: 'center', width: '170px' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan="8" style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-muted)' }}>
+                  <td colSpan="7" style={{ textAlign: 'center', padding: '3.5rem 1rem', color: 'var(--text-muted)' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem' }}>
-                      <Users size={34} style={{ opacity: 0.35 }} />
+                      <Users size={36} style={{ opacity: 0.35 }} />
                       <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>
                         {users.length === 0
                           ? 'No registered customers found.'
-                          : `No customers matching "${userSearch || userRoleFilter}"`}
+                          : `No accounts matching "${userSearch || userRoleFilter}"`}
                       </div>
-                      <p style={{ fontSize: '0.8rem', margin: 0 }}>
+                      <p style={{ fontSize: '0.82rem', margin: 0 }}>
                         {users.length === 0
                           ? 'Accounts created by shoppers will appear here.'
-                          : 'Try changing your search terms or filter selection.'}
+                          : 'Try adjusting your search terms or filter selection.'}
                       </p>
                       {(userSearch || userRoleFilter !== 'ALL') && (
                         <button
@@ -1024,8 +1127,8 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
                           }}
                           className="btn-auth"
                           style={{
-                            marginTop: '0.5rem',
-                            padding: '0.4rem 0.85rem',
+                            marginTop: '0.6rem',
+                            padding: '0.4rem 0.9rem',
                             fontSize: '0.8rem'
                           }}
                         >
@@ -1043,111 +1146,170 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
 
                   return (
                     <tr key={u._id}>
-                      <td><strong>{itemIndex}</strong></td>
-                      <td>
-                        <div style={{ fontWeight: 700, color: 'var(--text-main)' }}>{u.name}</div>
+                      <td style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.82rem' }}>
+                        <strong>{itemIndex}</strong>
                       </td>
-                      <td style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{u.email}</td>
-                      <td style={{ fontSize: '0.85rem' }}>{u.phone || 'N/A'}</td>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                          <div
+                            style={{
+                              width: '36px',
+                              height: '36px',
+                              borderRadius: '50%',
+                              background: getAvatarGradient(u.name),
+                              color: '#FFFFFF',
+                              fontWeight: 800,
+                              fontSize: '0.88rem',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              flexShrink: 0,
+                              boxShadow: '0 2px 5px rgba(0,0,0,0.12)'
+                            }}
+                          >
+                            {u.name ? u.name.charAt(0).toUpperCase() : 'U'}
+                          </div>
+                          <div>
+                            <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-main)', textTransform: 'capitalize' }}>
+                              {u.name}
+                            </div>
+                            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                              ID: {u._id ? u._id.slice(-6).toUpperCase() : 'N/A'}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.84rem', color: 'var(--text-main)' }}>
+                            <Mail size={13} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+                            <span>{u.email}</span>
+                          </div>
+                          {u.phone && (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                              <Phone size={12} style={{ flexShrink: 0 }} />
+                              <span>{u.phone}</span>
+                            </div>
+                          )}
+                        </div>
+                      </td>
                       <td>
                         <span
                           style={{
-                            display: 'inline-block',
-                            padding: '0.2rem 0.55rem',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.35rem',
+                            padding: '0.22rem 0.6rem',
                             borderRadius: '9999px',
                             fontSize: '0.72rem',
                             fontWeight: 700,
-                            textTransform: 'uppercase',
                             background: isAdmin
-                              ? (isDark ? 'rgba(245, 158, 11, 0.2)' : '#FEF3C7')
+                              ? (isDark ? 'rgba(245, 158, 11, 0.18)' : '#FEF3C7')
                               : isDelivery
-                              ? (isDark ? 'rgba(99, 102, 241, 0.2)' : '#EEF2FF')
-                              : (isDark ? 'rgba(16, 185, 129, 0.2)' : '#DCFCE7'),
+                              ? (isDark ? 'rgba(99, 102, 241, 0.18)' : '#EEF2FF')
+                              : (isDark ? 'rgba(16, 185, 129, 0.18)' : '#ECFDF5'),
                             color: isAdmin
                               ? (isDark ? '#FBBF24' : '#B45309')
                               : isDelivery
-                              ? (isDark ? '#A5B4FC' : '#3730A3')
-                              : (isDark ? '#34D399' : '#15803D'),
+                              ? (isDark ? '#A5B4FC' : '#4338CA')
+                              : (isDark ? '#34D399' : '#047857'),
                             border: isAdmin
-                              ? (isDark ? '1px solid rgba(245, 158, 11, 0.35)' : '1px solid #FDE68A')
+                              ? '1px solid rgba(245, 158, 11, 0.3)'
                               : isDelivery
-                              ? (isDark ? '1px solid rgba(99, 102, 241, 0.35)' : '1px solid #C7D2FE')
-                              : (isDark ? '1px solid rgba(16, 185, 129, 0.35)' : '1px solid #BBF7D0')
+                              ? '1px solid rgba(99, 102, 241, 0.3)'
+                              : '1px solid rgba(16, 185, 129, 0.3)'
                           }}
                         >
-                          {u.role}
+                          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: isAdmin ? '#F59E0B' : isDelivery ? '#6366F1' : '#10B981' }}></span>
+                          {isAdmin ? 'Admin' : isDelivery ? 'Delivery' : 'Customer'}
                         </span>
                       </td>
-                      <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)', maxWidth: '220px' }}>
+                      <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)', maxWidth: '240px' }}>
                         {u.addresses && u.addresses.length > 0 ? (
-                          <div>
-                            <div>{u.addresses[0].line1}</div>
-                            {u.addresses[0].label && (
-                              <span style={{ fontSize: '0.7rem', opacity: 0.75 }}>({u.addresses[0].label})</span>
-                            )}
+                          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.35rem' }}>
+                            <MapPin size={13} style={{ color: '#10B981', flexShrink: 0, marginTop: '2px' }} />
+                            <div>
+                              <div style={{ color: 'var(--text-main)', lineHeight: '1.3' }}>{u.addresses[0].line1}</div>
+                              {u.addresses[0].label && (
+                                <span style={{ fontSize: '0.7rem', fontWeight: 600, color: '#10B981', background: 'rgba(16, 185, 129, 0.1)', padding: '0.1rem 0.35rem', borderRadius: '4px', marginTop: '0.2rem', display: 'inline-block' }}>
+                                  {u.addresses[0].label}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         ) : (
-                          'No address saved'
+                          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>No address saved</span>
                         )}
                       </td>
-                      <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                      <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
                         {u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN', {
                           day: 'numeric',
                           month: 'short',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
+                          year: 'numeric'
                         }) : 'N/A'}
                       </td>
                       <td style={{ textAlign: 'center' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.45rem', flexWrap: 'wrap' }}>
-                          {!isAdmin && (
-                            <button
-                              onClick={() => handleImpersonateUser(u)}
-                              title={`Log in as customer ${u.name}`}
-                              style={{
-                                background: isDark ? 'rgba(16, 185, 129, 0.18)' : '#ECFDF5',
-                                border: isDark ? '1px solid rgba(16, 185, 129, 0.35)' : '1px solid #A7F3D0',
-                                color: isDark ? '#34D399' : '#047857',
-                                borderRadius: 'var(--radius-sm)',
-                                padding: '0.35rem 0.65rem',
-                                cursor: 'pointer',
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '0.3rem',
-                                fontSize: '0.75rem',
-                                fontWeight: 700,
-                                transition: 'var(--transition)'
-                              }}
-                            >
-                              <LogIn size={13} />
-                              <span>Login As</span>
-                            </button>
-                          )}
+                        <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
                           {!isAdmin ? (
-                            <button
-                              onClick={() => handleDeleteUser(u._id, u.name, u.role)}
-                              title={`Delete account for ${u.name}`}
+                            <>
+                              <button
+                                onClick={() => handleImpersonateUser(u)}
+                                title={`Log in as customer ${u.name}`}
+                                style={{
+                                  background: isDark ? 'rgba(16, 185, 129, 0.15)' : '#ECFDF5',
+                                  border: isDark ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid #A7F3D0',
+                                  color: isDark ? '#34D399' : '#047857',
+                                  borderRadius: 'var(--radius-sm)',
+                                  padding: '0.35rem 0.65rem',
+                                  cursor: 'pointer',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '0.3rem',
+                                  fontSize: '0.76rem',
+                                  fontWeight: 700,
+                                  whiteSpace: 'nowrap',
+                                  transition: 'all 0.15s ease'
+                                }}
+                              >
+                                <LogIn size={13} />
+                                <span>Login As</span>
+                              </button>
+
+                              <button
+                                onClick={() => handleDeleteUser(u._id, u.name, u.role)}
+                                title={`Delete account for ${u.name}`}
+                                style={{
+                                  background: isDark ? 'rgba(239, 68, 68, 0.12)' : '#FEF2F2',
+                                  border: isDark ? '1px solid rgba(239, 68, 68, 0.25)' : '1px solid #FECACA',
+                                  color: '#EF4444',
+                                  borderRadius: 'var(--radius-sm)',
+                                  padding: '0.35rem 0.5rem',
+                                  cursor: 'pointer',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  transition: 'all 0.15s ease'
+                                }}
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            </>
+                          ) : (
+                            <span
                               style={{
-                                background: isDark ? 'rgba(239, 68, 68, 0.18)' : '#FEF2F2',
-                                border: isDark ? '1px solid rgba(239, 68, 68, 0.35)' : '1px solid #FECACA',
-                                color: '#EF4444',
-                                borderRadius: 'var(--radius-sm)',
-                                padding: '0.35rem 0.65rem',
-                                cursor: 'pointer',
                                 display: 'inline-flex',
                                 alignItems: 'center',
-                                gap: '0.3rem',
-                                fontSize: '0.75rem',
-                                fontWeight: 700,
-                                transition: 'var(--transition)'
+                                gap: '0.25rem',
+                                fontSize: '0.72rem',
+                                color: 'var(--text-muted)',
+                                padding: '0.3rem 0.6rem',
+                                borderRadius: 'var(--radius-sm)',
+                                background: 'var(--bg-subtle)'
                               }}
                             >
-                              <Trash2 size={13} />
-                              <span>Delete</span>
-                            </button>
-                          ) : (
-                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>Protected</span>
+                              <Shield size={12} color="#F59E0B" />
+                              <span>Protected</span>
+                            </span>
                           )}
                         </div>
                       </td>
