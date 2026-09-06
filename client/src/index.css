@@ -130,8 +130,15 @@ body {
   display: contents;
 }
 
+.brand-location-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
 .logo {
-  order: 1;
   display: flex;
   align-items: center;
   gap: 0.45rem;
@@ -154,8 +161,8 @@ body {
 .logo-badge {
   background: linear-gradient(135deg, #0C831F, #086616);
   color: white;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
@@ -164,43 +171,54 @@ body {
   flex-shrink: 0;
 }
 
-.delivery-eta-badge {
-  background: rgba(12, 131, 31, 0.08);
-  border: 1.5px solid rgba(12, 131, 31, 0.24);
-  padding: 0.32rem 0.75rem;
-  border-radius: var(--radius-md);
+/* Delivery Address & 8 MINS Pill directly on right side of QuickKart */
+.delivery-location-pill {
   display: flex;
   flex-direction: column;
-  transition: var(--transition);
+  justify-content: center;
+  gap: 0.12rem;
+  padding: 0.22rem 0.55rem;
+  background: rgba(12, 131, 31, 0.08);
+  border: 1px solid rgba(12, 131, 31, 0.24);
+  border-radius: var(--radius-md);
   cursor: pointer;
+  transition: var(--transition);
+  min-width: 0;
   flex-shrink: 0;
 }
 
-.delivery-eta-badge:hover {
+.delivery-location-pill:hover {
   background: rgba(12, 131, 31, 0.15);
   border-color: #0C831F;
 }
 
-[data-theme="dark"] .delivery-eta-badge {
+[data-theme="dark"] .delivery-location-pill {
   background: rgba(16, 185, 129, 0.12);
   border-color: rgba(16, 185, 129, 0.3);
 }
 
-.eta-time {
-  font-size: 0.76rem;
-  font-weight: 900;
-  color: #0C831F;
+.delivery-pill-top {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  line-height: 1.1;
+  gap: 0.3rem;
 }
 
-[data-theme="dark"] .eta-time {
-  color: #34D399;
+.eta-badge-pill {
+  background: #0C831F;
+  color: #ffffff;
+  font-size: 0.62rem;
+  font-weight: 900;
+  padding: 0.08rem 0.36rem;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  letter-spacing: 0.25px;
+  box-shadow: 0 1px 2px rgba(12, 131, 31, 0.25);
+  flex-shrink: 0;
 }
 
-.address-line {
+.delivery-pill-bottom {
   display: flex;
   align-items: center;
   gap: 0.2rem;
@@ -208,14 +226,14 @@ body {
   line-height: 1.2;
 }
 
-.address-text {
-  font-size: 0.74rem;
+.delivery-pill-bottom .address-text {
+  font-size: 0.72rem;
   color: var(--text-muted);
-  max-width: 150px;
+  max-width: 140px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-weight: 600;
+  font-weight: 700;
   display: inline-block;
   vertical-align: middle;
 }
@@ -1513,18 +1531,13 @@ body {
     display: contents;
   }
 
-  .logo {
+  .brand-location-group {
     order: 1;
     flex-shrink: 0;
   }
 
-  .delivery-eta-badge {
-    order: 2;
-    flex-shrink: 0;
-  }
-
   .search-wrapper.desktop-only {
-    order: 3;
+    order: 2;
     flex: 1;
     max-width: 540px;
     margin: 0 1rem;
@@ -1532,12 +1545,8 @@ body {
   }
 
   .nav-actions {
-    order: 4;
+    order: 3;
     flex-shrink: 0;
-  }
-
-  .mobile-location-strip {
-    display: none !important;
   }
 
   .mobile-only-search {
@@ -1550,30 +1559,60 @@ body {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    padding: 0.55rem 0.85rem;
+    padding: 0.5rem 0.65rem;
     gap: 0.45rem;
   }
 
-  /* Tier 1: Top Bar with Brand and Actions */
+  /* Row 1: Top Bar with Brand + Location & Actions */
   .navbar-top-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    gap: 0.5rem;
+    gap: 0.45rem;
+  }
+
+  .brand-location-group {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
   }
 
   .logo {
     display: flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.3rem;
     flex-shrink: 0;
+  }
+
+  .logo-brand-text {
+    font-size: 1.15rem;
+  }
+
+  .logo-badge {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Delivery Address & 8 MINS pill right side of QuickKart on mobile */
+  .delivery-location-pill {
+    padding: 0.18rem 0.45rem;
+    max-width: 145px;
+    border-radius: var(--radius-sm);
+  }
+
+  .delivery-pill-bottom .address-text {
+    max-width: 98px;
+    font-size: 0.68rem;
   }
 
   .nav-actions {
     display: flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.28rem;
     flex-shrink: 0;
     margin-left: auto;
   }
@@ -1582,77 +1621,7 @@ body {
     display: none !important;
   }
 
-  /* Tier 2: Dedicated Amazon & Zepto Style Location Strip */
-  .mobile-location-strip {
-    display: flex !important;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding: 0.44rem 0.72rem;
-    background: rgba(12, 131, 31, 0.07);
-    border: 1px solid rgba(12, 131, 31, 0.18);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition: var(--transition);
-    gap: 0.5rem;
-  }
-
-  [data-theme="dark"] .mobile-location-strip {
-    background: rgba(16, 185, 129, 0.08);
-    border-color: rgba(16, 185, 129, 0.22);
-  }
-
-  .mobile-location-strip:hover {
-    background: rgba(12, 131, 31, 0.12);
-    border-color: rgba(12, 131, 31, 0.3);
-  }
-
-  .mobile-location-left {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    min-width: 0;
-    flex: 1 1 auto;
-    overflow: hidden;
-  }
-
-  .mobile-pin-icon {
-    flex-shrink: 0;
-  }
-
-  .mobile-deliver-to {
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    flex-shrink: 0;
-  }
-
-  .mobile-active-address {
-    font-size: 0.74rem;
-    font-weight: 700;
-    color: var(--text-main);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 0;
-  }
-
-  .mobile-eta-pill {
-    background: #0C831F;
-    color: #ffffff;
-    font-size: 0.64rem;
-    font-weight: 900;
-    padding: 0.12rem 0.42rem;
-    border-radius: var(--radius-sm);
-    display: flex;
-    align-items: center;
-    gap: 0.22rem;
-    flex-shrink: 0;
-    letter-spacing: 0.3px;
-    box-shadow: 0 1px 3px rgba(12, 131, 31, 0.3);
-  }
-
-  /* Tier 3: Full-Width Search Bar */
+  /* Row 2: Full-Width Search Bar */
   .mobile-only-search {
     display: block !important;
     width: 100% !important;
