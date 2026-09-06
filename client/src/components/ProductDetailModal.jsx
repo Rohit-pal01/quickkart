@@ -78,12 +78,35 @@ export default function ProductDetailModal({ product, isOpen, onClose }) {
                 />
               </div>
 
-              {/* Veg Indicator Badge */}
-              <div className="pdm-veg-mark">
-                <div className="veg-dot-box">
-                  <div className="veg-green-circle" />
+              {/* Diet Type Indicator Badge */}
+              <div
+                className="pdm-veg-mark"
+                style={{
+                  color: product.dietType === 'Non-Vegetarian' ? '#DC2626' : '#16A34A'
+                }}
+              >
+                <div
+                  className="veg-dot-box"
+                  style={{
+                    borderColor: product.dietType === 'Non-Vegetarian' ? '#DC2626' : '#16A34A'
+                  }}
+                >
+                  <div
+                    className="veg-green-circle"
+                    style={{
+                      background: product.dietType === 'Non-Vegetarian' ? '#DC2626' : '#16A34A'
+                    }}
+                  />
                 </div>
-                <span>100% Vegetarian</span>
+                <span>
+                  {product.dietType === 'Non-Vegetarian'
+                    ? 'Non-Vegetarian'
+                    : product.dietType === 'Vegan'
+                    ? '100% Vegan'
+                    : product.dietType === 'Contains Egg'
+                    ? 'Contains Egg'
+                    : '100% Vegetarian'}
+                </span>
               </div>
             </div>
           </div>
@@ -193,11 +216,11 @@ export default function ProductDetailModal({ product, isOpen, onClose }) {
                 </div>
                 <div className="pdm-spec-row">
                   <span className="spec-label">Diet Type:</span>
-                  <span className="spec-val">100% Vegetarian</span>
+                  <span className="spec-val">{product.dietType || '100% Vegetarian'}</span>
                 </div>
                 <div className="pdm-spec-row">
                   <span className="spec-label">Shelf Life:</span>
-                  <span className="spec-val">Best before 4 months from packaging</span>
+                  <span className="spec-val">{product.shelfLife || 'Best before 4 months from packaging'}</span>
                 </div>
               </div>
             </div>

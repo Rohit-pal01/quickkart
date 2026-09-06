@@ -8,6 +8,8 @@ const productSchema = new mongoose.Schema({
   unit: { type: String },
   stock: { type: Number, default: 0 },
   imageUrl: { type: String },
+  shelfLife: { type: String, default: 'Best before 4 months from packaging' },
+  dietType: { type: String, default: 'Vegetarian' },
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });
 

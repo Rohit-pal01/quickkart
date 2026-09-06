@@ -59,6 +59,8 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
     price: '',
     unit: '',
     stock: '',
+    dietType: 'Vegetarian',
+    shelfLife: '',
     description: '',
     imageUrl: ''
   });
@@ -215,6 +217,8 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
           price: '',
           unit: '',
           stock: '',
+          dietType: 'Vegetarian',
+          shelfLife: '',
           description: '',
           imageUrl: ''
         });
@@ -255,6 +259,8 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
         price: Number(editingProduct.price),
         unit: editingProduct.unit,
         stock: Number(editingProduct.stock),
+        dietType: editingProduct.dietType || 'Vegetarian',
+        shelfLife: editingProduct.shelfLife || '',
         description: editingProduct.description,
         imageUrl: editingProduct.imageUrl,
         isActive: editingProduct.isActive !== undefined ? editingProduct.isActive : true
@@ -1816,6 +1822,34 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
               />
             </div>
 
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Diet Type</label>
+                <select
+                  className="search-input"
+                  style={{ borderRadius: 'var(--radius-md)', paddingLeft: '0.75rem', width: '100%' }}
+                  value={newProduct.dietType || 'Vegetarian'}
+                  onChange={(e) => setNewProduct({ ...newProduct, dietType: e.target.value })}
+                >
+                  <option value="Vegetarian">Vegetarian (100% Veg)</option>
+                  <option value="Non-Vegetarian">Non-Vegetarian</option>
+                  <option value="Vegan">Vegan</option>
+                  <option value="Contains Egg">Contains Egg</option>
+                </select>
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Shelf Life</label>
+                <input
+                  type="text"
+                  className="search-input"
+                  style={{ borderRadius: 'var(--radius-md)', paddingLeft: '1rem', width: '100%' }}
+                  placeholder="e.g. Best before 7 days"
+                  value={newProduct.shelfLife}
+                  onChange={(e) => setNewProduct({ ...newProduct, shelfLife: e.target.value })}
+                />
+              </div>
+            </div>
+
             <div>
               <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Description</label>
               <textarea
@@ -2004,6 +2038,35 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
                   value={editingProduct.description || ''}
                   onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
                 />
+              </div>
+
+              {/* Diet Type & Shelf Life */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Diet Type</label>
+                  <select
+                    className="search-input"
+                    style={{ borderRadius: 'var(--radius-md)', paddingLeft: '0.75rem', width: '100%' }}
+                    value={editingProduct.dietType || 'Vegetarian'}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, dietType: e.target.value })}
+                  >
+                    <option value="Vegetarian">Vegetarian (100% Veg)</option>
+                    <option value="Non-Vegetarian">Non-Vegetarian</option>
+                    <option value="Vegan">Vegan</option>
+                    <option value="Contains Egg">Contains Egg</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Shelf Life</label>
+                  <input
+                    type="text"
+                    className="search-input"
+                    style={{ borderRadius: 'var(--radius-md)', paddingLeft: '1rem', width: '100%' }}
+                    placeholder="e.g. Best before 7 days from packaging"
+                    value={editingProduct.shelfLife || ''}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, shelfLife: e.target.value })}
+                  />
+                </div>
               </div>
 
               {/* Status Select */}

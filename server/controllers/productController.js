@@ -132,7 +132,7 @@ const getCategories = async (req, res, next) => {
 // @access  Private (Admin only)
 const createProduct = async (req, res, next) => {
   try {
-    const { name, description, category, price, unit, stock, imageUrl } = req.body;
+    const { name, description, category, price, unit, stock, imageUrl, shelfLife, dietType } = req.body;
 
     if (!name || !category || price === undefined) {
       return res.status(400).json({
@@ -149,6 +149,8 @@ const createProduct = async (req, res, next) => {
       unit: unit || '1 unit',
       stock: Number(stock) || 0,
       imageUrl: imageUrl || '',
+      shelfLife: shelfLife || 'Best before 4 months from packaging',
+      dietType: dietType || 'Vegetarian',
       isActive: true
     });
 
@@ -177,7 +179,7 @@ const updateProduct = async (req, res, next) => {
     }
 
     const fieldsToUpdate = [
-      'name', 'description', 'category', 'price', 'unit', 'stock', 'imageUrl', 'isActive'
+      'name', 'description', 'category', 'price', 'unit', 'stock', 'imageUrl', 'shelfLife', 'dietType', 'isActive'
     ];
 
     fieldsToUpdate.forEach(field => {
