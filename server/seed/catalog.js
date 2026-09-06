@@ -206,7 +206,7 @@ const sampleProducts = [
   },
   {
     name: 'Lay\'s India\'s Magic Masala',
-    description: 'Authentic ridged potato chips seasoned with aromatic Indian spices and chilies.',
+    description: 'Crispy ridged potato chips infused with an exquisite blend of authentic Indian spices, red chillies, and tangy amchur. 100% vegetarian, made from farm-fresh potatoes for the ultimate crunch.',
     category: 'Snacks & Munchies',
     price: 80,
     originalPrice: 94,

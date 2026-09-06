@@ -2,7 +2,7 @@ import React from 'react';
 import { Plus, Minus, Zap } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, onOpenDetail }) {
   const { getItemQty, addToCart, updateQty } = useCart();
   const currentQty = getItemQty(product._id);
   const isOutOfStock = product.stock <= 0;
@@ -11,8 +11,30 @@ export default function ProductCard({ product }) {
   const mrp = Math.round(product.price * 1.18);
   const discountPercent = Math.round(((mrp - product.price) / mrp) * 100);
 
+  const handleCardClick = (e) => {
+    // Prevent opening modal if clicking ADD or quantity counter buttons
+    if (e.target.closest('.product-footer')) {
+      return;
+    }
+    if (onOpenDetail) {
+      onOpenDetail(product);
+    }
+  };
+
   return (
-    <div className="product-card">
+    <div
+      className="product-card"
+      onClick={handleCardClick}
+      role="button"
+      tabIndex={0}
+      aria-label={`View details for ${product.name}`}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleCardClick(e);
+        }
+      }}
+    >
       <div className="product-img-box">
         {/* ⚡ 8 MINS Badge (Blinkit style) */}
         <div className="eta-tag-pill">
@@ -41,6 +63,12 @@ export default function ProductCard({ product }) {
         <h3 className="product-name" title={product.name}>
           {product.name}
         </h3>
+
+        {product.description && (
+          <p className="product-card-desc" title={product.description}>
+            {product.description}
+          </p>
+        )}
 
         <div className="product-footer">
           <div className="price-container">

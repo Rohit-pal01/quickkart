@@ -10,6 +10,7 @@ import AuthModal from './components/AuthModal';
 import LocationModal from './components/LocationModal';
 import OrderTracking from './components/OrderTracking';
 import AdminDashboard from './components/AdminDashboard';
+import ProductDetailModal from './components/ProductDetailModal';
 import Footer from './components/Footer';
 import { api } from './services/api';
 import {
@@ -58,6 +59,7 @@ function StoreContent() {
   const [isJuspayOpen, setIsJuspayOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isLocationOpen, setIsLocationOpen] = useState(false);
+  const [selectedProductDetail, setSelectedProductDetail] = useState(null);
 
   // Load products from API
   const loadCatalog = async () => {
@@ -417,7 +419,11 @@ function StoreContent() {
             ) : (
               <div className="product-grid">
                 {products.map((product) => (
-                  <ProductCard key={product._id} product={product} />
+                  <ProductCard
+                    key={product._id}
+                    product={product}
+                    onOpenDetail={setSelectedProductDetail}
+                  />
                 ))}
               </div>
             )}
@@ -495,6 +501,13 @@ function StoreContent() {
       <LocationModal
         isOpen={isLocationOpen}
         onClose={() => setIsLocationOpen(false)}
+      />
+
+      {/* Product Detail Quick-View Modal */}
+      <ProductDetailModal
+        product={selectedProductDetail}
+        isOpen={!!selectedProductDetail}
+        onClose={() => setSelectedProductDetail(null)}
       />
     </div>
   );
