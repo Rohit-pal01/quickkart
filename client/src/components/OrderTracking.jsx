@@ -27,9 +27,7 @@ export default function OrderTracking({ orderId, onBackToStore }) {
         setMyOrders(userOrders);
       }
 
-      // 2. Resolve which order to display:
-      // - If targetId is provided, use that
-      // - Otherwise, default to user's latest actual order
+      // 2. Resolve which order to display
       const idToFetch = targetId || (userOrders.length > 0 ? userOrders[0].orderId : null);
 
       if (idToFetch) {
@@ -38,7 +36,6 @@ export default function OrderTracking({ orderId, onBackToStore }) {
         if (res.success && res.order) {
           setOrder(res.order);
         } else if (userOrders.length > 0 && idToFetch !== userOrders[0].orderId) {
-          // If specific targetId failed, fallback to the user's latest order
           const fallbackRes = await api.getOrderById(userOrders[0].orderId);
           if (fallbackRes.success && fallbackRes.order) {
             setOrder(fallbackRes.order);
@@ -58,9 +55,17 @@ export default function OrderTracking({ orderId, onBackToStore }) {
     }
   };
 
+  const fetchOrder = () => {
+    if (activeId) {
+      loadData(activeId);
+    } else {
+      loadData(null);
+    }
+  };
+
   useEffect(() => {
-    loadData(activeId);
-  }, [activeId]);
+    loadData(orderId || null);
+  }, [orderId]);
 
   // Periodic polling for status transitions
   useEffect(() => {
@@ -368,11 +373,11 @@ export default function OrderTracking({ orderId, onBackToStore }) {
         }}
       >
         <h3 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: '1rem' }}>
-          Items in this Order ({order.items.length})
+          Items in this Order ({order.items?.length || 0})
         </h3>
 
         <div style={{ marginBottom: '1rem' }}>
-          {order.items.map((item, i) => (
+          {(order.items || []).map((item, i) => (
             <div
               key={i}
               style={{
