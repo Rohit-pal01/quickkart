@@ -29,6 +29,10 @@ export default function AdminDashboard({ onBackToStore }) {
   const [inventorySearch, setInventorySearch] = useState('');
   const [inventoryCategory, setInventoryCategory] = useState('All');
 
+  // Orders search & filter state
+  const [orderSearch, setOrderSearch] = useState('');
+  const [orderStatusFilter, setOrderStatusFilter] = useState('ALL');
+
   const getStatusStyle = (status) => {
     const styles = {
       CONFIRMED: {
@@ -221,6 +225,18 @@ export default function AdminDashboard({ onBackToStore }) {
     return matchesSearch && matchesCat;
   });
 
+  const filteredOrders = orders.filter(o => {
+    const q = orderSearch.trim().toLowerCase();
+    const matchesSearch = !q ||
+      o.orderId?.toLowerCase().includes(q) ||
+      o.userId?.name?.toLowerCase().includes(q) ||
+      o.userId?.phone?.includes(q) ||
+      o.items?.some(i => i.name?.toLowerCase().includes(q));
+
+    const matchesStatus = orderStatusFilter === 'ALL' || o.status === orderStatusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
   const totalRevenue = orders
     .filter(o => o.status !== 'CANCELLED' && o.status !== 'PAYMENT_FAILED')
     .reduce((sum, o) => sum + (o.totalAmount || 0), 0);
@@ -338,6 +354,64 @@ export default function AdminDashboard({ onBackToStore }) {
       {/* Live Orders Tab */}
       {activeTab === 'orders' && (
         <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)', overflow: 'hidden' }}>
+          {/* Orders Search & Filter Controls Header */}
+          <div
+            style={{
+              padding: '1.25rem 1.5rem',
+              borderBottom: '1px solid var(--border-light)',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '1rem'
+            }}
+          >
+            <div>
+              <h2 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0 }}>Live Customer Orders</h2>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: '0.2rem 0 0 0' }}>
+                Showing {filteredOrders.length} of {orders.length} orders. Search by Order ID, Customer Name, Phone, or Item.
+              </p>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+              <div style={{ position: 'relative', width: '250px' }}>
+                <Search size={15} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                <input
+                  type="text"
+                  placeholder="Search order ID, name, phone..."
+                  value={orderSearch}
+                  onChange={(e) => setOrderSearch(e.target.value)}
+                  className="search-input"
+                  style={{ width: '100%', paddingLeft: '2.2rem', paddingRight: orderSearch ? '2rem' : '0.75rem', fontSize: '0.82rem', height: '36px', borderRadius: 'var(--radius-md)' }}
+                />
+                {orderSearch && (
+                  <button
+                    onClick={() => setOrderSearch('')}
+                    style={{ position: 'absolute', right: '0.6rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                    aria-label="Clear search"
+                  >
+                    <X size={14} color="var(--text-muted)" />
+                  </button>
+                )}
+              </div>
+
+              <select
+                value={orderStatusFilter}
+                onChange={(e) => setOrderStatusFilter(e.target.value)}
+                className="search-input"
+                style={{ height: '36px', fontSize: '0.82rem', padding: '0 0.85rem', borderRadius: 'var(--radius-md)', minWidth: '150px' }}
+              >
+                <option value="ALL">All Statuses ({orders.length})</option>
+                <option value="PENDING_PAYMENT">PENDING_PAYMENT</option>
+                <option value="CONFIRMED">CONFIRMED</option>
+                <option value="PACKED">PACKED</option>
+                <option value="OUT_FOR_DELIVERY">OUT_FOR_DELIVERY</option>
+                <option value="DELIVERED">DELIVERED</option>
+                <option value="CANCELLED">CANCELLED</option>
+              </select>
+            </div>
+          </div>
+
           <table className="admin-table">
             <thead>
               <tr>
@@ -350,14 +424,16 @@ export default function AdminDashboard({ onBackToStore }) {
               </tr>
             </thead>
             <tbody>
-              {orders.length === 0 ? (
+              {filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>
-                    No orders placed yet.
+                  <td colSpan="6" style={{ textAlign: 'center', padding: '2.5rem 1rem', color: 'var(--text-muted)' }}>
+                    {orders.length === 0
+                      ? 'No orders placed yet.'
+                      : `No orders matching "${orderSearch}" with status "${orderStatusFilter}".`}
                   </td>
                 </tr>
               ) : (
-                orders.map((o) => (
+                filteredOrders.map((o) => (
                   <tr key={o._id}>
                     <td>
                       <strong>#{o.orderId}</strong>
