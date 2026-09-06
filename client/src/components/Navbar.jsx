@@ -14,6 +14,7 @@ export default function Navbar({
 }) {
   const { user, isAuthenticated, logout, activeAddress } = useAuth();
   const { itemCount, totalAmount, setIsCartOpen } = useCart();
+  const { theme, toggleTheme, isDark } = useTheme();
   const handleLogout = () => {
     logout();
     setActiveView('store');
