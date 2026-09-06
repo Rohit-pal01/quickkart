@@ -346,15 +346,6 @@ body {
   vertical-align: middle;
 }
 
-.nav-quick-logout-btn {
-  display: flex;
-}
-
-@media (max-width: 900px) {
-  .nav-quick-logout-btn {
-    display: none !important;
-  }
-}
 
 /* User Profile Menu Dropdown */
 .user-profile-menu-container {

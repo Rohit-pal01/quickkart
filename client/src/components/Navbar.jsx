@@ -136,35 +136,25 @@ export default function Navbar({
 
           {isAuthenticated ? (
             <div className="user-profile-menu-container" ref={profileMenuRef}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                <button
-                  className="btn-auth btn-profile"
-                  onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+              <button
+                className="btn-auth btn-profile"
+                onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                style={{
+                  background: activeView === 'orders' || isProfileMenuOpen ? 'var(--primary-light)' : 'var(--bg-card)',
+                  borderColor: activeView === 'orders' || isProfileMenuOpen ? '#0C831F' : undefined
+                }}
+                aria-label="User Account Menu"
+              >
+                <User size={15} />
+                <span className="user-nav-name">{user.name.split(' ')[0]}</span>
+                <ChevronDown
+                  size={12}
                   style={{
-                    background: activeView === 'orders' || isProfileMenuOpen ? 'var(--primary-light)' : 'var(--bg-card)',
-                    borderColor: activeView === 'orders' || isProfileMenuOpen ? '#0C831F' : undefined
+                    transition: 'transform 0.2s ease',
+                    transform: isProfileMenuOpen ? 'rotate(180deg)' : 'rotate(0)'
                   }}
-                  aria-label="User Account Menu"
-                >
-                  <User size={15} />
-                  <span className="user-nav-name">{user.name.split(' ')[0]}</span>
-                  <ChevronDown
-                    size={12}
-                    style={{
-                      transition: 'transform 0.2s ease',
-                      transform: isProfileMenuOpen ? 'rotate(180deg)' : 'rotate(0)'
-                    }}
-                  />
-                </button>
-                <button
-                  className="btn-auth nav-quick-logout-btn"
-                  onClick={handleLogout}
-                  title="Logout"
-                  style={{ padding: '0.45rem', color: '#EF4444', borderColor: 'rgba(239, 68, 68, 0.3)' }}
-                >
-                  <LogOut size={15} color="#EF4444" />
-                </button>
-              </div>
+                />
+              </button>
 
               {/* Professional User Dropdown Menu */}
               {isProfileMenuOpen && (
