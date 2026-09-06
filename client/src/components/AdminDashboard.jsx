@@ -348,6 +348,7 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
     if (totalItems === 0) return null;
     return (
       <div
+        className="admin-pagination-bar"
         style={{
           padding: '0.9rem 1.5rem',
           borderTop: '1px solid var(--border-light)',
@@ -477,15 +478,17 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
           gap: '1rem'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
           <button className="btn-auth" onClick={onBackToStore}>
             <ArrowLeft size={16} />
             <span>Storefront</span>
           </button>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Dark Store & Admin Hub</h1>
+          <h1 className="admin-main-title" style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0 }}>
+            Dark Store & Admin Hub
+          </h1>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <div className="admin-tabs-bar">
           <button
             className={`btn-auth ${activeTab === 'orders' ? 'active' : ''}`}
             style={{
@@ -532,14 +535,7 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
       </div>
 
       {/* Metrics Row */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: '1rem',
-          marginBottom: '1.5rem'
-        }}
-      >
+      <div className="admin-metrics-grid">
         <div style={{ background: 'var(--bg-card)', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-light)' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>TOTAL REVENUE</div>
           <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#10B981', marginTop: '0.3rem' }}>₹{totalRevenue}</div>
@@ -578,6 +574,7 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
         <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)', overflow: 'hidden' }}>
           {/* Orders Search & Filter Controls Header */}
           <div
+            className="admin-card-header"
             style={{
               padding: '1.25rem 1.5rem',
               borderBottom: '1px solid var(--border-light)',
@@ -595,8 +592,8 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
               </p>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-              <div style={{ position: 'relative', width: '250px' }}>
+            <div className="admin-controls-row">
+              <div className="admin-search-wrap">
                 <Search size={15} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
                 <input
                   type="text"
@@ -629,8 +626,7 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
                   setOrderStatusFilter(e.target.value);
                   setOrderPage(1);
                 }}
-                className="search-input"
-                style={{ height: '36px', fontSize: '0.82rem', padding: '0 0.85rem', borderRadius: 'var(--radius-md)', minWidth: '150px' }}
+                className="search-input admin-filter-select"
               >
                 <option value="ALL">All Statuses ({orders.length})</option>
                 <option value="PENDING_PAYMENT">PENDING_PAYMENT</option>
@@ -643,96 +639,102 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
             </div>
           </div>
 
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Order ID</th>
-                <th>Customer</th>
-                <th>Items</th>
-                <th>Amount</th>
-                <th>Status Transition</th>
-                <th>Created</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredOrders.length === 0 ? (
+          <div className="admin-scroll-hint">
+            <span>⇄ Swipe table horizontally to view all columns & status transition</span>
+          </div>
+
+          <div className="admin-table-container">
+            <table className="admin-table">
+              <thead>
                 <tr>
-                  <td colSpan="6" style={{ textAlign: 'center', padding: '2.5rem 1rem', color: 'var(--text-muted)' }}>
-                    {orders.length === 0
-                      ? 'No orders placed yet.'
-                      : `No orders matching "${orderSearch}" with status "${orderStatusFilter}".`}
-                  </td>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Items</th>
+                  <th>Amount</th>
+                  <th>Status Transition</th>
+                  <th>Created</th>
                 </tr>
-              ) : (
-                paginatedOrders.map((o) => (
-                  <tr key={o._id}>
-                    <td>
-                      <button
-                        type="button"
-                        onClick={() => onViewOrder && onViewOrder(o.orderId)}
-                        title={`Click to track order #${o.orderId}`}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          padding: 0,
-                          cursor: 'pointer',
-                          color: '#10B981',
-                          fontWeight: 800,
-                          textAlign: 'left',
-                          fontSize: '0.85rem',
-                          textDecoration: 'underline'
-                        }}
-                      >
-                        #{o.orderId}
-                      </button>
-                    </td>
-                    <td>
-                      <div>{o.userId?.name || 'Customer'}</div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{o.userId?.phone}</div>
-                    </td>
-                    <td>
-                      {o.items?.map(i => `${i.qty}x ${i.name}`).join(', ') || 'N/A'}
-                    </td>
-                    <td style={{ fontWeight: 800 }}>₹{o.totalAmount}</td>
-                    <td>
-                      {(() => {
-                        const sStyle = getStatusStyle(o.status);
-                        return (
-                          <select
-                            value={o.status}
-                            onChange={(e) => handleStatusChange(o._id, e.target.value)}
-                            style={{
-                              padding: '0.4rem 0.65rem',
-                              borderRadius: 'var(--radius-sm)',
-                              border: `1.5px solid ${sStyle.border}`,
-                              background: sStyle.bg,
-                              color: sStyle.text,
-                              fontWeight: 800,
-                              fontSize: '0.78rem',
-                              cursor: 'pointer',
-                              outline: 'none',
-                              letterSpacing: '0.3px',
-                              transition: 'var(--transition)'
-                            }}
-                          >
-                            <option value="PENDING_PAYMENT" style={{ background: isDark ? '#131B2E' : '#FFFFFF', color: isDark ? '#F8FAFC' : '#1C1C1C' }}>PENDING_PAYMENT</option>
-                            <option value="CONFIRMED" style={{ background: isDark ? '#131B2E' : '#FFFFFF', color: isDark ? '#F8FAFC' : '#1C1C1C' }}>CONFIRMED (Placed)</option>
-                            <option value="PACKED" style={{ background: isDark ? '#131B2E' : '#FFFFFF', color: isDark ? '#F8FAFC' : '#1C1C1C' }}>PACKED</option>
-                            <option value="OUT_FOR_DELIVERY" style={{ background: isDark ? '#131B2E' : '#FFFFFF', color: isDark ? '#F8FAFC' : '#1C1C1C' }}>OUT_FOR_DELIVERY</option>
-                            <option value="DELIVERED" style={{ background: isDark ? '#131B2E' : '#FFFFFF', color: isDark ? '#F8FAFC' : '#1C1C1C' }}>DELIVERED</option>
-                            <option value="CANCELLED" style={{ background: isDark ? '#131B2E' : '#FFFFFF', color: isDark ? '#F8FAFC' : '#1C1C1C' }}>CANCELLED</option>
-                          </select>
-                        );
-                      })()}
-                    </td>
-                    <td style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                      {new Date(o.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </thead>
+              <tbody>
+                {filteredOrders.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" style={{ textAlign: 'center', padding: '2.5rem 1rem', color: 'var(--text-muted)' }}>
+                      {orders.length === 0
+                        ? 'No orders placed yet.'
+                        : `No orders matching "${orderSearch}" with status "${orderStatusFilter}".`}
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  paginatedOrders.map((o) => (
+                    <tr key={o._id}>
+                      <td style={{ whiteSpace: 'nowrap' }}>
+                        <button
+                          type="button"
+                          onClick={() => onViewOrder && onViewOrder(o.orderId)}
+                          title={`Click to track order #${o.orderId}`}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: 0,
+                            cursor: 'pointer',
+                            color: '#10B981',
+                            fontWeight: 800,
+                            textAlign: 'left',
+                            fontSize: '0.85rem',
+                            textDecoration: 'underline'
+                          }}
+                        >
+                          #{o.orderId}
+                        </button>
+                      </td>
+                      <td style={{ minWidth: '130px' }}>
+                        <div>{o.userId?.name || 'Customer'}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{o.userId?.phone}</div>
+                      </td>
+                      <td style={{ minWidth: '190px', maxWidth: '300px', lineHeight: 1.45 }}>
+                        {o.items?.map(i => `${i.qty}x ${i.name}`).join(', ') || 'N/A'}
+                      </td>
+                      <td style={{ fontWeight: 800, whiteSpace: 'nowrap' }}>₹{o.totalAmount}</td>
+                      <td style={{ minWidth: '165px', whiteSpace: 'nowrap' }}>
+                        {(() => {
+                          const sStyle = getStatusStyle(o.status);
+                          return (
+                            <select
+                              value={o.status}
+                              onChange={(e) => handleStatusChange(o._id, e.target.value)}
+                              style={{
+                                padding: '0.4rem 0.65rem',
+                                borderRadius: 'var(--radius-sm)',
+                                border: `1.5px solid ${sStyle.border}`,
+                                background: sStyle.bg,
+                                color: sStyle.text,
+                                fontWeight: 800,
+                                fontSize: '0.78rem',
+                                cursor: 'pointer',
+                                outline: 'none',
+                                letterSpacing: '0.3px',
+                                transition: 'var(--transition)'
+                              }}
+                            >
+                              <option value="PENDING_PAYMENT" style={{ background: isDark ? '#131B2E' : '#FFFFFF', color: isDark ? '#F8FAFC' : '#1C1C1C' }}>PENDING_PAYMENT</option>
+                              <option value="CONFIRMED" style={{ background: isDark ? '#131B2E' : '#FFFFFF', color: isDark ? '#F8FAFC' : '#1C1C1C' }}>CONFIRMED (Placed)</option>
+                              <option value="PACKED" style={{ background: isDark ? '#131B2E' : '#FFFFFF', color: isDark ? '#F8FAFC' : '#1C1C1C' }}>PACKED</option>
+                              <option value="OUT_FOR_DELIVERY" style={{ background: isDark ? '#131B2E' : '#FFFFFF', color: isDark ? '#F8FAFC' : '#1C1C1C' }}>OUT_FOR_DELIVERY</option>
+                              <option value="DELIVERED" style={{ background: isDark ? '#131B2E' : '#FFFFFF', color: isDark ? '#F8FAFC' : '#1C1C1C' }}>DELIVERED</option>
+                              <option value="CANCELLED" style={{ background: isDark ? '#131B2E' : '#FFFFFF', color: isDark ? '#F8FAFC' : '#1C1C1C' }}>CANCELLED</option>
+                            </select>
+                          );
+                        })()}
+                      </td>
+                      <td style={{ fontSize: '0.78rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                        {new Date(o.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
 
           {renderPagination(currentOrderPage, totalOrderPages, orderPageSize, setOrderPageSize, setOrderPage, filteredOrders.length, 'orders')}
         </div>
@@ -743,6 +745,7 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
         <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)', overflow: 'hidden' }}>
           {/* Inventory Controls Header */}
           <div
+            className="admin-card-header"
             style={{
               padding: '1.25rem 1.5rem',
               borderBottom: '1px solid var(--border-light)',
@@ -760,8 +763,8 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
               </p>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-              <div style={{ position: 'relative', width: '220px' }}>
+            <div className="admin-controls-row">
+              <div className="admin-search-wrap">
                 <Search size={15} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
                 <input
                   type="text"
@@ -794,8 +797,7 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
                   setInventoryCategory(e.target.value);
                   setInventoryPage(1);
                 }}
-                className="search-input"
-                style={{ height: '36px', fontSize: '0.82rem', borderRadius: 'var(--radius-md)', padding: '0 0.75rem' }}
+                className="search-input admin-filter-select"
               >
                 <option value="All">All Categories</option>
                 {availableCategories.map(cat => (
@@ -805,7 +807,7 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
 
               <button
                 className="btn-checkout"
-                style={{ padding: '0.45rem 0.9rem', fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}
+                style={{ padding: '0.45rem 0.9rem', fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '0.35rem', whiteSpace: 'nowrap' }}
                 onClick={() => setActiveTab('add_product')}
               >
                 <Plus size={15} />
@@ -814,7 +816,11 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
             </div>
           </div>
 
-          <div style={{ overflowX: 'auto' }}>
+          <div className="admin-scroll-hint">
+            <span>⇄ Swipe table horizontally to view all columns & item actions</span>
+          </div>
+
+          <div className="admin-table-container">
             <table className="admin-table">
               <thead>
                 <tr>
@@ -991,6 +997,7 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
 
           {/* Dedicated Filter & Search Toolbar */}
           <div
+            className="admin-card-header"
             style={{
               padding: '0.85rem 1.75rem',
               background: isDark ? 'rgba(255, 255, 255, 0.02)' : 'var(--bg-subtle)',
@@ -1003,7 +1010,7 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
             }}
           >
             {/* Search customer input */}
-            <div style={{ position: 'relative', flex: '1', minWidth: '260px', maxWidth: '420px' }}>
+            <div className="admin-search-wrap" style={{ flex: '1', minWidth: '220px', maxWidth: '420px' }}>
               <Search
                 size={15}
                 style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}
@@ -1090,7 +1097,12 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
             </div>
           </div>
 
-          <table className="admin-table">
+          <div className="admin-scroll-hint">
+            <span>⇄ Swipe table horizontally to view all columns & customer actions</span>
+          </div>
+
+          <div className="admin-table-container">
+            <table className="admin-table">
             <thead>
               <tr>
                 <th style={{ width: '45px', textAlign: 'center' }}>#</th>
@@ -1319,8 +1331,9 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
               )}
             </tbody>
           </table>
+        </div>
 
-          {renderPagination(currentUserPage, totalUserPages, userPageSize, setUserPageSize, setUserPage, filteredUsers.length, 'customers')}
+        {renderPagination(currentUserPage, totalUserPages, userPageSize, setUserPageSize, setUserPage, filteredUsers.length, 'customers')}
         </div>
       )}
 

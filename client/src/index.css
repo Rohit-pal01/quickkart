@@ -949,15 +949,34 @@ body {
   100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
 }
 
-/* Admin Dashboard Table */
+/* Admin Dashboard Table & Mobile Horizontal Scroll */
+.admin-table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+
+/* Custom sleek scrollbar for tables so mobile/desktop users clearly see horizontal scroll */
+.admin-table-container::-webkit-scrollbar {
+  height: 6px;
+}
+.admin-table-container::-webkit-scrollbar-track {
+  background: var(--bg-subtle);
+}
+.admin-table-container::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+[data-theme="dark"] .admin-table-container::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
 .admin-table {
   width: 100%;
+  min-width: 760px; /* Crucial: Prevents table columns from squishing or being cut off on mobile */
   border-collapse: collapse;
   background: var(--bg-card);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border-light);
 }
 
 .admin-table th {
@@ -968,6 +987,7 @@ body {
   text-transform: uppercase;
   color: var(--text-muted);
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .admin-table td {
@@ -975,6 +995,53 @@ body {
   border-top: 1px solid var(--border-light);
   font-size: 0.86rem;
   color: var(--text-main);
+}
+
+/* Mobile swipe hint banner for tables */
+.admin-scroll-hint {
+  display: none;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 1rem;
+  background: rgba(16, 185, 129, 0.08);
+  border-bottom: 1px solid var(--border-light);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #10B981;
+}
+
+/* Admin Dashboard layout helpers */
+.admin-tabs-bar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.admin-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-controls-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.admin-search-wrap {
+  position: relative;
+  width: 250px;
+}
+
+.admin-filter-select {
+  height: 36px;
+  font-size: 0.82rem;
+  padding: 0 0.85rem;
+  border-radius: var(--radius-md);
+  min-width: 150px;
 }
 
 /* Dark mode form inputs & cards enhancements */
@@ -1069,14 +1136,18 @@ body {
     padding-bottom: 95px; /* Give room for mobile floating pill */
   }
 
+  .main-content {
+    padding: 0.75rem 0.65rem 2.5rem 0.65rem;
+  }
+
   .navbar {
-    padding: 0.6rem 0.85rem;
+    padding: 0.55rem 0.75rem;
     flex-wrap: wrap;
-    gap: 0.65rem;
+    gap: 0.5rem;
   }
 
   .brand-section {
-    gap: 0.6rem;
+    gap: 0.5rem;
   }
 
   .logo {
@@ -1084,7 +1155,17 @@ body {
   }
 
   .address-line {
-    max-width: 120px;
+    max-width: 110px;
+  }
+
+  .nav-actions {
+    gap: 0.4rem;
+  }
+
+  .btn-auth {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.8rem;
+    gap: 0.3rem;
   }
 
   .search-wrapper {
@@ -1096,6 +1177,79 @@ body {
   .search-input {
     padding: 0.6rem 0.9rem 0.6rem 2.6rem;
     font-size: 0.88rem;
+  }
+
+  /* Admin Dashboard Mobile Optimizations */
+  .admin-main-title {
+    font-size: 1.2rem !important;
+  }
+
+  .admin-tabs-bar {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.35rem;
+    scrollbar-width: none;
+    gap: 0.4rem;
+  }
+
+  .admin-tabs-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .admin-tabs-bar button {
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-size: 0.8rem;
+    padding: 0.45rem 0.75rem;
+  }
+
+  .admin-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.65rem;
+    margin-bottom: 1rem;
+  }
+
+  .admin-metrics-grid > div {
+    padding: 0.85rem !important;
+  }
+
+  .admin-metrics-grid > div:last-child {
+    grid-column: span 2;
+  }
+
+  .admin-card-header {
+    padding: 1rem !important;
+  }
+
+  .admin-controls-row {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+
+  .admin-search-wrap {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .admin-filter-select {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .admin-scroll-hint {
+    display: flex;
+  }
+
+  .admin-pagination-bar {
+    padding: 0.85rem 1rem !important;
+    flex-direction: column;
+    gap: 0.75rem !important;
+    align-items: center !important;
+    text-align: center;
   }
 
   /* 2-column Product Grid on Mobile (exactly like Blinkit/Zepto) */
@@ -1135,6 +1289,44 @@ body {
     width: 56px;
     height: 56px;
     font-size: 1.4rem;
+  }
+}
+
+.nav-admin-label-short {
+  display: none;
+}
+
+@media (max-width: 540px) {
+  .nav-admin-label-full {
+    display: none;
+  }
+  .nav-admin-label-short {
+    display: inline;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo {
+    font-size: 1.15rem;
+  }
+
+  .delivery-eta-badge {
+    padding: 0.22rem 0.5rem;
+  }
+
+  .address-line {
+    max-width: 85px;
+    font-size: 0.7rem;
+  }
+
+  .btn-auth {
+    padding: 0.38rem 0.55rem;
+    font-size: 0.75rem;
+  }
+
+  .theme-toggle-btn {
+    width: 32px;
+    height: 32px;
   }
 }
 

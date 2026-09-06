@@ -95,7 +95,8 @@ export default function Navbar({
             onClick={() => setActiveView(activeView === 'admin' ? 'store' : 'admin')}
           >
             <Shield size={16} color="#0C831F" />
-            <span>Dark Store Hub</span>
+            <span className="nav-admin-label-full">Dark Store Hub</span>
+            <span className="nav-admin-label-short">Hub</span>
           </button>
         )}
 
