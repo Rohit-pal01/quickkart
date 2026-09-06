@@ -21,7 +21,8 @@ import {
   Shield,
   RefreshCw,
   LogOut,
-  Zap
+  Zap,
+  Download
 } from 'lucide-react';
 import { api } from '../services/api';
 import { useTheme } from '../context/ThemeContext';
@@ -184,6 +185,68 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
     } finally {
       setSimulating(false);
     }
+  };
+
+  const handleExportCSV = () => {
+    if (!orders || orders.length === 0) {
+      alert('No orders available to export.');
+      return;
+    }
+
+    const headers = [
+      'Order ID',
+      'Customer Name',
+      'Customer Phone',
+      'Delivery Address',
+      'Items Count',
+      'Items Summary',
+      'Subtotal (INR)',
+      'Delivery Fee (INR)',
+      'Total Amount (INR)',
+      'Status',
+      'Payment Method',
+      'Order Date'
+    ];
+
+    const escapeCSV = (val) => {
+      if (val === null || val === undefined) return '""';
+      const str = String(val).replace(/"/g, '""');
+      return `"${str}"`;
+    };
+
+    const rows = orders.map(o => {
+      const itemsSummary = (o.items || [])
+        .map(i => `${i.qty}x ${i.name}`)
+        .join('; ');
+
+      const dateStr = o.createdAt ? new Date(o.createdAt).toLocaleString('en-IN') : '';
+
+      return [
+        escapeCSV(o.orderId || o._id),
+        escapeCSV(o.userId?.name || 'Customer'),
+        escapeCSV(o.userId?.phone || ''),
+        escapeCSV(o.deliveryAddress?.line1 || ''),
+        escapeCSV(o.items?.length || 0),
+        escapeCSV(itemsSummary),
+        escapeCSV(o.subtotal || o.totalAmount || 0),
+        escapeCSV(o.deliveryFee || 0),
+        escapeCSV(o.totalAmount || 0),
+        escapeCSV(o.status || 'CONFIRMED'),
+        escapeCSV(o.paymentMethod || 'UPI'),
+        escapeCSV(dateStr)
+      ].join(',');
+    });
+
+    const csvContent = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `quickkart_orders_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const handleDeleteUser = async (userId, userName, userRole) => {
@@ -778,6 +841,28 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
               >
                 <Zap size={15} fill="#F7D000" color="#F7D000" />
                 <span>{simulating ? 'Simulating...' : '⚡ Simulate Order'}</span>
+              </button>
+
+              <button
+                type="button"
+                className="btn-auth"
+                onClick={handleExportCSV}
+                style={{
+                  height: '42px',
+                  minHeight: '42px',
+                  padding: '0 0.85rem',
+                  fontSize: '0.84rem',
+                  fontWeight: 600,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  whiteSpace: 'nowrap',
+                  borderRadius: 'var(--radius-md)'
+                }}
+                title="Download orders report in Excel / CSV format"
+              >
+                <Download size={14} />
+                <span>Export CSV</span>
               </button>
             </div>
           </div>
