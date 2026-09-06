@@ -637,8 +637,8 @@ body {
   background: var(--bg-card);
   width: 100%;
   max-width: 440px;
-  max-height: calc(100vh - 2.5rem);
-  max-height: calc(100dvh - 2.5rem);
+  max-height: calc(100vh - 1.5rem);
+  max-height: calc(100dvh - 1.5rem);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-xl);
   border: 1px solid var(--border-light);
@@ -650,7 +650,7 @@ body {
 }
 
 .modal-card-header {
-  padding: 0.9rem 1.25rem;
+  padding: 0.85rem 1.25rem;
   border-bottom: 1px solid var(--border-light);
   display: flex;
   align-items: center;
@@ -668,7 +668,7 @@ body {
 }
 
 .modal-card-scroll-body {
-  padding: 1.15rem 1.25rem;
+  padding: 0.9rem 1.25rem;
   overflow-y: auto;
   flex: 1 1 auto;
   min-height: 0;
