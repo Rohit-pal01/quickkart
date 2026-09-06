@@ -44,8 +44,9 @@ export const api = {
     return res.json();
   },
 
-  async getAllUsers() {
-    const res = await fetch(`${API_BASE}/auth/users`, {
+  async getAllUsers(params = {}) {
+    const query = new URLSearchParams(params).toString();
+    const res = await fetch(`${API_BASE}/auth/users${query ? `?${query}` : ''}`, {
       headers: getAuthHeaders()
     });
     return res.json();

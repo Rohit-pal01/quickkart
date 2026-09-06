@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Package, TrendingUp, Users, Plus, Edit2, Trash2, CheckCircle2, Clock, AlertTriangle, ArrowLeft, Search, X } from 'lucide-react';
+import { Package, TrendingUp, Users, Plus, Edit2, Trash2, CheckCircle2, Clock, AlertTriangle, ArrowLeft, Search, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { api } from '../services/api';
 import { useTheme } from '../context/ThemeContext';
 
@@ -32,6 +32,12 @@ export default function AdminDashboard({ onBackToStore }) {
   // Orders search & filter state
   const [orderSearch, setOrderSearch] = useState('');
   const [orderStatusFilter, setOrderStatusFilter] = useState('ALL');
+
+  // Customers search, filter & pagination state
+  const [userSearch, setUserSearch] = useState('');
+  const [userRoleFilter, setUserRoleFilter] = useState('ALL');
+  const [userPage, setUserPage] = useState(1);
+  const [userPageSize, setUserPageSize] = useState(10);
 
   const getStatusStyle = (status) => {
     const styles = {
@@ -236,6 +242,25 @@ export default function AdminDashboard({ onBackToStore }) {
     const matchesStatus = orderStatusFilter === 'ALL' || o.status === orderStatusFilter;
     return matchesSearch && matchesStatus;
   });
+
+  const filteredUsers = users.filter(u => {
+    const q = userSearch.trim().toLowerCase();
+    const matchesSearch = !q ||
+      u.name?.toLowerCase().includes(q) ||
+      u.email?.toLowerCase().includes(q) ||
+      u.phone?.includes(q) ||
+      u.addresses?.some(a =>
+        a.line1?.toLowerCase().includes(q) ||
+        a.label?.toLowerCase().includes(q)
+      );
+
+    const matchesRole = userRoleFilter === 'ALL' || u.role?.toLowerCase() === userRoleFilter.toLowerCase();
+    return matchesSearch && matchesRole;
+  });
+
+  const totalUserPages = Math.max(1, Math.ceil(filteredUsers.length / userPageSize));
+  const currentUserPage = Math.min(userPage, totalUserPages);
+  const paginatedUsers = filteredUsers.slice((currentUserPage - 1) * userPageSize, currentUserPage * userPageSize);
 
   const totalRevenue = orders
     .filter(o => o.status !== 'CANCELLED' && o.status !== 'PAYMENT_FAILED')
@@ -667,14 +692,92 @@ export default function AdminDashboard({ onBackToStore }) {
       {/* Customers / Users Tab */}
       {activeTab === 'users' && (
         <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)', overflow: 'hidden' }}>
-          <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          {/* Customers Search & Filter Controls Header */}
+          <div
+            style={{
+              padding: '1.25rem 1.5rem',
+              borderBottom: '1px solid var(--border-light)',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '1rem'
+            }}
+          >
             <div>
-              <h2 style={{ fontSize: '1.15rem', fontWeight: 800 }}>Registered Users & Customers</h2>
-              <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: 0 }}>Total of {users.length} accounts created across QuickKart</p>
+              <h2 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0 }}>Registered Users & Customers</h2>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: '0.2rem 0 0 0' }}>
+                Showing {filteredUsers.length} of {users.length} accounts. Search by Name, Email, Phone, or Address.
+              </p>
             </div>
-            <span style={{ fontSize: '0.8rem', fontWeight: 700, padding: '0.3rem 0.75rem', background: '#FDF2F8', color: '#EC4899', borderRadius: '9999px' }}>
-              {users.length} Total Users
-            </span>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+              {/* Search customer input */}
+              <div style={{ position: 'relative', width: '260px' }}>
+                <Search size={15} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                <input
+                  type="text"
+                  placeholder="Search name, email, phone, address..."
+                  value={userSearch}
+                  onChange={(e) => {
+                    setUserSearch(e.target.value);
+                    setUserPage(1);
+                  }}
+                  className="search-input"
+                  style={{
+                    width: '100%',
+                    paddingLeft: '2.2rem',
+                    paddingRight: userSearch ? '2rem' : '0.75rem',
+                    fontSize: '0.82rem',
+                    height: '36px',
+                    borderRadius: 'var(--radius-md)'
+                  }}
+                />
+                {userSearch && (
+                  <button
+                    onClick={() => {
+                      setUserSearch('');
+                      setUserPage(1);
+                    }}
+                    style={{ position: 'absolute', right: '0.6rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                    aria-label="Clear search"
+                  >
+                    <X size={14} color="var(--text-muted)" />
+                  </button>
+                )}
+              </div>
+
+              {/* Role filter dropdown */}
+              <select
+                value={userRoleFilter}
+                onChange={(e) => {
+                  setUserRoleFilter(e.target.value);
+                  setUserPage(1);
+                }}
+                className="search-input"
+                style={{ height: '36px', fontSize: '0.82rem', padding: '0 0.85rem', borderRadius: 'var(--radius-md)', minWidth: '140px' }}
+              >
+                <option value="ALL">All Roles ({users.length})</option>
+                <option value="customer">Customers ({users.filter(u => u.role === 'customer').length})</option>
+                <option value="admin">Admins ({users.filter(u => u.role === 'admin').length})</option>
+                <option value="delivery">Delivery ({users.filter(u => u.role === 'delivery').length})</option>
+              </select>
+
+              <span
+                style={{
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  padding: '0.35rem 0.85rem',
+                  background: isDark ? 'rgba(236, 72, 153, 0.18)' : '#FDF2F8',
+                  color: isDark ? '#F472B6' : '#EC4899',
+                  border: isDark ? '1px solid rgba(236, 72, 153, 0.3)' : '1px solid #FBCFE8',
+                  borderRadius: '9999px',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                {filteredUsers.length} {filteredUsers.length === 1 ? 'Customer' : 'Customers'}
+              </span>
+            </div>
           </div>
 
           <table className="admin-table">
@@ -691,81 +794,257 @@ export default function AdminDashboard({ onBackToStore }) {
               </tr>
             </thead>
             <tbody>
-              {users.length === 0 ? (
+              {filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>
-                    No registered customers found.
+                  <td colSpan="8" style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-muted)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem' }}>
+                      <Users size={34} style={{ opacity: 0.35 }} />
+                      <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>
+                        {users.length === 0
+                          ? 'No registered customers found.'
+                          : `No customers matching "${userSearch || userRoleFilter}"`}
+                      </div>
+                      <p style={{ fontSize: '0.8rem', margin: 0 }}>
+                        {users.length === 0
+                          ? 'Accounts created by shoppers will appear here.'
+                          : 'Try changing your search terms or filter selection.'}
+                      </p>
+                      {(userSearch || userRoleFilter !== 'ALL') && (
+                        <button
+                          onClick={() => {
+                            setUserSearch('');
+                            setUserRoleFilter('ALL');
+                            setUserPage(1);
+                          }}
+                          className="btn-auth"
+                          style={{
+                            marginTop: '0.5rem',
+                            padding: '0.4rem 0.85rem',
+                            fontSize: '0.8rem'
+                          }}
+                        >
+                          Clear Search & Filters
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ) : (
-                users.map((u, idx) => (
-                  <tr key={u._id}>
-                    <td><strong>{idx + 1}</strong></td>
-                    <td>
-                      <div style={{ fontWeight: 700, color: 'var(--text-main)' }}>{u.name}</div>
-                    </td>
-                    <td style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{u.email}</td>
-                    <td style={{ fontSize: '0.85rem' }}>{u.phone || 'N/A'}</td>
-                    <td>
-                      <span
-                        style={{
-                          display: 'inline-block',
-                          padding: '0.2rem 0.55rem',
-                          borderRadius: '9999px',
-                          fontSize: '0.72rem',
-                          fontWeight: 700,
-                          textTransform: 'uppercase',
-                          background: u.role === 'admin' ? '#FEF3C7' : '#DCFCE7',
-                          color: u.role === 'admin' ? '#B45309' : '#15803D'
-                        }}
-                      >
-                        {u.role}
-                      </span>
-                    </td>
-                    <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)', maxWidth: '200px' }}>
-                      {u.addresses && u.addresses.length > 0 ? u.addresses[0].line1 : 'No address saved'}
-                    </td>
-                    <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                      {u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      }) : 'N/A'}
-                    </td>
-                    <td style={{ textAlign: 'center' }}>
-                      {u.role !== 'admin' ? (
-                        <button
-                          onClick={() => handleDeleteUser(u._id, u.name, u.role)}
-                          title={`Delete account for ${u.name}`}
+                paginatedUsers.map((u, idx) => {
+                  const itemIndex = (currentUserPage - 1) * userPageSize + idx + 1;
+                  const isAdmin = u.role === 'admin';
+                  const isDelivery = u.role === 'delivery';
+
+                  return (
+                    <tr key={u._id}>
+                      <td><strong>{itemIndex}</strong></td>
+                      <td>
+                        <div style={{ fontWeight: 700, color: 'var(--text-main)' }}>{u.name}</div>
+                      </td>
+                      <td style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{u.email}</td>
+                      <td style={{ fontSize: '0.85rem' }}>{u.phone || 'N/A'}</td>
+                      <td>
+                        <span
                           style={{
-                            background: '#FEF2F2',
-                            border: '1px solid #FECACA',
-                            color: '#DC2626',
-                            borderRadius: 'var(--radius-sm)',
-                            padding: '0.35rem 0.65rem',
-                            cursor: 'pointer',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '0.3rem',
-                            fontSize: '0.75rem',
+                            display: 'inline-block',
+                            padding: '0.2rem 0.55rem',
+                            borderRadius: '9999px',
+                            fontSize: '0.72rem',
                             fontWeight: 700,
-                            transition: 'var(--transition)'
+                            textTransform: 'uppercase',
+                            background: isAdmin
+                              ? (isDark ? 'rgba(245, 158, 11, 0.2)' : '#FEF3C7')
+                              : isDelivery
+                              ? (isDark ? 'rgba(99, 102, 241, 0.2)' : '#EEF2FF')
+                              : (isDark ? 'rgba(16, 185, 129, 0.2)' : '#DCFCE7'),
+                            color: isAdmin
+                              ? (isDark ? '#FBBF24' : '#B45309')
+                              : isDelivery
+                              ? (isDark ? '#A5B4FC' : '#3730A3')
+                              : (isDark ? '#34D399' : '#15803D'),
+                            border: isAdmin
+                              ? (isDark ? '1px solid rgba(245, 158, 11, 0.35)' : '1px solid #FDE68A')
+                              : isDelivery
+                              ? (isDark ? '1px solid rgba(99, 102, 241, 0.35)' : '1px solid #C7D2FE')
+                              : (isDark ? '1px solid rgba(16, 185, 129, 0.35)' : '1px solid #BBF7D0')
                           }}
                         >
-                          <Trash2 size={13} />
-                          <span>Delete</span>
-                        </button>
-                      ) : (
-                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>Protected</span>
-                      )}
-                    </td>
-                  </tr>
-                ))
+                          {u.role}
+                        </span>
+                      </td>
+                      <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)', maxWidth: '220px' }}>
+                        {u.addresses && u.addresses.length > 0 ? (
+                          <div>
+                            <div>{u.addresses[0].line1}</div>
+                            {u.addresses[0].label && (
+                              <span style={{ fontSize: '0.7rem', opacity: 0.75 }}>({u.addresses[0].label})</span>
+                            )}
+                          </div>
+                        ) : (
+                          'No address saved'
+                        )}
+                      </td>
+                      <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                        {u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN', {
+                          day: 'numeric',
+                          month: 'short',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        }) : 'N/A'}
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        {!isAdmin ? (
+                          <button
+                            onClick={() => handleDeleteUser(u._id, u.name, u.role)}
+                            title={`Delete account for ${u.name}`}
+                            style={{
+                              background: isDark ? 'rgba(239, 68, 68, 0.18)' : '#FEF2F2',
+                              border: isDark ? '1px solid rgba(239, 68, 68, 0.35)' : '1px solid #FECACA',
+                              color: '#EF4444',
+                              borderRadius: 'var(--radius-sm)',
+                              padding: '0.35rem 0.65rem',
+                              cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '0.3rem',
+                              fontSize: '0.75rem',
+                              fontWeight: 700,
+                              transition: 'var(--transition)'
+                            }}
+                          >
+                            <Trash2 size={13} />
+                            <span>Delete</span>
+                          </button>
+                        ) : (
+                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>Protected</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
+
+          {/* Pagination and page size bar */}
+          {filteredUsers.length > 0 && (
+            <div
+              style={{
+                padding: '0.9rem 1.5rem',
+                borderTop: '1px solid var(--border-light)',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: '1rem',
+                fontSize: '0.82rem',
+                color: 'var(--text-muted)'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
+                <span>
+                  Showing <strong>{(currentUserPage - 1) * userPageSize + 1}</strong> -{' '}
+                  <strong>{Math.min(currentUserPage * userPageSize, filteredUsers.length)}</strong> of{' '}
+                  <strong>{filteredUsers.length}</strong> customers
+                </span>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <span>Per page:</span>
+                  <select
+                    value={userPageSize}
+                    onChange={(e) => {
+                      setUserPageSize(Number(e.target.value));
+                      setUserPage(1);
+                    }}
+                    className="search-input"
+                    style={{
+                      height: '28px',
+                      padding: '0 0.5rem',
+                      fontSize: '0.8rem',
+                      borderRadius: 'var(--radius-sm)',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={25}>25</option>
+                    <option value={50}>50</option>
+                    <option value={100}>100</option>
+                  </select>
+                </div>
+              </div>
+
+              {totalUserPages > 1 && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <button
+                    onClick={() => setUserPage(p => Math.max(1, p - 1))}
+                    disabled={currentUserPage <= 1}
+                    className="btn-auth"
+                    style={{
+                      padding: '0.35rem 0.65rem',
+                      fontSize: '0.78rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.2rem',
+                      opacity: currentUserPage <= 1 ? 0.4 : 1,
+                      cursor: currentUserPage <= 1 ? 'not-allowed' : 'pointer'
+                    }}
+                  >
+                    <ChevronLeft size={14} />
+                    <span>Prev</span>
+                  </button>
+
+                  {Array.from({ length: totalUserPages }, (_, i) => i + 1)
+                    .filter(p => p === 1 || p === totalUserPages || Math.abs(p - currentUserPage) <= 1)
+                    .map((p, i, arr) => {
+                      const prev = arr[i - 1];
+                      return (
+                        <React.Fragment key={p}>
+                          {prev && p - prev > 1 && <span style={{ padding: '0 0.2rem' }}>...</span>}
+                          <button
+                            onClick={() => setUserPage(p)}
+                            style={{
+                              minWidth: '30px',
+                              height: '30px',
+                              padding: '0 0.45rem',
+                              borderRadius: 'var(--radius-sm)',
+                              border: currentUserPage === p ? '1px solid #10B981' : '1px solid var(--border-light)',
+                              background: currentUserPage === p ? '#10B981' : 'var(--bg-card)',
+                              color: currentUserPage === p ? '#FFF' : 'var(--text-main)',
+                              fontWeight: currentUserPage === p ? 700 : 500,
+                              fontSize: '0.78rem',
+                              cursor: 'pointer',
+                              transition: 'var(--transition)'
+                            }}
+                          >
+                            {p}
+                          </button>
+                        </React.Fragment>
+                      );
+                    })}
+
+                  <button
+                    onClick={() => setUserPage(p => Math.min(totalUserPages, p + 1))}
+                    disabled={currentUserPage >= totalUserPages}
+                    className="btn-auth"
+                    style={{
+                      padding: '0.35rem 0.65rem',
+                      fontSize: '0.78rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.2rem',
+                      opacity: currentUserPage >= totalUserPages ? 0.4 : 1,
+                      cursor: currentUserPage >= totalUserPages ? 'not-allowed' : 'pointer'
+                    }}
+                  >
+                    <span>Next</span>
+                    <ChevronRight size={14} />
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 

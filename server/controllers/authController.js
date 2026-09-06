@@ -197,13 +197,54 @@ const deleteAddress = async (req, res, next) => {
 // @access  Private/Admin
 const getAllUsers = async (req, res, next) => {
   try {
-    const users = await User.find({})
+    const { search, role, page, limit } = req.query;
+
+    const query = {};
+
+    if (role && role !== 'ALL') {
+      query.role = role.toLowerCase();
+    }
+
+    if (search && search.trim()) {
+      const q = search.trim();
+      const regex = new RegExp(q, 'i');
+      query.$or = [
+        { name: regex },
+        { email: regex },
+        { phone: regex },
+        { 'addresses.line1': regex }
+      ];
+    }
+
+    if (limit && parseInt(limit) > 0) {
+      const pageNum = Math.max(1, parseInt(page) || 1);
+      const limitNum = parseInt(limit) || 20;
+      const total = await User.countDocuments(query);
+      const users = await User.find(query)
+        .select('-passwordHash')
+        .sort({ createdAt: -1 })
+        .skip((pageNum - 1) * limitNum)
+        .limit(limitNum);
+
+      return res.status(200).json({
+        success: true,
+        count: users.length,
+        total,
+        page: pageNum,
+        pages: Math.ceil(total / limitNum),
+        users
+      });
+    }
+
+    const total = await User.countDocuments(query);
+    const users = await User.find(query)
       .select('-passwordHash')
       .sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
       count: users.length,
+      total,
       users
     });
   } catch (error) {
