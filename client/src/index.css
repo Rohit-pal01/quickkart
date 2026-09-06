@@ -290,6 +290,161 @@ body {
   border-color: #CBD5E1;
 }
 
+.user-nav-name {
+  max-width: 90px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.nav-quick-logout-btn {
+  display: flex;
+}
+
+@media (max-width: 900px) {
+  .nav-quick-logout-btn {
+    display: none !important;
+  }
+}
+
+/* User Profile Menu Dropdown */
+.user-profile-menu-container {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.user-profile-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 235px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+  padding: 0.55rem;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  animation: fadeInMenu 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeInMenu {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.profile-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.55rem;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md);
+  margin-bottom: 0.2rem;
+}
+
+.profile-avatar-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0C831F, #10B981);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(12, 131, 31, 0.25);
+}
+
+.profile-user-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.profile-user-name {
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-user-email {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-admin-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  background: rgba(12, 131, 31, 0.15);
+  color: #0C831F;
+  border-radius: var(--radius-full);
+  padding: 0.1rem 0.45rem;
+  margin-top: 0.15rem;
+}
+
+.profile-dropdown-divider {
+  height: 1px;
+  background: var(--border-light);
+  margin: 0.25rem 0;
+}
+
+.profile-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: var(--transition);
+}
+
+.profile-dropdown-item:hover {
+  background: var(--bg-subtle);
+  color: #0C831F;
+}
+
+.profile-dropdown-item.active {
+  background: var(--primary-light);
+  color: #0C831F;
+  font-weight: 700;
+}
+
+.profile-dropdown-item.logout {
+  color: #EF4444;
+}
+
+.profile-dropdown-item.logout:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #DC2626;
+}
+
 .cart-btn,
 .cart-btn-desktop {
   background: linear-gradient(135deg, #0C831F 0%, #086616 100%);
@@ -1364,8 +1519,9 @@ body {
     display: flex;
     align-items: center;
     gap: 0.65rem;
-    flex-shrink: 0;
+    flex: 1 1 auto;
     min-width: 0;
+    overflow: hidden;
   }
 
   .nav-actions {
@@ -1446,35 +1602,51 @@ body {
 
   .navbar-top-bar {
     gap: 0.4rem;
+    flex-wrap: nowrap;
+    overflow: hidden;
   }
 
   .brand-section {
-    gap: 0.5rem;
+    gap: 0.45rem;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .delivery-eta-badge {
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
   }
 
   .logo {
     font-size: 1.25rem;
+    flex-shrink: 0;
   }
 
   .address-text {
-    max-width: 105px;
+    max-width: 95px;
   }
 
   .nav-actions {
     gap: 0.35rem;
+    flex-shrink: 0;
+    margin-left: auto;
   }
 
   .btn-auth {
-    padding: 0.4rem 0.6rem;
+    padding: 0.38rem 0.6rem;
     font-size: 0.78rem;
     gap: 0.25rem;
+    flex-shrink: 0;
   }
 
   .cart-btn,
   .cart-btn-desktop {
-    padding: 0.4rem 0.65rem;
+    padding: 0.38rem 0.65rem;
     font-size: 0.8rem;
     gap: 0.3rem;
+    flex-shrink: 0;
   }
 
   /* Admin Dashboard Mobile Optimizations */
@@ -1639,25 +1811,128 @@ body {
 
 @media (max-width: 600px) {
   .navbar {
-    padding: 0.42rem 0.5rem;
+    padding: 0.45rem 0.55rem;
     gap: 0.35rem;
+    overflow: hidden;
   }
 
   .navbar-top-bar {
-    gap: 0.28rem;
+    gap: 0.35rem;
     width: 100%;
     order: 1;
+    flex-wrap: nowrap;
+    overflow: hidden;
   }
 
   .brand-section {
-    gap: 0.3rem;
-    flex-shrink: 0;
+    gap: 0.35rem;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
   }
 
   .logo {
-    font-size: 1.05rem;
+    font-size: 1.08rem;
     gap: 0.28rem;
     flex-shrink: 0;
+  }
+
+  .logo-badge {
+    width: 26px;
+    height: 26px;
+  }
+
+  .delivery-eta-badge {
+    padding: 0.2rem 0.45rem;
+    flex-shrink: 1;
+    min-width: 0;
+    max-width: 130px;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .eta-time {
+    font-size: 0.68rem;
+  }
+
+  .address-line {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .address-text {
+    max-width: 72px;
+    font-size: 0.66rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .nav-actions {
+    gap: 0.28rem;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+
+  .theme-toggle-btn {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .btn-auth {
+    padding: 0.3rem 0.48rem;
+    font-size: 0.74rem;
+    gap: 0.2rem;
+    flex-shrink: 0;
+  }
+
+  .user-nav-name {
+    max-width: 55px;
+  }
+
+  .nav-admin-btn {
+    padding: 0.3rem 0.42rem;
+  }
+
+  .nav-admin-label-short {
+    display: none;
+  }
+
+  .cart-btn,
+  .cart-btn-desktop {
+    padding: 0.32rem 0.55rem;
+    font-size: 0.76rem;
+    gap: 0.25rem;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .user-profile-dropdown {
+    width: 215px;
+    right: 0;
+  }
+}
+
+@media (max-width: 375px) {
+  .navbar {
+    padding: 0.38rem 0.45rem;
+  }
+
+  .navbar-top-bar {
+    gap: 0.25rem;
+  }
+
+  .brand-section {
+    gap: 0.25rem;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .logo {
+    font-size: 1rem;
+    gap: 0.22rem;
   }
 
   .logo-badge {
@@ -1666,109 +1941,54 @@ body {
   }
 
   .delivery-eta-badge {
-    padding: 0.18rem 0.45rem;
-    flex-shrink: 0;
-    box-sizing: border-box;
-  }
-
-  .eta-time {
-    font-size: 0.68rem;
+    padding: 0.16rem 0.35rem;
+    flex-shrink: 1;
+    min-width: 0;
+    max-width: 105px;
   }
 
   .address-text {
-    max-width: 76px;
-    font-size: 0.66rem;
+    max-width: 58px;
+    font-size: 0.62rem;
   }
 
   .nav-actions {
     gap: 0.22rem;
-    flex-shrink: 0;
-    margin-left: auto;
   }
 
   .theme-toggle-btn {
-    width: 27px;
-    height: 27px;
-    padding: 0;
-    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
   }
 
   .btn-auth {
-    padding: 0.26rem 0.42rem;
-    font-size: 0.72rem;
-    gap: 0.2rem;
-    flex-shrink: 0;
-  }
-
-  .cart-btn,
-  .cart-btn-desktop {
-    padding: 0.26rem 0.46rem;
-    font-size: 0.72rem;
-    gap: 0.22rem;
-    flex-shrink: 0;
-    white-space: nowrap;
-  }
-}
-
-@media (max-width: 375px) {
-  .navbar {
-    padding: 0.38rem 0.4rem;
-  }
-
-  .navbar-top-bar {
-    gap: 0.2rem;
-  }
-
-  .brand-section {
-    gap: 0.25rem;
-    flex-shrink: 0;
-  }
-
-  .logo {
-    font-size: 0.98rem;
-    gap: 0.22rem;
-  }
-
-  .logo-badge {
-    width: 22px;
-    height: 22px;
-  }
-
-  .delivery-eta-badge {
-    padding: 0.16rem 0.38rem;
-    flex-shrink: 0;
-  }
-
-  .address-text {
-    max-width: 68px;
-    font-size: 0.64rem;
-  }
-
-  .theme-toggle-btn {
-    width: 25px;
-    height: 25px;
-  }
-
-  .btn-auth {
-    padding: 0.24rem 0.36rem;
-    font-size: 0.69rem;
-  }
-
-  .cart-btn,
-  .cart-btn-desktop {
-    padding: 0.24rem 0.4rem;
+    padding: 0.28rem 0.4rem;
     font-size: 0.7rem;
+  }
+
+  .user-nav-name {
+    max-width: 45px;
+  }
+
+  .cart-btn,
+  .cart-btn-desktop {
+    padding: 0.28rem 0.45rem;
+    font-size: 0.72rem;
   }
 }
 
 @media (max-width: 360px) {
+  .user-nav-name {
+    display: none;
+  }
+
   .cart-label-mobile {
     display: none;
   }
 
   .cart-btn,
   .cart-btn-desktop {
-    padding: 0.38rem 0.55rem;
+    padding: 0.35rem 0.52rem;
   }
 }
 

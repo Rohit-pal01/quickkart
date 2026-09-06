@@ -1,5 +1,5 @@
-import React from 'react';
-import { Zap, ShoppingCart, Search, User, MapPin, Shield, LogOut, ChevronDown, Sun, Moon } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Zap, ShoppingCart, Search, User, MapPin, Shield, LogOut, ChevronDown, Sun, Moon, Package } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
@@ -15,7 +15,29 @@ export default function Navbar({
   const { user, isAuthenticated, logout, activeAddress } = useAuth();
   const { itemCount, totalAmount, setIsCartOpen } = useCart();
   const { theme, toggleTheme, isDark } = useTheme();
+
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef(null);
+
+  // Close profile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setIsProfileMenuOpen(false);
+      }
+    };
+    if (isProfileMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [isProfileMenuOpen]);
+
   const handleLogout = () => {
+    setIsProfileMenuOpen(false);
     logout();
     setActiveView('store');
   };
@@ -71,7 +93,7 @@ export default function Navbar({
 
           {isAuthenticated && user?.role === 'admin' && (
             <button
-              className="btn-auth"
+              className="btn-auth nav-admin-btn"
               style={{
                 borderColor: activeView === 'admin' ? '#0C831F' : undefined,
                 background: activeView === 'admin' ? 'var(--primary-light)' : 'var(--bg-card)',
@@ -86,26 +108,111 @@ export default function Navbar({
           )}
 
           {isAuthenticated ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-              <button
-                className="btn-auth"
-                onClick={() => setActiveView('orders')}
-                style={{
-                  background: activeView === 'orders' ? 'var(--primary-light)' : 'var(--bg-card)',
-                  borderColor: activeView === 'orders' ? '#0C831F' : undefined
-                }}
-              >
-                <User size={15} />
-                <span>{user.name.split(' ')[0]}</span>
-              </button>
-              <button
-                className="btn-auth"
-                onClick={handleLogout}
-                title="Logout"
-                style={{ padding: '0.55rem' }}
-              >
-                <LogOut size={15} color="#EF4444" />
-              </button>
+            <div className="user-profile-menu-container" ref={profileMenuRef}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <button
+                  className="btn-auth btn-profile"
+                  onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                  style={{
+                    background: activeView === 'orders' || isProfileMenuOpen ? 'var(--primary-light)' : 'var(--bg-card)',
+                    borderColor: activeView === 'orders' || isProfileMenuOpen ? '#0C831F' : undefined
+                  }}
+                  aria-label="User Account Menu"
+                >
+                  <User size={15} />
+                  <span className="user-nav-name">{user.name.split(' ')[0]}</span>
+                  <ChevronDown
+                    size={12}
+                    style={{
+                      transition: 'transform 0.2s ease',
+                      transform: isProfileMenuOpen ? 'rotate(180deg)' : 'rotate(0)'
+                    }}
+                  />
+                </button>
+                <button
+                  className="btn-auth nav-quick-logout-btn"
+                  onClick={handleLogout}
+                  title="Logout"
+                  style={{ padding: '0.55rem' }}
+                >
+                  <LogOut size={15} color="#EF4444" />
+                </button>
+              </div>
+
+              {/* Professional User Dropdown Menu */}
+              {isProfileMenuOpen && (
+                <div className="user-profile-dropdown">
+                  <div className="profile-dropdown-header">
+                    <div className="profile-avatar-circle">
+                      {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                    </div>
+                    <div className="profile-user-info">
+                      <div className="profile-user-name">{user.name}</div>
+                      <div className="profile-user-email">{user.email || user.phone || 'Customer Account'}</div>
+                      {user.role === 'admin' && (
+                        <span className="profile-admin-badge">Admin</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="profile-dropdown-divider" />
+
+                  <button
+                    className={`profile-dropdown-item ${activeView === 'orders' ? 'active' : ''}`}
+                    onClick={() => {
+                      setActiveView('orders');
+                      setIsProfileMenuOpen(false);
+                    }}
+                  >
+                    <Package size={16} color="#0C831F" />
+                    <span>My Orders & Tracking</span>
+                  </button>
+
+                  <button
+                    className="profile-dropdown-item"
+                    onClick={() => {
+                      onOpenLocation();
+                      setIsProfileMenuOpen(false);
+                    }}
+                  >
+                    <MapPin size={16} color="#0284C7" />
+                    <span>Delivery Addresses</span>
+                  </button>
+
+                  {user.role === 'admin' && (
+                    <button
+                      className={`profile-dropdown-item ${activeView === 'admin' ? 'active' : ''}`}
+                      onClick={() => {
+                        setActiveView(activeView === 'admin' ? 'store' : 'admin');
+                        setIsProfileMenuOpen(false);
+                      }}
+                    >
+                      <Shield size={16} color="#0C831F" />
+                      <span>Dark Store Hub</span>
+                    </button>
+                  )}
+
+                  <button
+                    className="profile-dropdown-item"
+                    onClick={() => {
+                      toggleTheme();
+                    }}
+                  >
+                    {isDark ? <Sun size={16} color="#FBBF24" /> : <Moon size={16} color="#64748B" />}
+                    <span>{isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}</span>
+                  </button>
+
+                  <div className="profile-dropdown-divider" />
+
+                  <button
+                    className="profile-dropdown-item logout"
+                    onClick={handleLogout}
+                  >
+                    <LogOut size={16} color="#EF4444" />
+                    <span>Log Out</span>
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <button className="btn-auth" onClick={onOpenAuth}>
