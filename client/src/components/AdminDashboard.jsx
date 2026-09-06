@@ -525,42 +525,6 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
-      {isDemoAdmin && (
-        <div
-          style={{
-            background: isDark ? 'rgba(245, 158, 11, 0.15)' : '#FEF9C3',
-            border: isDark ? '1px solid rgba(245, 158, 11, 0.35)' : '1px solid #FDE047',
-            borderRadius: 'var(--radius-md)',
-            padding: '0.75rem 1.25rem',
-            marginBottom: '1.25rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '1rem',
-            flexWrap: 'wrap'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-            <Shield size={18} color="#D97706" style={{ flexShrink: 0 }} />
-            <span style={{ fontSize: '0.86rem', color: isDark ? '#FCD34D' : '#854D0E', fontWeight: 600 }}>
-              <strong>Demo Mode (Read-Only):</strong> You are previewing the Dark Store Hub as a guest. Modifying catalog details (such as Veg/Non-Veg dietary badge, price, stock) and deleting items are restricted to protect the demo catalog.
-            </span>
-          </div>
-          <span
-            style={{
-              fontSize: '0.7rem',
-              fontWeight: 800,
-              padding: '0.2rem 0.55rem',
-              borderRadius: '999px',
-              background: isDark ? 'rgba(245, 158, 11, 0.3)' : '#FEF08A',
-              color: isDark ? '#FDE68A' : '#854D0E',
-              letterSpacing: '0.04em'
-            }}
-          >
-            READ-ONLY DEMO
-          </span>
-        </div>
-      )}
       <div
         style={{
           display: 'flex',
@@ -585,8 +549,29 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
             <LogOut size={16} color="#EF4444" />
             <span>Logout</span>
           </button>
-          <h1 className="admin-main-title" style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0 }}>
-            Dark Store & Admin Hub
+          <h1 className="admin-main-title" style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+            <span>Dark Store & Admin Hub</span>
+            {isDemoAdmin && (
+              <span
+                style={{
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  padding: '0.2rem 0.6rem',
+                  borderRadius: '999px',
+                  background: isDark ? 'rgba(245, 158, 11, 0.16)' : '#FEF3C7',
+                  color: isDark ? '#FBBF24' : '#B45309',
+                  border: isDark ? '1px solid rgba(245, 158, 11, 0.35)' : '1px solid #FCD34D',
+                  letterSpacing: '0.02em',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.35rem'
+                }}
+                title="Exploring in Demo Mode (Read-Only). Catalog modifications are restricted."
+              >
+                <Shield size={12} color="#D97706" />
+                <span>Read-Only Demo</span>
+              </span>
+            )}
           </h1>
         </div>
 
