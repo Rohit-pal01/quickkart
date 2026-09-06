@@ -1005,6 +1005,17 @@ body {
   display: block;
 }
 
+@media (max-width: 850px) {
+  .admin-desktop-table {
+    display: none !important;
+  }
+  .admin-mobile-card-list {
+    display: flex !important;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
+
 /* Mobile swipe hint banner for tables */
 .admin-scroll-hint {
   display: none;
@@ -1045,11 +1056,34 @@ body {
 }
 
 .admin-filter-select {
-  height: 36px;
-  font-size: 0.82rem;
-  padding: 0 0.85rem;
-  border-radius: var(--radius-md);
-  min-width: 150px;
+  height: 42px !important;
+  min-height: 42px !important;
+  line-height: 1.4 !important;
+  padding: 0.45rem 2rem 0.45rem 0.85rem !important;
+  font-size: 0.86rem !important;
+  border-radius: var(--radius-md) !important;
+  border: 1.5px solid var(--border-light) !important;
+  background-color: var(--bg-subtle) !important;
+  color: var(--text-main) !important;
+  min-width: 160px;
+  box-sizing: border-box !important;
+  cursor: pointer;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  appearance: auto;
+  -webkit-appearance: auto;
+}
+
+[data-theme="dark"] .admin-filter-select {
+  background-color: var(--bg-card) !important;
+  color: var(--text-main) !important;
+  border-color: var(--border-light) !important;
+}
+
+[data-theme="dark"] .admin-filter-select option {
+  background-color: #131B2E !important;
+  color: #F8FAFC !important;
 }
 
 /* Dark mode form inputs & cards enhancements */
@@ -1245,6 +1279,12 @@ body {
   .admin-filter-select {
     width: 100% !important;
     min-width: 0 !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    padding: 0.5rem 0.85rem !important;
+    font-size: 0.88rem !important;
+    line-height: 1.4 !important;
+    box-sizing: border-box !important;
   }
 
   .admin-desktop-table {

@@ -604,7 +604,7 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
                     setOrderPage(1);
                   }}
                   className="search-input"
-                  style={{ width: '100%', paddingLeft: '2.2rem', paddingRight: orderSearch ? '2rem' : '0.75rem', fontSize: '0.82rem', height: '36px', borderRadius: 'var(--radius-md)' }}
+                  style={{ width: '100%', paddingLeft: '2.2rem', paddingRight: orderSearch ? '2rem' : '0.75rem', fontSize: '0.85rem', height: '42px', minHeight: '42px', borderRadius: 'var(--radius-md)', boxSizing: 'border-box' }}
                 />
                 {orderSearch && (
                   <button
@@ -626,7 +626,15 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
                   setOrderStatusFilter(e.target.value);
                   setOrderPage(1);
                 }}
-                className="search-input admin-filter-select"
+                className="admin-filter-select"
+                style={{
+                  height: '42px',
+                  minHeight: '42px',
+                  lineHeight: '1.4',
+                  padding: '0.45rem 0.85rem',
+                  fontSize: '0.86rem',
+                  boxSizing: 'border-box'
+                }}
               >
                 <option value="ALL">All Statuses ({orders.length})</option>
                 <option value="PENDING_PAYMENT">PENDING_PAYMENT</option>
@@ -834,7 +842,10 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
                             fontWeight: 800,
                             fontSize: '0.78rem',
                             cursor: 'pointer',
-                            outline: 'none'
+                            outline: 'none',
+                            minHeight: '38px',
+                            lineHeight: '1.4',
+                            boxSizing: 'border-box'
                           }}
                         >
                           <option value="PENDING_PAYMENT">PENDING_PAYMENT</option>
@@ -891,7 +902,7 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
                     setInventoryPage(1);
                   }}
                   className="search-input"
-                  style={{ width: '100%', paddingLeft: '2.2rem', paddingRight: inventorySearch ? '2rem' : '0.75rem', fontSize: '0.82rem', height: '36px', borderRadius: 'var(--radius-md)' }}
+                  style={{ width: '100%', paddingLeft: '2.2rem', paddingRight: inventorySearch ? '2rem' : '0.75rem', fontSize: '0.85rem', height: '42px', minHeight: '42px', borderRadius: 'var(--radius-md)', boxSizing: 'border-box' }}
                 />
                 {inventorySearch && (
                   <button
@@ -913,7 +924,15 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
                   setInventoryCategory(e.target.value);
                   setInventoryPage(1);
                 }}
-                className="search-input admin-filter-select"
+                className="admin-filter-select"
+                style={{
+                  height: '42px',
+                  minHeight: '42px',
+                  lineHeight: '1.4',
+                  padding: '0.45rem 0.85rem',
+                  fontSize: '0.86rem',
+                  boxSizing: 'border-box'
+                }}
               >
                 <option value="All">All Categories</option>
                 {availableCategories.map(cat => (
