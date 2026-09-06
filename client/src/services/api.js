@@ -60,6 +60,14 @@ export const api = {
     return res.json();
   },
 
+  async impersonateUser(userId) {
+    const res = await fetch(`${API_BASE}/auth/impersonate/${userId}`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    });
+    return res.json();
+  },
+
   // Products
   async getProducts(params = {}) {
     const query = new URLSearchParams();

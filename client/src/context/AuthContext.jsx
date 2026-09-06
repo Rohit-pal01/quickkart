@@ -71,6 +71,17 @@ export const AuthProvider = ({ children }) => {
     setActiveAddress(null);
   };
 
+  const impersonate = (userData, newToken) => {
+    localStorage.setItem('quickkart_token', newToken);
+    setToken(newToken);
+    setUser(userData);
+    if (userData.addresses && userData.addresses.length > 0) {
+      setActiveAddress(userData.addresses[0]);
+    } else {
+      setActiveAddress(null);
+    }
+  };
+
   const addAddress = async (addr) => {
     const res = await api.addAddress(addr);
     if (res.success && res.addresses) {
@@ -92,6 +103,7 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         logout,
+        impersonate,
         addAddress,
         isAuthenticated: !!user,
         isAdmin: user?.role === 'admin'

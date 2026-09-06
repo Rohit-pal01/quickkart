@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Package, TrendingUp, Users, Plus, Edit2, Trash2, CheckCircle2, Clock, AlertTriangle, ArrowLeft, Search, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Package, TrendingUp, Users, Plus, Edit2, Trash2, CheckCircle2, Clock, AlertTriangle, ArrowLeft, Search, X, ChevronLeft, ChevronRight, LogIn } from 'lucide-react';
 import { api } from '../services/api';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function AdminDashboard({ onBackToStore, onViewOrder }) {
   const { isDark } = useTheme();
+  const { impersonate } = useAuth();
   const [activeTab, setActiveTab] = useState('orders'); // 'orders' | 'inventory' | 'users' | 'add_product'
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
@@ -136,6 +138,24 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
       }
     } catch (err) {
       alert('Server error deleting user');
+    }
+  };
+
+  const handleImpersonateUser = async (targetUser) => {
+    if (!window.confirm(`Switch session and log in as customer "${targetUser.name}" (${targetUser.email})?`)) {
+      return;
+    }
+    try {
+      const res = await api.impersonateUser(targetUser._id);
+      if (res.success && res.token) {
+        impersonate(res.user, res.token);
+        alert(`Session switched! You are now logged in as ${targetUser.name}.`);
+        onBackToStore();
+      } else {
+        alert(res.message || 'Failed to switch to customer account');
+      }
+    } catch (err) {
+      alert('Error switching account session');
     }
   };
 
@@ -1080,31 +1100,56 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
                         }) : 'N/A'}
                       </td>
                       <td style={{ textAlign: 'center' }}>
-                        {!isAdmin ? (
-                          <button
-                            onClick={() => handleDeleteUser(u._id, u.name, u.role)}
-                            title={`Delete account for ${u.name}`}
-                            style={{
-                              background: isDark ? 'rgba(239, 68, 68, 0.18)' : '#FEF2F2',
-                              border: isDark ? '1px solid rgba(239, 68, 68, 0.35)' : '1px solid #FECACA',
-                              color: '#EF4444',
-                              borderRadius: 'var(--radius-sm)',
-                              padding: '0.35rem 0.65rem',
-                              cursor: 'pointer',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '0.3rem',
-                              fontSize: '0.75rem',
-                              fontWeight: 700,
-                              transition: 'var(--transition)'
-                            }}
-                          >
-                            <Trash2 size={13} />
-                            <span>Delete</span>
-                          </button>
-                        ) : (
-                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>Protected</span>
-                        )}
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.45rem', flexWrap: 'wrap' }}>
+                          {!isAdmin && (
+                            <button
+                              onClick={() => handleImpersonateUser(u)}
+                              title={`Log in as customer ${u.name}`}
+                              style={{
+                                background: isDark ? 'rgba(16, 185, 129, 0.18)' : '#ECFDF5',
+                                border: isDark ? '1px solid rgba(16, 185, 129, 0.35)' : '1px solid #A7F3D0',
+                                color: isDark ? '#34D399' : '#047857',
+                                borderRadius: 'var(--radius-sm)',
+                                padding: '0.35rem 0.65rem',
+                                cursor: 'pointer',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '0.3rem',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                transition: 'var(--transition)'
+                              }}
+                            >
+                              <LogIn size={13} />
+                              <span>Login As</span>
+                            </button>
+                          )}
+                          {!isAdmin ? (
+                            <button
+                              onClick={() => handleDeleteUser(u._id, u.name, u.role)}
+                              title={`Delete account for ${u.name}`}
+                              style={{
+                                background: isDark ? 'rgba(239, 68, 68, 0.18)' : '#FEF2F2',
+                                border: isDark ? '1px solid rgba(239, 68, 68, 0.35)' : '1px solid #FECACA',
+                                color: '#EF4444',
+                                borderRadius: 'var(--radius-sm)',
+                                padding: '0.35rem 0.65rem',
+                                cursor: 'pointer',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '0.3rem',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                transition: 'var(--transition)'
+                              }}
+                            >
+                              <Trash2 size={13} />
+                              <span>Delete</span>
+                            </button>
+                          ) : (
+                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>Protected</span>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   );

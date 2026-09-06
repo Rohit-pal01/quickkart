@@ -284,6 +284,40 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
+// @desc    Impersonate / Log in as customer (Admin only)
+// @route   POST /api/auth/impersonate/:id
+// @access  Private/Admin
+const impersonateUser = async (req, res, next) => {
+  try {
+    const targetUser = await User.findById(req.params.id);
+    if (!targetUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    const token = generateToken(targetUser._id);
+
+    res.status(200).json({
+      success: true,
+      token,
+      user: {
+        id: targetUser._id,
+        _id: targetUser._id,
+        name: targetUser.name,
+        email: targetUser.email,
+        phone: targetUser.phone,
+        role: targetUser.role,
+        addresses: targetUser.addresses
+      },
+      message: `Switched session to ${targetUser.name}`
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -291,5 +325,6 @@ module.exports = {
   addAddress,
   deleteAddress,
   getAllUsers,
-  deleteUser
+  deleteUser,
+  impersonateUser
 };
