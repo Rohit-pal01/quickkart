@@ -28,7 +28,7 @@ export default function OrderTracking({ orderId, onBackToStore, onOpenAuth }) {
     }
   }, [orderId]);
 
-  const loadData = async (targetId) => {
+  const fetchOrder = async (targetId = null) => {
     if (!user) {
       setOrder(null);
       setMyOrders([]);
@@ -47,8 +47,9 @@ export default function OrderTracking({ orderId, onBackToStore, onOpenAuth }) {
         setMyOrders(userOrders);
       }
 
-      // 2. Resolve which order to display
-      const idToFetch = targetId || (userOrders.length > 0 ? userOrders[0].orderId : null);
+      // 2. Resolve which order to display (handle string targetId or click event)
+      const requestedId = typeof targetId === 'string' ? targetId : activeId;
+      const idToFetch = requestedId || (userOrders.length > 0 ? userOrders[0].orderId : null);
 
       if (idToFetch) {
         setActiveId(idToFetch);
@@ -75,17 +76,9 @@ export default function OrderTracking({ orderId, onBackToStore, onOpenAuth }) {
     }
   };
 
-  const fetchOrder = () => {
-    if (activeId) {
-      loadData(activeId);
-    } else {
-      loadData(null);
-    }
-  };
-
   useEffect(() => {
     if (user) {
-      loadData(orderId || null);
+      fetchOrder(orderId || null);
     }
   }, [orderId, user?._id]);
 
