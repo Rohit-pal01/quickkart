@@ -44,41 +44,53 @@ export default function Navbar({
 
   return (
     <header className="navbar">
-      {/* Top Bar: Brand & Actions */}
+      {/* Top Bar: Brand & Actions (Desktop Single Row / Mobile Tier 1) */}
       <div className="navbar-top-bar">
-        {/* Brand & Location Indicator */}
-        {/* Brand & Location Indicator (Zepto & Blinkit Style) */}
-        <div className="brand-section">
-          <div
-            className="logo"
-            style={{ cursor: 'pointer' }}
-            onClick={() => setActiveView('store')}
-            title="QuickKart Home"
-          >
-            <div className="logo-badge">
-              <Zap size={16} fill="#F7D000" color="#F7D000" />
-            </div>
-            <span className="logo-brand-text">
-              Quick<strong style={{ color: '#0C831F' }}>Kart</strong>
-            </span>
+        {/* Brand Logo */}
+        <div
+          className="logo"
+          style={{ cursor: 'pointer' }}
+          onClick={() => setActiveView('store')}
+          title="QuickKart Home"
+        >
+          <div className="logo-badge">
+            <Zap size={16} fill="#F7D000" color="#F7D000" />
           </div>
+          <span className="logo-brand-text">
+            Quick<strong style={{ color: '#0C831F' }}>Kart</strong>
+          </span>
+        </div>
 
-          <div
-            className="delivery-eta-badge"
-            onClick={onOpenLocation}
-            style={{ cursor: 'pointer' }}
-            title="Click to change your delivery city or address"
-          >
-            <div className="eta-time">
-              <Zap size={11} fill="#0C831F" color="#0C831F" />
-              <span>8 MINS</span>
-            </div>
-            <div className="address-line">
-              <span className="address-text">{activeAddress ? activeAddress.line1 : 'Select City'}</span>
-              <ChevronDown size={11} color="var(--text-muted)" style={{ flexShrink: 0 }} />
-            </div>
+        {/* Desktop-Only Location Pill */}
+        <div
+          className="delivery-eta-badge desktop-only"
+          onClick={onOpenLocation}
+          style={{ cursor: 'pointer' }}
+          title="Click to change your delivery city or address"
+        >
+          <div className="eta-time">
+            <Zap size={11} fill="#0C831F" color="#0C831F" />
+            <span>8 MINS</span>
+          </div>
+          <div className="address-line">
+            <span className="address-text">{activeAddress ? activeAddress.line1 : 'Select City'}</span>
+            <ChevronDown size={11} color="var(--text-muted)" style={{ flexShrink: 0 }} />
           </div>
         </div>
+
+        {/* Desktop-Only Center Search Bar */}
+        {activeView === 'store' && (
+          <div className="search-wrapper desktop-only">
+            <Search className="search-icon" size={17} />
+            <input
+              type="text"
+              className="search-input"
+              placeholder='Search "milk", "chips", "maggi", "amul butter", "curd"...'
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        )}
 
         {/* Navigation Actions */}
         <div className="nav-actions">
@@ -131,7 +143,7 @@ export default function Navbar({
                   />
                 </button>
                 <button
-                  className="btn-auth nav-quick-logout-btn"
+                  className="btn-auth nav-quick-logout-btn desktop-only"
                   onClick={handleLogout}
                   title="Logout"
                   style={{ padding: '0.55rem' }}
@@ -222,7 +234,7 @@ export default function Navbar({
             </button>
           )}
 
-          {/* Cart Button (Visible on Desktop & Mobile) */}
+          {/* Cart Button */}
           <button
             className="cart-btn"
             onClick={() => setIsCartOpen(true)}
@@ -243,10 +255,26 @@ export default function Navbar({
         </div>
       </div>
 
-      {/* Instant Search Bar (Row 2 on Mobile/Tablet) */}
+      {/* Mobile Tier 2: Dedicated Amazon & Zepto Style Location Strip */}
+      <div className="mobile-location-strip" onClick={onOpenLocation}>
+        <div className="mobile-location-left">
+          <MapPin size={13} className="mobile-pin-icon" color="#0C831F" />
+          <span className="mobile-deliver-to">Deliver to:</span>
+          <span className="mobile-active-address">
+            {activeAddress ? activeAddress.line1 : 'Select Delivery Location'}
+          </span>
+          <ChevronDown size={12} color="var(--text-muted)" style={{ flexShrink: 0 }} />
+        </div>
+        <div className="mobile-eta-pill">
+          <Zap size={10} fill="#FFFFFF" color="#FFFFFF" />
+          <span>8 MINS</span>
+        </div>
+      </div>
+
+      {/* Mobile Tier 3: Search Bar */}
       {activeView === 'store' && (
-        <div className="search-wrapper">
-          <Search className="search-icon" size={17} />
+        <div className="search-wrapper mobile-only-search">
+          <Search className="search-icon" size={16} />
           <input
             type="text"
             className="search-input"

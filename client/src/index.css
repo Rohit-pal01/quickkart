@@ -130,16 +130,8 @@ body {
   display: contents;
 }
 
-.brand-section {
-  order: 1;
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-
 .logo {
+  order: 1;
   display: flex;
   align-items: center;
   gap: 0.45rem;
@@ -149,6 +141,7 @@ body {
   color: var(--text-main);
   letter-spacing: -0.6px;
   user-select: none;
+  flex-shrink: 0;
 }
 
 .logo-brand-text {
@@ -1491,51 +1484,77 @@ body {
 
 /* ==========================================================================
    Header Navbar Layout by Screen Size
-   Desktop (> 1100px): Single Row (Brand on Left, Search in Middle, Actions on Right)
-   Tablet & Mobile (<= 1100px): Clean 2-Tier Header (Row 1: Brand & Actions, Row 2: Search)
+   Desktop (> 900px): Single Unified Row (Brand, Location, Center Search, Actions)
+   Mobile / Tablet (<= 900px): Professional Multi-Tier Layout (Amazon & Zepto Style)
+   - Tier 1: Logo on Left, Actions on Right
+   - Tier 2: Dedicated Amazon & Zepto Location Strip
+   - Tier 3: Full-width Quick Commerce Search Bar
    ========================================================================== */
-@media (min-width: 1101px) {
+.mobile-location-strip {
+  display: none;
+}
+
+.mobile-only-search {
+  display: none;
+}
+
+@media (min-width: 901px) {
   .navbar {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: 1.25rem;
+    gap: 1.15rem;
     flex-wrap: nowrap;
     padding: 0.65rem 1.25rem;
   }
 
   .navbar-top-bar {
-    display: contents; /* Allows brand-section and nav-actions to sit on opposite ends of the single row */
+    display: contents;
   }
 
-  .brand-section {
+  .logo {
     order: 1;
     flex-shrink: 0;
   }
 
-  .search-wrapper {
+  .delivery-eta-badge {
     order: 2;
+    flex-shrink: 0;
+  }
+
+  .search-wrapper.desktop-only {
+    order: 3;
     flex: 1;
-    max-width: 580px;
-    margin-top: 0;
+    max-width: 540px;
+    margin: 0 1rem;
+    display: block !important;
   }
 
   .nav-actions {
-    order: 3;
+    order: 4;
     flex-shrink: 0;
+  }
+
+  .mobile-location-strip {
+    display: none !important;
+  }
+
+  .mobile-only-search {
+    display: none !important;
   }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 900px) {
   .navbar {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    padding: 0.65rem 1rem;
-    gap: 0.55rem;
+    padding: 0.55rem 0.85rem;
+    gap: 0.45rem;
   }
 
+  /* Tier 1: Top Bar with Brand and Actions */
   .navbar-top-bar {
     display: flex;
     align-items: center;
@@ -1544,36 +1563,106 @@ body {
     gap: 0.5rem;
   }
 
-  .brand-section {
+  .logo {
     display: flex;
     align-items: center;
-    gap: 0.65rem;
-    flex: 1 1 auto;
-    min-width: 0;
-    overflow: hidden;
+    gap: 0.35rem;
+    flex-shrink: 0;
   }
 
   .nav-actions {
     display: flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: 0.35rem;
     flex-shrink: 0;
     margin-left: auto;
   }
 
-  .search-wrapper {
+  .desktop-only {
+    display: none !important;
+  }
+
+  /* Tier 2: Dedicated Amazon & Zepto Style Location Strip */
+  .mobile-location-strip {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.44rem 0.72rem;
+    background: rgba(12, 131, 31, 0.07);
+    border: 1px solid rgba(12, 131, 31, 0.18);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition);
+    gap: 0.5rem;
+  }
+
+  [data-theme="dark"] .mobile-location-strip {
+    background: rgba(16, 185, 129, 0.08);
+    border-color: rgba(16, 185, 129, 0.22);
+  }
+
+  .mobile-location-strip:hover {
+    background: rgba(12, 131, 31, 0.12);
+    border-color: rgba(12, 131, 31, 0.3);
+  }
+
+  .mobile-location-left {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+  }
+
+  .mobile-pin-icon {
+    flex-shrink: 0;
+  }
+
+  .mobile-deliver-to {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  .mobile-active-address {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  .mobile-eta-pill {
+    background: #0C831F;
+    color: #ffffff;
+    font-size: 0.64rem;
+    font-weight: 900;
+    padding: 0.12rem 0.42rem;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    gap: 0.22rem;
+    flex-shrink: 0;
+    letter-spacing: 0.3px;
+    box-shadow: 0 1px 3px rgba(12, 131, 31, 0.3);
+  }
+
+  /* Tier 3: Full-Width Search Bar */
+  .mobile-only-search {
+    display: block !important;
     width: 100% !important;
     max-width: 100% !important;
-    margin-top: 0;
+    margin: 0;
   }
 
   .search-input {
     padding: 0.62rem 0.9rem 0.62rem 2.6rem;
     font-size: 0.88rem;
-  }
-
-  .address-text {
-    max-width: 130px;
   }
 
   .nav-admin-label-full {
@@ -1610,61 +1699,17 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
     gap: 0.8rem;
   }
-}
 
-/* ==========================================================================
-   Mobile Responsive Styles (Blinkit / Zepto App Feel <= 768px)
-   ========================================================================== */
-@media (max-width: 768px) {
   body {
-    padding-bottom: 95px; /* Give room for mobile floating pill */
+    padding-bottom: 95px; /* Room for mobile floating pill */
   }
 
   .main-content {
     padding: 0.75rem 0.65rem 2.5rem 0.65rem;
   }
 
-  .navbar {
-    padding: 0.55rem 0.75rem;
-    gap: 0.45rem;
-  }
-
-  .navbar-top-bar {
-    gap: 0.4rem;
-    flex-wrap: nowrap;
-    overflow: hidden;
-  }
-
-  .brand-section {
-    gap: 0.5rem;
-    flex: 1 1 auto;
-    min-width: 0;
-    overflow: hidden;
-  }
-
-  .delivery-eta-badge {
-    padding: 0.25rem 0.55rem;
-    max-width: 155px;
-    flex-shrink: 0;
-  }
-
-  .logo {
-    font-size: 1.2rem;
-    flex-shrink: 0;
-  }
-
-  .address-text {
-    max-width: 95px;
-  }
-
-  .nav-actions {
-    gap: 0.35rem;
-    flex-shrink: 0;
-    margin-left: auto;
-  }
-
   .btn-auth {
-    padding: 0.38rem 0.6rem;
+    padding: 0.38rem 0.55rem;
     font-size: 0.78rem;
     gap: 0.25rem;
     flex-shrink: 0;
@@ -1677,7 +1722,9 @@ body {
     gap: 0.3rem;
     flex-shrink: 0;
   }
+}
 
+@media (max-width: 768px) {
   /* Admin Dashboard Mobile Optimizations */
   .admin-main-title {
     font-size: 1.2rem !important;
@@ -1841,7 +1888,7 @@ body {
 @media (max-width: 600px) {
   .navbar {
     padding: 0.45rem 0.65rem;
-    gap: 0.4rem;
+    gap: 0.38rem;
   }
 
   .navbar-top-bar {
@@ -1853,92 +1900,22 @@ body {
     justify-content: space-between;
   }
 
-  /* Zepto / Blinkit Stacked Brand & Delivery Block */
-  .brand-section {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 0.12rem;
-    min-width: 0;
-    flex: 1 1 auto;
-    overflow: hidden;
-    white-space: normal;
-  }
-
   .logo {
-    font-size: 1.05rem;
-    gap: 0.3rem;
+    font-size: 1.1rem;
+    gap: 0.35rem;
     line-height: 1;
     flex-shrink: 0;
   }
 
   .logo-brand-text {
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     letter-spacing: -0.3px;
   }
 
   .logo-badge {
-    width: 21px;
-    height: 21px;
+    width: 22px;
+    height: 22px;
     border-radius: 4px;
-  }
-
-  /* Seamless Zepto/Blinkit Location Row: No border, No cyan bracket, pure clean typography */
-  .delivery-eta-badge {
-    padding: 0 !important;
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    display: flex;
-    flex-direction: row !important;
-    align-items: center;
-    gap: 0.3rem;
-    max-width: 100%;
-    margin-top: 0.08rem;
-    cursor: pointer;
-  }
-
-  .delivery-eta-badge:hover {
-    background: transparent !important;
-    border: none !important;
-  }
-
-  .eta-time {
-    background: #0C831F;
-    color: #ffffff !important;
-    font-size: 0.62rem;
-    font-weight: 900;
-    padding: 0.08rem 0.36rem;
-    border-radius: 3px;
-    letter-spacing: 0.2px;
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-  }
-
-  .eta-time svg {
-    display: none; /* Clean solid chip like Zepto/Blinkit */
-  }
-
-  .address-line {
-    display: flex;
-    align-items: center;
-    gap: 0.2rem;
-    min-width: 0;
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--text-muted);
-  }
-
-  .address-text {
-    max-width: 125px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   .nav-actions {
@@ -1992,6 +1969,8 @@ body {
     max-width: calc(100vw - 20px);
   }
 }
+
+
 
 @media (max-width: 460px) {
   .user-nav-name {
