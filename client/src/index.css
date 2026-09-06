@@ -996,6 +996,14 @@ body {
   color: var(--text-main);
 }
 
+/* Responsive View Switching: Desktop Table vs Mobile Cards */
+.admin-mobile-card-list {
+  display: none;
+}
+.admin-desktop-table {
+  display: block;
+}
+
 /* Mobile swipe hint banner for tables */
 .admin-scroll-hint {
   display: none;
@@ -1238,8 +1246,19 @@ body {
     min-width: 0 !important;
   }
 
+  .admin-desktop-table {
+    display: none !important;
+  }
+
+  .admin-mobile-card-list {
+    display: flex !important;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0.85rem;
+  }
+
   .admin-scroll-hint {
-    display: flex;
+    display: none;
   }
 
   .admin-pagination-bar {

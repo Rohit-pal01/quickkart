@@ -639,11 +639,7 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
             </div>
           </div>
 
-          <div className="admin-scroll-hint">
-            <span>⇄ Swipe table horizontally to view all columns & status transition</span>
-          </div>
-
-          <div className="admin-table-container">
+          <div className="admin-table-container admin-desktop-table">
             <table className="admin-table">
               <thead>
                 <tr>
@@ -736,6 +732,126 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
             </table>
           </div>
 
+          {/* Mobile Orders Card View (Zero horizontal scroll needed - 100% visible on mobile) */}
+          <div className="admin-mobile-card-list">
+            {filteredOrders.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '2.5rem 1rem', color: 'var(--text-muted)' }}>
+                {orders.length === 0
+                  ? 'No orders placed yet.'
+                  : `No orders matching "${orderSearch}" with status "${orderStatusFilter}".`}
+              </div>
+            ) : (
+              paginatedOrders.map((o) => {
+                const sStyle = getStatusStyle(o.status);
+                return (
+                  <div
+                    key={o._id}
+                    style={{
+                      background: 'var(--bg-card)',
+                      border: '1px solid var(--border-light)',
+                      borderRadius: 'var(--radius-md)',
+                      padding: '0.9rem',
+                      boxShadow: 'var(--shadow-sm)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.65rem'
+                    }}
+                  >
+                    {/* Top Row: Order ID + Time + Status Badge */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                        <button
+                          type="button"
+                          onClick={() => onViewOrder && onViewOrder(o.orderId)}
+                          title={`Click to track order #${o.orderId}`}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: 0,
+                            cursor: 'pointer',
+                            color: '#10B981',
+                            fontWeight: 800,
+                            fontSize: '0.92rem',
+                            textDecoration: 'underline'
+                          }}
+                        >
+                          #{o.orderId}
+                        </button>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                          • {new Date(o.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+
+                      <span
+                        style={{
+                          padding: '0.2rem 0.55rem',
+                          borderRadius: 'var(--radius-full)',
+                          border: `1px solid ${sStyle.border}`,
+                          background: sStyle.bg,
+                          color: sStyle.text,
+                          fontWeight: 800,
+                          fontSize: '0.72rem'
+                        }}
+                      >
+                        {o.status}
+                      </span>
+                    </div>
+
+                    {/* Customer Info */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.82rem', borderTop: '1px dashed var(--border-light)', paddingTop: '0.45rem' }}>
+                      <span style={{ fontWeight: 700, color: 'var(--text-main)' }}>
+                        {o.userId?.name || 'Customer'}
+                      </span>
+                      <span style={{ color: 'var(--text-muted)' }}>
+                        {o.userId?.phone || 'No phone'}
+                      </span>
+                    </div>
+
+                    {/* Items list */}
+                    <div style={{ background: 'var(--bg-subtle)', padding: '0.5rem 0.65rem', borderRadius: 'var(--radius-sm)', fontSize: '0.8rem', color: 'var(--text-main)', lineHeight: 1.4 }}>
+                      <span style={{ fontWeight: 700, color: 'var(--text-muted)', fontSize: '0.72rem', display: 'block', marginBottom: '0.15rem' }}>ITEMS ORDERED:</span>
+                      {o.items?.map(i => `${i.qty}x ${i.name}`).join(', ') || 'N/A'}
+                    </div>
+
+                    {/* Total Amount & Status Transition Dropdown */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', borderTop: '1px solid var(--border-light)', paddingTop: '0.55rem' }}>
+                      <div>
+                        <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 700 }}>TOTAL AMOUNT</div>
+                        <div style={{ fontSize: '1.15rem', fontWeight: 900, color: 'var(--text-main)' }}>₹{o.totalAmount}</div>
+                      </div>
+
+                      <div style={{ flex: 1, maxWidth: '190px' }}>
+                        <select
+                          value={o.status}
+                          onChange={(e) => handleStatusChange(o._id, e.target.value)}
+                          style={{
+                            width: '100%',
+                            padding: '0.45rem 0.65rem',
+                            borderRadius: 'var(--radius-sm)',
+                            border: `1.5px solid ${sStyle.border}`,
+                            background: sStyle.bg,
+                            color: sStyle.text,
+                            fontWeight: 800,
+                            fontSize: '0.78rem',
+                            cursor: 'pointer',
+                            outline: 'none'
+                          }}
+                        >
+                          <option value="PENDING_PAYMENT">PENDING_PAYMENT</option>
+                          <option value="CONFIRMED">CONFIRMED</option>
+                          <option value="PACKED">PACKED</option>
+                          <option value="OUT_FOR_DELIVERY">OUT_FOR_DELIVERY</option>
+                          <option value="DELIVERED">DELIVERED</option>
+                          <option value="CANCELLED">CANCELLED</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
           {renderPagination(currentOrderPage, totalOrderPages, orderPageSize, setOrderPageSize, setOrderPage, filteredOrders.length, 'orders')}
         </div>
       )}
@@ -816,11 +932,7 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
             </div>
           </div>
 
-          <div className="admin-scroll-hint">
-            <span>⇄ Swipe table horizontally to view all columns & item actions</span>
-          </div>
-
-          <div className="admin-table-container">
+          <div className="admin-table-container admin-desktop-table">
             <table className="admin-table">
               <thead>
                 <tr>
@@ -934,6 +1046,114 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
                 )}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Inventory Cards View */}
+          <div className="admin-mobile-card-list">
+            {filteredProducts.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--text-muted)' }}>
+                No items found matching your filter criteria.
+              </div>
+            ) : (
+              paginatedProducts.map((p) => (
+                <div
+                  key={p._id}
+                  style={{
+                    background: 'var(--bg-card)',
+                    border: '1px solid var(--border-light)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: '0.85rem',
+                    boxShadow: 'var(--shadow-sm)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.65rem'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <img
+                      src={p.imageUrl}
+                      alt=""
+                      onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=100'; }}
+                      style={{ width: '48px', height: '48px', borderRadius: 'var(--radius-sm)', objectFit: 'cover', flexShrink: 0, border: '1px solid var(--border-light)' }}
+                    />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <span style={{ fontWeight: 800, fontSize: '0.9rem', color: 'var(--text-main)', display: 'block' }}>{p.name}</span>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{p.category} • {p.unit}</span>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px dashed var(--border-light)', paddingTop: '0.5rem' }}>
+                    <div>
+                      <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 700 }}>PRICE / UNIT</div>
+                      <div style={{ fontSize: '1.1rem', fontWeight: 900, color: 'var(--text-main)' }}>₹{p.price}</div>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                      <span
+                        style={{
+                          padding: '0.2rem 0.55rem',
+                          borderRadius: 'var(--radius-full)',
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                          background: p.stock > 10 ? '#ECFDF5' : '#FEF3C7',
+                          color: p.stock > 10 ? '#059669' : '#D97706'
+                        }}
+                      >
+                        {p.stock} units
+                      </span>
+                      <span style={{ color: p.isActive ? '#10B981' : '#EF4444', fontWeight: 700, fontSize: '0.75rem' }}>
+                        {p.isActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', borderTop: '1px solid var(--border-light)', paddingTop: '0.5rem' }}>
+                    <button
+                      type="button"
+                      onClick={() => setEditingProduct({ ...p })}
+                      style={{
+                        background: isDark ? 'rgba(59, 130, 246, 0.18)' : '#EFF6FF',
+                        border: '1px solid rgba(59, 130, 246, 0.35)',
+                        color: '#3B82F6',
+                        borderRadius: 'var(--radius-sm)',
+                        padding: '0.45rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.35rem',
+                        cursor: 'pointer',
+                        fontWeight: 700,
+                        fontSize: '0.78rem'
+                      }}
+                    >
+                      <Edit2 size={13} />
+                      <span>Edit Specs</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteProduct(p._id, p.name)}
+                      style={{
+                        background: isDark ? 'rgba(239, 68, 68, 0.18)' : '#FEF2F2',
+                        border: '1px solid rgba(239, 68, 68, 0.35)',
+                        color: '#EF4444',
+                        borderRadius: 'var(--radius-sm)',
+                        padding: '0.45rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.35rem',
+                        cursor: 'pointer',
+                        fontWeight: 700,
+                        fontSize: '0.78rem'
+                      }}
+                    >
+                      <Trash2 size={13} />
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
 
           {renderPagination(currentInventoryPage, totalInventoryPages, inventoryPageSize, setInventoryPageSize, setInventoryPage, filteredProducts.length, 'products')}
@@ -1097,11 +1317,7 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
             </div>
           </div>
 
-          <div className="admin-scroll-hint">
-            <span>⇄ Swipe table horizontally to view all columns & customer actions</span>
-          </div>
-
-          <div className="admin-table-container">
+          <div className="admin-table-container admin-desktop-table">
             <table className="admin-table">
             <thead>
               <tr>
@@ -1331,6 +1547,144 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Customers Card View */}
+        <div className="admin-mobile-card-list">
+          {filteredUsers.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--text-muted)' }}>
+              No accounts matching your filter.
+            </div>
+          ) : (
+            paginatedUsers.map((u) => {
+              const isAdmin = u.role === 'admin';
+              return (
+                <div
+                  key={u._id}
+                  style={{
+                    background: 'var(--bg-card)',
+                    border: '1px solid var(--border-light)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: '0.9rem',
+                    boxShadow: 'var(--shadow-sm)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.65rem'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                      <div
+                        style={{
+                          width: '36px',
+                          height: '36px',
+                          borderRadius: '50%',
+                          background: getAvatarGradient(u.name),
+                          color: '#FFFFFF',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontWeight: 800,
+                          fontSize: '0.88rem',
+                          flexShrink: 0
+                        }}
+                      >
+                        {(u.name || 'U').charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <div style={{ fontWeight: 800, fontSize: '0.88rem', color: 'var(--text-main)' }}>{u.name}</div>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>ID: {u._id ? u._id.slice(-6).toUpperCase() : 'N/A'}</div>
+                      </div>
+                    </div>
+
+                    <span
+                      style={{
+                        padding: '0.15rem 0.5rem',
+                        borderRadius: 'var(--radius-full)',
+                        fontSize: '0.7rem',
+                        fontWeight: 800,
+                        textTransform: 'uppercase',
+                        background: isAdmin ? 'rgba(239, 68, 68, 0.12)' : 'rgba(16, 185, 129, 0.12)',
+                        color: isAdmin ? '#EF4444' : '#10B981',
+                        border: isAdmin ? '1px solid rgba(239, 68, 68, 0.3)' : '1px solid rgba(16, 185, 129, 0.3)'
+                      }}
+                    >
+                      {u.role}
+                    </span>
+                  </div>
+
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '0.25rem', borderTop: '1px dashed var(--border-light)', paddingTop: '0.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: 'var(--text-main)' }}>
+                      <Mail size={13} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+                      <span>{u.email}</span>
+                    </div>
+                    {u.phone && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                        <Phone size={13} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+                        <span>{u.phone}</span>
+                      </div>
+                    )}
+                    {u.addresses && u.addresses.length > 0 && (
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.35rem', marginTop: '0.15rem' }}>
+                        <MapPin size={13} style={{ color: '#10B981', flexShrink: 0, marginTop: '2px' }} />
+                        <span>{u.addresses[0].line1}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--border-light)', paddingTop: '0.55rem', marginTop: '0.1rem' }}>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                      Joined {u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : 'N/A'}
+                    </span>
+
+                    {!isAdmin ? (
+                      <div style={{ display: 'flex', gap: '0.45rem' }}>
+                        <button
+                          onClick={() => handleImpersonateUser(u)}
+                          style={{
+                            background: isDark ? 'rgba(16, 185, 129, 0.15)' : '#ECFDF5',
+                            border: isDark ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid #A7F3D0',
+                            color: isDark ? '#34D399' : '#047857',
+                            borderRadius: 'var(--radius-sm)',
+                            padding: '0.35rem 0.65rem',
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.3rem',
+                            fontSize: '0.76rem',
+                            fontWeight: 700
+                          }}
+                        >
+                          <LogIn size={13} />
+                          <span>Login As</span>
+                        </button>
+                        <button
+                          onClick={() => handleDeleteUser(u._id, u.name, u.role)}
+                          style={{
+                            background: isDark ? 'rgba(239, 68, 68, 0.12)' : '#FEF2F2',
+                            border: isDark ? '1px solid rgba(239, 68, 68, 0.25)' : '1px solid #FECACA',
+                            color: '#EF4444',
+                            borderRadius: 'var(--radius-sm)',
+                            padding: '0.35rem 0.5rem',
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    ) : (
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>
+                        <Shield size={12} color="#F59E0B" /> Protected Admin
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
 
         {renderPagination(currentUserPage, totalUserPages, userPageSize, setUserPageSize, setUserPage, filteredUsers.length, 'customers')}
