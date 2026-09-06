@@ -54,4 +54,14 @@ const authorize = (...roles) => {
   };
 };
 
-module.exports = { protect, authorize };
+const restrictDemo = (req, res, next) => {
+  if (req.user && req.user.isDemo) {
+    return res.status(403).json({
+      success: false,
+      message: 'Action restricted: Demo Admin is in Read-Only mode to protect catalog data. Log in with owner credentials to make modifications.'
+    });
+  }
+  next();
+};
+
+module.exports = { protect, authorize, restrictDemo };

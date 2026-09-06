@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   passwordHash: { type: String, required: true },
   role: { type: String, enum: ['customer', 'admin', 'delivery'], default: 'customer' },
+  isDemo: { type: Boolean, default: false },
   addresses: [addressSchema]
 }, { timestamps: true });
 

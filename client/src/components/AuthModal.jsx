@@ -67,8 +67,8 @@ export default function AuthModal({ isOpen, onClose }) {
   const handleDemoLogin = async (role) => {
     setError(null);
     setLoading(true);
-    const demoEmail = role === 'admin' ? 'admin@quickkart.com' : 'customer@quickkart.com';
-    const demoPass = role === 'admin' ? 'admin123' : 'customer123';
+    const demoEmail = role === 'admin' ? 'demo.admin@quickkart.com' : 'customer@quickkart.com';
+    const demoPass = role === 'admin' ? 'demo123' : 'customer123';
 
     try {
       const res = await login(demoEmail, demoPass);
@@ -360,8 +360,8 @@ export default function AuthModal({ isOpen, onClose }) {
                 onClick={() => handleDemoLogin('admin')}
                 disabled={loading}
               >
-                <span style={{ fontWeight: 800 }}>Demo: Admin</span>
-                <span style={{ fontSize: '0.65rem', color: '#0C831F' }}>admin@quickkart.com</span>
+                <span style={{ fontWeight: 800 }}>Demo: Admin (Read-Only)</span>
+                <span style={{ fontSize: '0.65rem', color: '#0C831F' }}>demo.admin@quickkart.com</span>
               </button>
             </div>
           </div>

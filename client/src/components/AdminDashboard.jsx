@@ -46,7 +46,8 @@ const getAvatarGradient = (name = '') => {
 
 export default function AdminDashboard({ onBackToStore, onViewOrder }) {
   const { isDark } = useTheme();
-  const { impersonate, logout } = useAuth();
+  const { user, impersonate, logout } = useAuth();
+  const isDemoAdmin = Boolean(user?.isDemo);
   const [activeTab, setActiveTab] = useState('orders'); // 'orders' | 'inventory' | 'users' | 'add_product'
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
@@ -204,6 +205,10 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
   const handleAddProduct = async (e) => {
     e.preventDefault();
     setFormMsg(null);
+    if (isDemoAdmin) {
+      setFormMsg({ type: 'error', text: 'Action restricted: You are exploring in Demo Mode (Read-Only). Adding products requires logging in with the owner account.' });
+      return;
+    }
     const priceNum = Number(newProduct.price);
     const mrpNum = newProduct.mrp !== '' && newProduct.mrp !== undefined ? Number(newProduct.mrp) : undefined;
     if (mrpNum !== undefined && !isNaN(mrpNum) && priceNum > mrpNum) {
@@ -241,6 +246,10 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
   };
 
   const handleDeleteProduct = async (productId, productName) => {
+    if (isDemoAdmin) {
+      alert('Action restricted: You are logged in as a Demo Admin (Read-Only Mode) to protect catalog integrity. Deleting products is disabled.');
+      return;
+    }
     if (!window.confirm(`Are you sure you want to permanently delete "${productName}" from the store inventory?`)) {
       return;
     }
@@ -257,9 +266,35 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
     }
   };
 
+  const handleRestoreCatalog = async () => {
+    if (isDemoAdmin) {
+      alert('Action restricted: Catalog restore is disabled in demo mode.');
+      return;
+    }
+    if (!window.confirm('Reset and restore the complete default store catalog? Any changes will be reverted to the original catalog.')) {
+      return;
+    }
+    try {
+      const res = await api.restoreCatalog();
+      if (res.success) {
+        alert(res.message || 'Catalog restored successfully!');
+        fetchData();
+      } else {
+        alert(res.message || 'Failed to restore catalog');
+      }
+    } catch (err) {
+      console.error('Error restoring catalog:', err);
+      alert('Server error restoring catalog');
+    }
+  };
+
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
     if (!editingProduct) return;
+    if (isDemoAdmin) {
+      alert('Action restricted: You are logged in as a Demo Admin (Read-Only Mode). Modifying product details (such as Veg/Non-Veg dietary badge, price, or description) is disabled.');
+      return;
+    }
     const priceNum = Number(editingProduct.price);
     const mrpNum = editingProduct.mrp !== '' && editingProduct.mrp !== undefined && editingProduct.mrp !== null ? Number(editingProduct.mrp) : undefined;
     if (mrpNum !== undefined && !isNaN(mrpNum) && priceNum > mrpNum) {
@@ -490,6 +525,42 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
+      {isDemoAdmin && (
+        <div
+          style={{
+            background: isDark ? 'rgba(245, 158, 11, 0.15)' : '#FEF9C3',
+            border: isDark ? '1px solid rgba(245, 158, 11, 0.35)' : '1px solid #FDE047',
+            borderRadius: 'var(--radius-md)',
+            padding: '0.75rem 1.25rem',
+            marginBottom: '1.25rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '1rem',
+            flexWrap: 'wrap'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+            <Shield size={18} color="#D97706" style={{ flexShrink: 0 }} />
+            <span style={{ fontSize: '0.86rem', color: isDark ? '#FCD34D' : '#854D0E', fontWeight: 600 }}>
+              <strong>Demo Mode (Read-Only):</strong> You are previewing the Dark Store Hub as a guest. Modifying catalog details (such as Veg/Non-Veg dietary badge, price, stock) and deleting items are restricted to protect the demo catalog.
+            </span>
+          </div>
+          <span
+            style={{
+              fontSize: '0.7rem',
+              fontWeight: 800,
+              padding: '0.2rem 0.55rem',
+              borderRadius: '999px',
+              background: isDark ? 'rgba(245, 158, 11, 0.3)' : '#FEF08A',
+              color: isDark ? '#FDE68A' : '#854D0E',
+              letterSpacing: '0.04em'
+            }}
+          >
+            READ-ONLY DEMO
+          </span>
+        </div>
+      )}
       <div
         style={{
           display: 'flex',
@@ -979,6 +1050,28 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
                 <Plus size={15} />
                 <span>Add Item</span>
               </button>
+
+              {!isDemoAdmin && (
+                <button
+                  type="button"
+                  className="btn-auth"
+                  style={{
+                    padding: '0.45rem 0.9rem',
+                    fontSize: '0.82rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                    whiteSpace: 'nowrap',
+                    borderColor: 'rgba(16, 185, 129, 0.4)',
+                    color: '#10B981'
+                  }}
+                  onClick={handleRestoreCatalog}
+                  title="Reset and restore catalog to the initial 36 rich catalog products"
+                >
+                  <RefreshCw size={14} color="#10B981" />
+                  <span>Restore Catalog</span>
+                </button>
+              )}
             </div>
           </div>
 

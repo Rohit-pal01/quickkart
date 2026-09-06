@@ -118,6 +118,14 @@ export const api = {
     return res.json();
   },
 
+  async restoreCatalog() {
+    const res = await fetch(`${API_BASE}/products/restore-catalog`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    });
+    return res.json();
+  },
+
   // Orders
   async createOrder(orderPayload) {
     const res = await fetch(`${API_BASE}/orders`, {

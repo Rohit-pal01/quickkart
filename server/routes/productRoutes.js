@@ -6,18 +6,20 @@ const {
   getCategories,
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  restoreDefaultCatalog
 } = require('../controllers/productController');
-const { protect, authorize } = require('../middleware/authMiddleware');
+const { protect, authorize, restrictDemo } = require('../middleware/authMiddleware');
 
 // Public routes
 router.get('/', getProducts);
 router.get('/categories', getCategories);
 router.get('/:id', getProductById);
 
-// Admin-only management routes
-router.post('/', protect, authorize('admin'), createProduct);
-router.put('/:id', protect, authorize('admin'), updateProduct);
-router.delete('/:id', protect, authorize('admin'), deleteProduct);
+// Admin-only management routes (Protected + Blocked for Demo Admin)
+router.post('/', protect, authorize('admin'), restrictDemo, createProduct);
+router.put('/:id', protect, authorize('admin'), restrictDemo, updateProduct);
+router.delete('/:id', protect, authorize('admin'), restrictDemo, deleteProduct);
+router.post('/restore-catalog', protect, authorize('admin'), restrictDemo, restoreDefaultCatalog);
 
 module.exports = router;

@@ -64,6 +64,7 @@ const register = async (req, res, next) => {
         email: user.email,
         phone: user.phone,
         role: user.role,
+        isDemo: user.isDemo || false,
         addresses: user.addresses
       }
     });
@@ -113,6 +114,7 @@ const login = async (req, res, next) => {
         email: user.email,
         phone: user.phone,
         role: user.role,
+        isDemo: user.isDemo || false,
         addresses: user.addresses
       }
     });
@@ -309,6 +311,7 @@ const impersonateUser = async (req, res, next) => {
         email: targetUser.email,
         phone: targetUser.phone,
         role: targetUser.role,
+        isDemo: targetUser.isDemo || false,
         addresses: targetUser.addresses
       },
       message: `Switched session to ${targetUser.name}`

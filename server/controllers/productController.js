@@ -244,11 +244,30 @@ const deleteProduct = async (req, res, next) => {
   }
 };
 
+// @desc    Restore default store catalog
+// @route   POST /api/products/restore-catalog
+// @access  Private (Real Admin only)
+const restoreDefaultCatalog = async (req, res, next) => {
+  try {
+    const sampleProducts = require('../seed/catalog');
+    await Product.deleteMany({});
+    const inserted = await Product.insertMany(sampleProducts);
+    res.status(200).json({
+      success: true,
+      message: `Successfully restored ${inserted.length} catalog products!`,
+      count: inserted.length
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getProducts,
   getProductById,
   getCategories,
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  restoreDefaultCatalog
 };
