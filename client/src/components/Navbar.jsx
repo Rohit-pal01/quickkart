@@ -129,11 +129,22 @@ export default function Navbar({
           </button>
         )}
 
-        {/* Desktop Cart Button */}
-        <button className="cart-btn-desktop" onClick={() => setIsCartOpen(true)}>
-          <ShoppingCart size={18} />
-          <span>
+        {/* Cart Button (Visible on Desktop & Mobile) */}
+        <button
+          className="cart-btn"
+          onClick={() => setIsCartOpen(true)}
+          aria-label="View Shopping Cart"
+          title="View Shopping Cart"
+        >
+          <div className="cart-icon-wrapper">
+            <ShoppingCart size={17} />
+            {itemCount > 0 && <span className="cart-badge-dot">{itemCount}</span>}
+          </div>
+          <span className="cart-label-desktop">
             {itemCount > 0 ? `${itemCount} items • ₹${totalAmount}` : 'My Cart'}
+          </span>
+          <span className="cart-label-mobile">
+            {itemCount > 0 ? `₹${totalAmount}` : 'My Cart'}
           </span>
         </button>
       </div>

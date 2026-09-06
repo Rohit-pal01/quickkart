@@ -253,6 +253,7 @@ body {
   border-color: #CBD5E1;
 }
 
+.cart-btn,
 .cart-btn-desktop {
   background: linear-gradient(135deg, #0C831F 0%, #086616 100%);
   color: white;
@@ -267,12 +268,34 @@ body {
   gap: 0.65rem;
   box-shadow: 0 4px 12px rgba(12, 131, 31, 0.28);
   transition: var(--transition);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
+.cart-btn:hover,
 .cart-btn-desktop:hover {
   border-color: var(--bright-blue);
   box-shadow: 0 4px 16px rgba(81, 226, 245, 0.35);
   transform: translateY(-1px);
+}
+
+.cart-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-badge-dot {
+  display: none;
+}
+
+.cart-label-desktop {
+  display: inline;
+}
+
+.cart-label-mobile {
+  display: none;
 }
 
 /* Perk Cards (Free Delivery, Express, Quality Assured) */
@@ -1334,9 +1357,14 @@ body {
     font-size: 0.75rem;
   }
 
-  /* Hide desktop cart button on mobile to rely on floating bottom bar */
+  /* Mobile cart button: always visible & responsive */
+  .cart-btn,
   .cart-btn-desktop {
-    display: none;
+    display: flex;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.82rem;
+    gap: 0.4rem;
+    border-radius: var(--radius-md);
   }
 
   .cat-circle-card {
@@ -1352,6 +1380,35 @@ body {
 
 .nav-admin-label-short {
   display: none;
+}
+
+@media (max-width: 640px) {
+  .cart-label-desktop {
+    display: none;
+  }
+
+  .cart-label-mobile {
+    display: inline;
+  }
+
+  .cart-badge-dot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: -7px;
+    right: -8px;
+    background: #F7D000;
+    color: #111827;
+    font-size: 0.62rem;
+    font-weight: 900;
+    min-width: 15px;
+    height: 15px;
+    padding: 0 3px;
+    border-radius: 9999px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    line-height: 1;
+  }
 }
 
 @media (max-width: 540px) {
@@ -1385,6 +1442,24 @@ body {
   .theme-toggle-btn {
     width: 32px;
     height: 32px;
+  }
+
+  .cart-btn,
+  .cart-btn-desktop {
+    padding: 0.38rem 0.6rem;
+    font-size: 0.76rem;
+    gap: 0.35rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .cart-label-mobile {
+    display: none;
+  }
+
+  .cart-btn,
+  .cart-btn-desktop {
+    padding: 0.38rem 0.55rem;
   }
 }
 
