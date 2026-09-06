@@ -3,3 +3,5 @@ node_modules/
 dist/
 *.log
 .DS_Store
+*CREDENTIALS*.txt
+ADMIN_PRIVATE_KEY.txt
