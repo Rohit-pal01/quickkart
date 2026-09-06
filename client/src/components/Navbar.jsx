@@ -46,45 +46,19 @@ export default function Navbar({
     <header className="navbar">
       {/* Top Bar: Brand & Actions (Desktop Single Row / Mobile Tier 1) */}
       <div className="navbar-top-bar">
-        {/* Brand & Delivery Location Group (Logo + Delivery Address & 8 MINS right beside it) */}
-        <div className="brand-location-group">
-          <div
-            className="logo"
-            style={{ cursor: 'pointer' }}
-            onClick={() => setActiveView('store')}
-            title="QuickKart Home"
-          >
-            <div className="logo-badge">
-              <Zap size={16} fill="#F7D000" color="#F7D000" />
-            </div>
-            <span className="logo-brand-text">
-              Quick<strong style={{ color: '#0C831F' }}>Kart</strong>
-            </span>
+        {/* Brand Logo */}
+        <div
+          className="logo"
+          style={{ cursor: 'pointer' }}
+          onClick={() => setActiveView('store')}
+          title="QuickKart Home"
+        >
+          <div className="logo-badge">
+            <Zap size={18} fill="#F7D000" color="#F7D000" />
           </div>
-
-          {/* Delivery Address & 8 MINS right beside QuickKart */}
-          <div
-            className="delivery-location-pill"
-            onClick={onOpenLocation}
-            style={{ cursor: 'pointer' }}
-            title={`Delivering to: ${activeAddress?.line1 || 'Sector 62'} (Click to change)`}
-          >
-            <div className="delivery-pill-top">
-              <div className="eta-badge-pill">
-                <Zap size={8} fill="#FFFFFF" color="#FFFFFF" />
-                <span>8 MINS</span>
-              </div>
-            </div>
-            <div className="delivery-pill-bottom">
-              <MapPin size={9} color="#0C831F" style={{ flexShrink: 0 }} />
-              <span className="address-text">
-                {activeAddress?.line1
-                  ? activeAddress.line1.split(',')[0].trim()
-                  : 'Sector 62'}
-              </span>
-              <ChevronDown size={9} color="var(--text-muted)" style={{ flexShrink: 0 }} />
-            </div>
-          </div>
+          <span className="logo-brand-text">
+            Quick<strong style={{ color: '#0C831F' }}>Kart</strong>
+          </span>
         </div>
 
         {/* Desktop-Only Center Search Bar */}
@@ -213,17 +187,6 @@ export default function Navbar({
                       <span>Dark Store Hub</span>
                     </button>
                   )}
-
-                  <button
-                    className="profile-dropdown-item"
-                    onClick={() => {
-                      toggleTheme();
-                    }}
-                  >
-                    {isDark ? <Sun size={16} color="#FBBF24" /> : <Moon size={16} color="#64748B" />}
-                    <span>{isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}</span>
-                  </button>
-
                   <div className="profile-dropdown-divider" />
 
                   <button
