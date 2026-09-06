@@ -126,6 +126,13 @@ body {
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
+.navbar-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
 .brand-section {
   display: flex;
   align-items: center;
@@ -1289,32 +1296,69 @@ body {
 }
 
 /* ==========================================================================
-   Tablets, Medium Screens & Mobile Viewports (<= 1100px)
-   Blinkit/Zepto 2-Row Header:
-   Row 1: Brand (left) + Actions (right)
-   Row 2: Full-Width Instant Search Bar
+   Header Navbar Layout by Screen Size
+   Desktop (> 1100px): Single Row (Brand on Left, Search in Middle, Actions on Right)
+   Tablet & Mobile (<= 1100px): Clean 2-Tier Header (Row 1: Brand & Actions, Row 2: Search)
    ========================================================================== */
-@media (max-width: 1100px) {
+@media (min-width: 1101px) {
   .navbar {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: 0.6rem 0.95rem;
-    gap: 0.55rem 0.6rem;
+    gap: 1.25rem;
+    flex-wrap: nowrap;
+    padding: 0.65rem 1.25rem;
+  }
+
+  .navbar-top-bar {
+    display: contents; /* Allows brand-section and nav-actions to sit on opposite ends of the single row */
   }
 
   .brand-section {
     order: 1;
+    flex-shrink: 0;
+  }
+
+  .search-wrapper {
+    order: 2;
+    flex: 1;
+    max-width: 580px;
+    margin-top: 0;
+  }
+
+  .nav-actions {
+    order: 3;
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 1100px) {
+  .navbar {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.65rem 1rem;
+    gap: 0.55rem;
+  }
+
+  .navbar-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .brand-section {
     display: flex;
     align-items: center;
     gap: 0.65rem;
     flex-shrink: 0;
-    min-width: max-content;
+    min-width: 0;
   }
 
   .nav-actions {
-    order: 2;
     display: flex;
     align-items: center;
     gap: 0.45rem;
@@ -1323,11 +1367,9 @@ body {
   }
 
   .search-wrapper {
-    order: 3;
     width: 100% !important;
     max-width: 100% !important;
-    flex: 1 1 100% !important;
-    margin-top: 0.15rem;
+    margin-top: 0;
   }
 
   .search-input {
@@ -1389,15 +1431,15 @@ body {
 
   .navbar {
     padding: 0.55rem 0.75rem;
-    flex-wrap: wrap;
-    gap: 0.5rem 0.4rem;
+    gap: 0.45rem;
+  }
+
+  .navbar-top-bar {
+    gap: 0.4rem;
   }
 
   .brand-section {
-    order: 1;
-    gap: 0.45rem;
-    flex-shrink: 0;
-    min-width: max-content;
+    gap: 0.5rem;
   }
 
   .logo {
@@ -1405,32 +1447,24 @@ body {
   }
 
   .address-line {
-    max-width: 105px;
+    max-width: 110px;
   }
 
   .nav-actions {
-    order: 2;
     gap: 0.35rem;
-    flex-shrink: 0;
-    margin-left: auto;
   }
 
   .btn-auth {
-    padding: 0.42rem 0.65rem;
+    padding: 0.4rem 0.6rem;
     font-size: 0.78rem;
+    gap: 0.25rem;
+  }
+
+  .cart-btn,
+  .cart-btn-desktop {
+    padding: 0.4rem 0.65rem;
+    font-size: 0.8rem;
     gap: 0.3rem;
-  }
-
-  .search-wrapper {
-    order: 3;
-    max-width: 100% !important;
-    width: 100% !important;
-    flex: 1 1 100% !important;
-  }
-
-  .search-input {
-    padding: 0.6rem 0.9rem 0.6rem 2.6rem;
-    font-size: 0.88rem;
   }
 
   /* Admin Dashboard Mobile Optimizations */
@@ -1594,34 +1628,62 @@ body {
 }
 
 @media (max-width: 480px) {
+  .navbar {
+    padding: 0.45rem 0.6rem;
+    gap: 0.4rem;
+  }
+
+  .navbar-top-bar {
+    gap: 0.25rem;
+  }
+
+  .brand-section {
+    gap: 0.35rem;
+  }
+
   .logo {
-    font-size: 1.15rem;
+    font-size: 1.12rem;
+    gap: 0.35rem;
+  }
+
+  .logo-badge {
+    width: 26px;
+    height: 26px;
   }
 
   .delivery-eta-badge {
-    padding: 0.22rem 0.5rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  .eta-time {
+    font-size: 0.72rem;
   }
 
   .address-line {
-    max-width: 85px;
-    font-size: 0.7rem;
+    max-width: 75px;
+    font-size: 0.68rem;
+  }
+
+  .nav-actions {
+    gap: 0.25rem;
   }
 
   .btn-auth {
-    padding: 0.38rem 0.55rem;
-    font-size: 0.75rem;
+    padding: 0.32rem 0.5rem;
+    font-size: 0.74rem;
+    gap: 0.2rem;
   }
 
   .theme-toggle-btn {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
   }
 
   .cart-btn,
   .cart-btn-desktop {
-    padding: 0.38rem 0.6rem;
-    font-size: 0.76rem;
-    gap: 0.35rem;
+    padding: 0.32rem 0.5rem;
+    font-size: 0.74rem;
+    gap: 0.25rem;
   }
 }
 
