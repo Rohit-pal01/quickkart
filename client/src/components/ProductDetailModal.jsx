@@ -79,35 +79,47 @@ export default function ProductDetailModal({ product, isOpen, onClose }) {
               </div>
 
               {/* Diet Type Indicator Badge */}
-              <div
-                className="pdm-veg-mark"
-                style={{
-                  color: product.dietType === 'Non-Vegetarian' ? '#DC2626' : '#16A34A'
-                }}
-              >
-                <div
-                  className="veg-dot-box"
-                  style={{
-                    borderColor: product.dietType === 'Non-Vegetarian' ? '#DC2626' : '#16A34A'
-                  }}
-                >
+              {(() => {
+                const isNonVeg = product.dietType === 'Non-Vegetarian';
+                const isEgg = product.dietType === 'Contains Egg';
+                const badgeColor = isNonVeg ? '#DC2626' : isEgg ? '#D97706' : '#16A34A';
+                const badgeBg = isNonVeg ? 'rgba(239, 68, 68, 0.08)' : isEgg ? 'rgba(217, 119, 6, 0.08)' : 'rgba(22, 163, 74, 0.08)';
+
+                return (
                   <div
-                    className="veg-green-circle"
+                    className="pdm-veg-mark"
                     style={{
-                      background: product.dietType === 'Non-Vegetarian' ? '#DC2626' : '#16A34A'
+                      color: badgeColor,
+                      background: badgeBg,
+                      padding: '0.3rem 0.6rem',
+                      borderRadius: 'var(--radius-full)',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.4rem',
+                      marginTop: '0.75rem'
                     }}
-                  />
-                </div>
-                <span>
-                  {product.dietType === 'Non-Vegetarian'
-                    ? 'Non-Vegetarian'
-                    : product.dietType === 'Vegan'
-                    ? '100% Vegan'
-                    : product.dietType === 'Contains Egg'
-                    ? 'Contains Egg'
-                    : '100% Vegetarian'}
-                </span>
-              </div>
+                  >
+                    <div
+                      className="veg-dot-box"
+                      style={{ borderColor: badgeColor }}
+                    >
+                      <div
+                        className="veg-green-circle"
+                        style={{ background: badgeColor }}
+                      />
+                    </div>
+                    <span style={{ fontWeight: 700, fontSize: '0.8rem' }}>
+                      {isNonVeg
+                        ? 'Non-Vegetarian'
+                        : isEgg
+                        ? 'Contains Egg'
+                        : product.dietType === 'Vegan'
+                        ? '100% Vegan'
+                        : '100% Vegetarian'}
+                    </span>
+                  </div>
+                );
+              })()}
             </div>
           </div>
 
