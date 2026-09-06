@@ -46,19 +46,50 @@ export default function Navbar({
     <header className="navbar">
       {/* Top Bar: Brand & Actions (Desktop Single Row / Mobile Tier 1) */}
       <div className="navbar-top-bar">
-        {/* Brand Logo */}
-        <div
-          className="logo"
-          style={{ cursor: 'pointer' }}
-          onClick={() => setActiveView('store')}
-          title="QuickKart Home"
-        >
-          <div className="logo-badge">
-            <Zap size={18} fill="#F7D000" color="#F7D000" />
+        {/* Brand & Location Group */}
+        <div className="brand-location-group">
+          <div
+            className="logo"
+            style={{ cursor: 'pointer' }}
+            onClick={() => setActiveView('store')}
+            title="QuickKart Home"
+          >
+            <div className="logo-badge">
+              <Zap size={18} fill="#F7D000" color="#F7D000" />
+            </div>
+            <span className="logo-brand-text">
+              Quick<strong style={{ color: '#0C831F' }}>Kart</strong>
+            </span>
           </div>
-          <span className="logo-brand-text">
-            Quick<strong style={{ color: '#0C831F' }}>Kart</strong>
-          </span>
+
+          {/* Professional Blinkit/Zepto Style Delivery Address Box */}
+          <div
+            className="delivery-location-box"
+            onClick={onOpenLocation}
+            role="button"
+            tabIndex={0}
+            title={`Delivering to: ${activeAddress?.line1 || 'Sector 62, Bengaluru'} (Click to change)`}
+          >
+            <div className="delivery-box-top">
+              <div className="delivery-eta-badge">
+                <Zap size={9} fill="#FFFFFF" color="#FFFFFF" />
+                <span>8 MINS</span>
+              </div>
+              <span className="delivery-eta-label">Delivery in 8 MINS</span>
+            </div>
+            <div className="delivery-box-bottom">
+              <MapPin size={10} color="#0C831F" style={{ flexShrink: 0 }} />
+              <span className="delivery-address-desktop">
+                {activeAddress?.line1 || 'Sector 62, Bengaluru'}
+              </span>
+              <span className="delivery-address-mobile">
+                {activeAddress?.line1
+                  ? activeAddress.line1.split(',')[0].trim()
+                  : 'Sector 62'}
+              </span>
+              <ChevronDown size={10} color="var(--text-muted)" style={{ flexShrink: 0 }} />
+            </div>
+          </div>
         </div>
 
         {/* Desktop-Only Center Search Bar */}
