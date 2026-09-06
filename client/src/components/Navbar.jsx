@@ -143,10 +143,10 @@ export default function Navbar({
                   />
                 </button>
                 <button
-                  className="btn-auth nav-quick-logout-btn desktop-only"
+                  className="btn-auth nav-quick-logout-btn"
                   onClick={handleLogout}
                   title="Logout"
-                  style={{ padding: '0.55rem' }}
+                  style={{ padding: '0.45rem', color: '#EF4444', borderColor: 'rgba(239, 68, 68, 0.3)' }}
                 >
                   <LogOut size={15} color="#EF4444" />
                 </button>

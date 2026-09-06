@@ -19,7 +19,8 @@ import {
   Phone,
   MapPin,
   Shield,
-  RefreshCw
+  RefreshCw,
+  LogOut
 } from 'lucide-react';
 import { api } from '../services/api';
 import { useTheme } from '../context/ThemeContext';
@@ -45,7 +46,7 @@ const getAvatarGradient = (name = '') => {
 
 export default function AdminDashboard({ onBackToStore, onViewOrder }) {
   const { isDark } = useTheme();
-  const { impersonate } = useAuth();
+  const { impersonate, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('orders'); // 'orders' | 'inventory' | 'users' | 'add_product'
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
@@ -499,10 +500,19 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
           gap: '1rem'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
           <button className="btn-auth" onClick={onBackToStore}>
             <ArrowLeft size={16} />
             <span>Storefront</span>
+          </button>
+          <button
+            className="btn-auth"
+            onClick={logout}
+            style={{ color: '#EF4444', borderColor: 'rgba(239, 68, 68, 0.3)' }}
+            title="Log Out of Account"
+          >
+            <LogOut size={16} color="#EF4444" />
+            <span>Logout</span>
           </button>
           <h1 className="admin-main-title" style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0 }}>
             Dark Store & Admin Hub
