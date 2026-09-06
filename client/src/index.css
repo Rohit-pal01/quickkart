@@ -1455,7 +1455,7 @@ body {
     display: contents;
   }
 
-  .brand-location-group {
+  .logo {
     order: 1;
     flex-shrink: 0;
   }
