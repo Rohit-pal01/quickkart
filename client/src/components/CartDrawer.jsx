@@ -80,7 +80,7 @@ export default function CartDrawer({ onProceedToPayment, onOpenAuth }) {
             </div>
           ) : (
             <>
-              {/* Zepto / Rapido Style Free Delivery Progress Tracker */}
+              {/* Dynamic Free Delivery Progress Tracker */}
               <div
                 style={{
                   background: subtotal >= 199 ? 'var(--primary-light)' : 'rgba(81, 226, 245, 0.12)',
