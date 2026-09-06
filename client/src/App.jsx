@@ -34,7 +34,7 @@ import {
 const CATEGORY_ITEMS = [
   { name: 'All', label: 'All Items', Icon: Layers, color: '#0b5e54', bg: 'rgba(81, 226, 245, 0.22)' },
   { name: 'Dairy & Breakfast', label: 'Dairy & Bread', Icon: Milk, color: '#0284C7', bg: 'rgba(157, 249, 239, 0.3)' },
-  { name: 'Fruits & Vegetables', label: 'Fresh Fruits', Icon: Apple, color: '#16A34A', bg: '#DCFCE7' },
+  { name: 'Fruits & Vegetables', label: 'Fresh Fruits & Vegetables', Icon: Apple, color: '#16A34A', bg: '#DCFCE7' },
   { name: 'Snacks & Munchies', label: 'Chips & Snacks', Icon: Cookie, color: '#9c384e', bg: 'rgba(255, 168, 182, 0.32)' },
   { name: 'Beverages', label: 'Cold Drinks', Icon: CupSoda, color: '#088395', bg: 'rgba(81, 226, 245, 0.25)' },
   { name: 'Instant Food', label: 'Instant Food', Icon: Utensils, color: '#704f57', bg: 'rgba(162, 128, 137, 0.22)' },
