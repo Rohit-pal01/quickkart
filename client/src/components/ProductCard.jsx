@@ -36,7 +36,7 @@ export default function ProductCard({ product, onOpenDetail }) {
       }}
     >
       <div className="product-img-box">
-        {/* ⚡ 8 MINS Badge (Blinkit style) */}
+        {/* ⚡ 8 MINS Delivery Badge */}
         <div className="eta-tag-pill">
           <Zap size={11} fill="#0C831F" color="#0C831F" />
           <span>8 MINS</span>
@@ -63,12 +63,6 @@ export default function ProductCard({ product, onOpenDetail }) {
         <h3 className="product-name" title={product.name}>
           {product.name}
         </h3>
-
-        {product.description && (
-          <p className="product-card-desc" title={product.description}>
-            {product.description}
-          </p>
-        )}
 
         <div className="product-footer">
           <div className="price-container">

@@ -49,28 +49,34 @@ export default function ProductDetailModal({ product, isOpen, onClose }) {
           {/* LEFT: Image & Badges */}
           <div className="pdm-image-col">
             <div className="pdm-image-card">
-              {/* ETA Pill */}
-              <div className="eta-tag-pill pdm-eta-tag">
-                <Zap size={13} fill="#0C831F" color="#0C831F" />
-                <span>8 MINS DELIVERY</span>
+              {/* Header Badges: ETA & Discount */}
+              <div className="pdm-top-badges">
+                <div className="pdm-eta-tag">
+                  <Zap size={13} fill="#0C831F" color="#0C831F" />
+                  <span>8 MINS DELIVERY</span>
+                </div>
+
+                {discountPercent > 0 ? (
+                  <div className="pdm-discount-pill">
+                    {discountPercent}% OFF
+                  </div>
+                ) : (
+                  <div />
+                )}
               </div>
 
-              {/* Discount Tag */}
-              {discountPercent > 0 && (
-                <div className="pdm-discount-pill">
-                  {discountPercent}% OFF
-                </div>
-              )}
-
-              <img
-                src={product.imageUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80'}
-                alt={product.name}
-                className="pdm-product-img"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80';
-                }}
-              />
+              {/* Product Image Container */}
+              <div className="pdm-product-img-wrap">
+                <img
+                  src={product.imageUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80'}
+                  alt={product.name}
+                  className="pdm-product-img"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80';
+                  }}
+                />
+              </div>
 
               {/* Veg Indicator Badge */}
               <div className="pdm-veg-mark">
