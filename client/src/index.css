@@ -953,7 +953,6 @@ body {
 .admin-table-container {
   width: 100%;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
   position: relative;
 }
 
@@ -1187,7 +1186,6 @@ body {
   .admin-tabs-bar {
     width: 100%;
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
     padding-bottom: 0.35rem;
     scrollbar-width: none;
     gap: 0.4rem;
