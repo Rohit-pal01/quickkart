@@ -26,9 +26,10 @@ export default function ProductDetailModal({ product, isOpen, onClose }) {
 
   const currentQty = getItemQty(product._id);
   const isOutOfStock = product.stock <= 0;
-  const mrp = Math.round(product.price * 1.18);
-  const discountPercent = Math.round(((mrp - product.price) / mrp) * 100);
-  const savings = mrp - product.price;
+  const hasDiscount = product.mrp && product.mrp > product.price;
+  const mrp = hasDiscount ? product.mrp : null;
+  const discountPercent = hasDiscount ? Math.round(((mrp - product.price) / mrp) * 100) : 0;
+  const savings = hasDiscount ? mrp - product.price : 0;
 
   return (
     <div className="modal-center-backdrop" onClick={onClose} role="dialog" aria-modal="true">
@@ -56,7 +57,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }) {
                   <span>8 MINS DELIVERY</span>
                 </div>
 
-                {discountPercent > 0 ? (
+                {hasDiscount ? (
                   <div className="pdm-discount-pill">
                     {discountPercent}% OFF
                   </div>
@@ -137,9 +138,11 @@ export default function ProductDetailModal({ product, isOpen, onClose }) {
             <div className="pdm-price-section">
               <div className="pdm-price-row">
                 <span className="pdm-current-price">₹{product.price}</span>
-                <span className="pdm-mrp-price">₹{mrp}</span>
-                {discountPercent > 0 && (
-                  <span className="pdm-save-tag">SAVE ₹{savings}</span>
+                {hasDiscount && (
+                  <>
+                    <span className="pdm-mrp-price">₹{mrp}</span>
+                    <span className="pdm-save-tag">SAVE ₹{savings}</span>
+                  </>
                 )}
               </div>
               <span className="pdm-tax-note">(Inclusive of all taxes)</span>

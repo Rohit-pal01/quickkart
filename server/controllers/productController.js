@@ -132,7 +132,7 @@ const getCategories = async (req, res, next) => {
 // @access  Private (Admin only)
 const createProduct = async (req, res, next) => {
   try {
-    const { name, description, category, price, unit, stock, imageUrl, shelfLife, dietType } = req.body;
+    const { name, description, category, price, mrp, unit, stock, imageUrl, shelfLife, dietType } = req.body;
 
     if (!name || !category || price === undefined) {
       return res.status(400).json({
@@ -141,11 +141,22 @@ const createProduct = async (req, res, next) => {
       });
     }
 
+    const numericPrice = Number(price);
+    const numericMrp = mrp !== undefined && mrp !== '' ? Number(mrp) : numericPrice;
+
+    if (numericMrp < numericPrice) {
+      return res.status(400).json({
+        success: false,
+        message: 'Selling price cannot exceed Maximum Retail Price (MRP)'
+      });
+    }
+
     const product = await Product.create({
       name,
       description,
       category,
-      price: Number(price),
+      price: numericPrice,
+      mrp: numericMrp,
       unit: unit || '1 unit',
       stock: Number(stock) || 0,
       imageUrl: imageUrl || '',
@@ -178,8 +189,18 @@ const updateProduct = async (req, res, next) => {
       });
     }
 
+    const targetPrice = req.body.price !== undefined ? Number(req.body.price) : product.price;
+    const targetMrp = req.body.mrp !== undefined && req.body.mrp !== '' ? Number(req.body.mrp) : (product.mrp || targetPrice);
+
+    if (targetMrp < targetPrice) {
+      return res.status(400).json({
+        success: false,
+        message: 'Selling price cannot exceed Maximum Retail Price (MRP)'
+      });
+    }
+
     const fieldsToUpdate = [
-      'name', 'description', 'category', 'price', 'unit', 'stock', 'imageUrl', 'shelfLife', 'dietType', 'isActive'
+      'name', 'description', 'category', 'price', 'mrp', 'unit', 'stock', 'imageUrl', 'shelfLife', 'dietType', 'isActive'
     ];
 
     fieldsToUpdate.forEach(field => {

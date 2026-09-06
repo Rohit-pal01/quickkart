@@ -203,10 +203,17 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
   const handleAddProduct = async (e) => {
     e.preventDefault();
     setFormMsg(null);
+    const priceNum = Number(newProduct.price);
+    const mrpNum = newProduct.mrp !== '' && newProduct.mrp !== undefined ? Number(newProduct.mrp) : undefined;
+    if (mrpNum !== undefined && !isNaN(mrpNum) && priceNum > mrpNum) {
+      setFormMsg({ type: 'error', text: `Selling price (₹${priceNum}) cannot exceed Maximum Retail Price (MRP ₹${mrpNum}). Retail law forbids selling above printed MRP.` });
+      return;
+    }
     try {
       const res = await api.createProduct({
         ...newProduct,
-        price: Number(newProduct.price),
+        price: priceNum,
+        mrp: mrpNum,
         stock: Number(newProduct.stock)
       });
       if (res.success) {
@@ -215,6 +222,7 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
           name: '',
           category: 'Dairy & Breakfast',
           price: '',
+          mrp: '',
           unit: '',
           stock: '',
           dietType: 'Vegetarian',
@@ -251,12 +259,19 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
     if (!editingProduct) return;
+    const priceNum = Number(editingProduct.price);
+    const mrpNum = editingProduct.mrp !== '' && editingProduct.mrp !== undefined && editingProduct.mrp !== null ? Number(editingProduct.mrp) : undefined;
+    if (mrpNum !== undefined && !isNaN(mrpNum) && priceNum > mrpNum) {
+      alert(`Selling price (₹${priceNum}) cannot exceed Maximum Retail Price (MRP ₹${mrpNum}). Retail law forbids selling above printed MRP.`);
+      return;
+    }
     setEditLoading(true);
     try {
       const res = await api.updateProduct(editingProduct._id, {
         name: editingProduct.name,
         category: editingProduct.category,
-        price: Number(editingProduct.price),
+        price: priceNum,
+        mrp: mrpNum,
         unit: editingProduct.unit,
         stock: Number(editingProduct.stock),
         dietType: editingProduct.dietType || 'Vegetarian',
@@ -267,7 +282,7 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
       });
       if (res.success) {
         setProducts(prev =>
-          prev.map(p => (p._id === editingProduct._id ? (res.product || { ...p, ...editingProduct }) : p))
+          prev.map(p => (p._id === editingProduct._id ? (res.product || { ...p, ...editingProduct, mrp: mrpNum }) : p))
         );
         setEditingProduct(null);
       } else {
@@ -999,7 +1014,14 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
                         </div>
                       </td>
                       <td>{p.category}</td>
-                      <td style={{ fontWeight: 800 }}>₹{p.price}</td>
+                      <td style={{ fontWeight: 800 }}>
+                        ₹{p.price}
+                        {p.mrp && p.mrp > p.price && (
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textDecoration: 'line-through', marginLeft: '0.35rem', fontWeight: 500 }}>
+                            ₹{p.mrp}
+                          </span>
+                        )}
+                      </td>
                       <td>{p.unit}</td>
                       <td>
                         <span
@@ -1110,7 +1132,14 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px dashed var(--border-light)', paddingTop: '0.5rem' }}>
                     <div>
                       <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 700 }}>PRICE / UNIT</div>
-                      <div style={{ fontSize: '1.1rem', fontWeight: 900, color: 'var(--text-main)' }}>₹{p.price}</div>
+                      <div style={{ fontSize: '1.1rem', fontWeight: 900, color: 'var(--text-main)' }}>
+                        ₹{p.price}
+                        {p.mrp && p.mrp > p.price && (
+                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textDecoration: 'line-through', marginLeft: '0.35rem', fontWeight: 500 }}>
+                            ₹{p.mrp}
+                          </span>
+                        )}
+                      </div>
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
@@ -1756,7 +1785,7 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
                 <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Category</label>
                 <select
                   className="search-input"
-                  style={{ borderRadius: 'var(--radius-md)', paddingLeft: '1rem' }}
+                  style={{ borderRadius: 'var(--radius-md)', paddingLeft: '1rem', width: '100%' }}
                   value={newProduct.category}
                   onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
                 >
@@ -1770,44 +1799,109 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Price (₹)</label>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Unit / Weight</label>
                 <input
-                  type="number"
-                  required
+                  type="text"
                   className="search-input"
-                  style={{ borderRadius: 'var(--radius-md)', paddingLeft: '1rem' }}
-                  placeholder="e.g. 75"
-                  value={newProduct.price}
-                  onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+                  style={{ borderRadius: 'var(--radius-md)', paddingLeft: '1rem', width: '100%' }}
+                  placeholder="e.g. 500 ml / 1 kg"
+                  value={newProduct.unit}
+                  onChange={(e) => setNewProduct({ ...newProduct, unit: e.target.value })}
                 />
               </div>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.9rem' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Unit / Weight</label>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>
+                  Selling Price (₹) <span style={{ color: 'var(--primary)' }}>*</span>
+                </label>
                 <input
-                  type="text"
+                  type="number"
+                  required
+                  min="0"
+                  step="any"
                   className="search-input"
-                  style={{ borderRadius: 'var(--radius-md)', paddingLeft: '1rem' }}
-                  placeholder="e.g. 500 ml / 1 kg"
-                  value={newProduct.unit}
-                  onChange={(e) => setNewProduct({ ...newProduct, unit: e.target.value })}
+                  style={{
+                    borderRadius: 'var(--radius-md)',
+                    paddingLeft: '1rem',
+                    width: '100%',
+                    borderColor: newProduct.mrp && Number(newProduct.price) > Number(newProduct.mrp) ? '#EF4444' : undefined
+                  }}
+                  placeholder="e.g. 75"
+                  value={newProduct.price}
+                  onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Stock Quantity</label>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>
+                  MRP (₹) <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 400 }}>(Optional - for discount tag)</span>
+                </label>
                 <input
                   type="number"
-                  required
+                  min="0"
+                  step="any"
                   className="search-input"
-                  style={{ borderRadius: 'var(--radius-md)', paddingLeft: '1rem' }}
-                  placeholder="e.g. 100"
-                  value={newProduct.stock}
-                  onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })}
+                  style={{
+                    borderRadius: 'var(--radius-md)',
+                    paddingLeft: '1rem',
+                    width: '100%',
+                    borderColor: newProduct.mrp && Number(newProduct.price) > Number(newProduct.mrp) ? '#EF4444' : undefined
+                  }}
+                  placeholder="e.g. 90 (Leave blank if no discount)"
+                  value={newProduct.mrp || ''}
+                  onChange={(e) => setNewProduct({ ...newProduct, mrp: e.target.value })}
                 />
               </div>
+            </div>
+
+            {/* Live Pricing Feedback */}
+            {newProduct.mrp && Number(newProduct.price) > Number(newProduct.mrp) && (
+              <div style={{
+                padding: '0.55rem 0.8rem',
+                borderRadius: 'var(--radius-md)',
+                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                color: '#EF4444',
+                fontSize: '0.78rem',
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem'
+              }}>
+                ⚠️ Selling price (₹{newProduct.price}) cannot exceed Maximum Retail Price (MRP ₹{newProduct.mrp}). Retail law prohibits selling above printed MRP.
+              </div>
+            )}
+            {newProduct.mrp && Number(newProduct.price) < Number(newProduct.mrp) && Number(newProduct.price) > 0 && (
+              <div style={{
+                padding: '0.55rem 0.8rem',
+                borderRadius: 'var(--radius-md)',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                border: '1px solid rgba(16, 185, 129, 0.3)',
+                color: '#10B981',
+                fontSize: '0.78rem',
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem'
+              }}>
+                ✨ Customers will see: {Math.round(((Number(newProduct.mrp) - Number(newProduct.price)) / Number(newProduct.mrp)) * 100)}% OFF (Save ₹{(Number(newProduct.mrp) - Number(newProduct.price)).toFixed(0)})
+              </div>
+            )}
+
+            <div>
+              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Stock Quantity</label>
+              <input
+                type="number"
+                required
+                min="0"
+                className="search-input"
+                style={{ borderRadius: 'var(--radius-md)', paddingLeft: '1rem', width: '100%' }}
+                placeholder="e.g. 100"
+                value={newProduct.stock}
+                onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })}
+              />
             </div>
 
             <div>
@@ -1935,7 +2029,7 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
                 />
               </div>
 
-              {/* Category & Price */}
+              {/* Category & Unit */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.9rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Category</label>
@@ -1951,23 +2045,6 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Price (₹)</label>
-                  <input
-                    type="number"
-                    required
-                    min="0"
-                    step="any"
-                    className="search-input"
-                    style={{ borderRadius: 'var(--radius-md)', paddingLeft: '1rem', width: '100%' }}
-                    value={editingProduct.price ?? ''}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
-                  />
-                </div>
-              </div>
-
-              {/* Unit & Stock */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.9rem' }}>
-                <div>
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Unit / Weight</label>
                   <input
                     type="text"
@@ -1978,18 +2055,98 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
                     onChange={(e) => setEditingProduct({ ...editingProduct, unit: e.target.value })}
                   />
                 </div>
+              </div>
+
+              {/* Price & MRP */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.9rem' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Available Stock</label>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>
+                    Selling Price (₹) <span style={{ color: 'var(--primary)' }}>*</span>
+                  </label>
                   <input
                     type="number"
                     required
                     min="0"
+                    step="any"
                     className="search-input"
-                    style={{ borderRadius: 'var(--radius-md)', paddingLeft: '1rem', width: '100%' }}
-                    value={editingProduct.stock ?? ''}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, stock: e.target.value })}
+                    style={{
+                      borderRadius: 'var(--radius-md)',
+                      paddingLeft: '1rem',
+                      width: '100%',
+                      borderColor: editingProduct.mrp && Number(editingProduct.price) > Number(editingProduct.mrp) ? '#EF4444' : undefined
+                    }}
+                    value={editingProduct.price ?? ''}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
                   />
                 </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>
+                    MRP (₹) <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 400 }}>(Optional - for discount tag)</span>
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="any"
+                    className="search-input"
+                    style={{
+                      borderRadius: 'var(--radius-md)',
+                      paddingLeft: '1rem',
+                      width: '100%',
+                      borderColor: editingProduct.mrp && Number(editingProduct.price) > Number(editingProduct.mrp) ? '#EF4444' : undefined
+                    }}
+                    placeholder="Leave blank if no discount"
+                    value={editingProduct.mrp ?? ''}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, mrp: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              {/* Live Pricing Feedback */}
+              {editingProduct.mrp && Number(editingProduct.price) > Number(editingProduct.mrp) && (
+                <div style={{
+                  padding: '0.55rem 0.8rem',
+                  borderRadius: 'var(--radius-md)',
+                  backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  color: '#EF4444',
+                  fontSize: '0.78rem',
+                  fontWeight: 600,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem'
+                }}>
+                  ⚠️ Selling price (₹{editingProduct.price}) cannot exceed Maximum Retail Price (MRP ₹{editingProduct.mrp}). Retail law prohibits selling above printed MRP.
+                </div>
+              )}
+              {editingProduct.mrp && Number(editingProduct.price) < Number(editingProduct.mrp) && Number(editingProduct.price) > 0 && (
+                <div style={{
+                  padding: '0.55rem 0.8rem',
+                  borderRadius: 'var(--radius-md)',
+                  backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                  border: '1px solid rgba(16, 185, 129, 0.3)',
+                  color: '#10B981',
+                  fontSize: '0.78rem',
+                  fontWeight: 600,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem'
+                }}>
+                  ✨ Customers will see: {Math.round(((Number(editingProduct.mrp) - Number(editingProduct.price)) / Number(editingProduct.mrp)) * 100)}% OFF (Save ₹{(Number(editingProduct.mrp) - Number(editingProduct.price)).toFixed(0)})
+                </div>
+              )}
+
+              {/* Available Stock */}
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>Available Stock</label>
+                <input
+                  type="number"
+                  required
+                  min="0"
+                  className="search-input"
+                  style={{ borderRadius: 'var(--radius-md)', paddingLeft: '1rem', width: '100%' }}
+                  value={editingProduct.stock ?? ''}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, stock: e.target.value })}
+                />
               </div>
 
               {/* Image URL with live preview */}

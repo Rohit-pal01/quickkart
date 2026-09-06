@@ -14,7 +14,7 @@ const seedData = async () => {
     console.log('Clearing existing product catalog...');
     await Product.deleteMany({});
 
-    console.log('Seeding enriched Blinkit/Zepto quick-commerce catalog...');
+    console.log('Seeding enriched quick-commerce product catalog...');
     const inserted = await Product.insertMany(sampleProducts);
     console.log(`Successfully seeded ${inserted.length} products!`);
 

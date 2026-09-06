@@ -7,9 +7,10 @@ export default function ProductCard({ product, onOpenDetail }) {
   const currentQty = getItemQty(product._id);
   const isOutOfStock = product.stock <= 0;
 
-  // Realistic MRP markup for quick-commerce discount badge
-  const mrp = Math.round(product.price * 1.18);
-  const discountPercent = Math.round(((mrp - product.price) / mrp) * 100);
+  // Dynamic MRP & discount calculation
+  const hasDiscount = product.mrp && product.mrp > product.price;
+  const mrp = hasDiscount ? product.mrp : null;
+  const discountPercent = hasDiscount ? Math.round(((mrp - product.price) / mrp) * 100) : 0;
 
   const handleCardClick = (e) => {
     // Prevent opening modal if clicking ADD or quantity counter buttons
@@ -67,14 +68,16 @@ export default function ProductCard({ product, onOpenDetail }) {
         <div className="product-footer">
           <div className="price-container">
             <div className="product-price">₹{product.price}</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-              <span className="mrp-strikethrough">₹{mrp}</span>
-              {discountPercent > 0 && (
-                <span className="discount-badge">
-                  {discountPercent}% OFF
-                </span>
-              )}
-            </div>
+            {hasDiscount && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                <span className="mrp-strikethrough">₹{mrp}</span>
+                {discountPercent > 0 && (
+                  <span className="discount-badge">
+                    {discountPercent}% OFF
+                  </span>
+                )}
+              </div>
+            )}
           </div>
 
           {isOutOfStock ? (
