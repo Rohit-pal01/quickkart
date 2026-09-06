@@ -67,18 +67,22 @@ export default function Navbar({
             className="delivery-location-pill"
             onClick={onOpenLocation}
             style={{ cursor: 'pointer' }}
-            title="Click to change your delivery city or address"
+            title={`Delivering to: ${activeAddress?.line1 || 'Sector 62'} (Click to change)`}
           >
             <div className="delivery-pill-top">
               <div className="eta-badge-pill">
-                <Zap size={9} fill="#FFFFFF" color="#FFFFFF" />
+                <Zap size={8} fill="#FFFFFF" color="#FFFFFF" />
                 <span>8 MINS</span>
               </div>
             </div>
             <div className="delivery-pill-bottom">
-              <MapPin size={10} color="#0C831F" style={{ flexShrink: 0 }} />
-              <span className="address-text">{activeAddress ? activeAddress.line1 : 'Select Location'}</span>
-              <ChevronDown size={10} color="var(--text-muted)" style={{ flexShrink: 0 }} />
+              <MapPin size={9} color="#0C831F" style={{ flexShrink: 0 }} />
+              <span className="address-text">
+                {activeAddress?.line1
+                  ? activeAddress.line1.split(',')[0].trim()
+                  : 'Sector 62'}
+              </span>
+              <ChevronDown size={9} color="var(--text-muted)" style={{ flexShrink: 0 }} />
             </div>
           </div>
         </div>

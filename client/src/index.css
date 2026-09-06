@@ -176,14 +176,15 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 0.12rem;
-  padding: 0.22rem 0.55rem;
+  gap: 0.1rem;
+  padding: 0.16rem 0.42rem;
   background: rgba(12, 131, 31, 0.08);
   border: 1px solid rgba(12, 131, 31, 0.24);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: var(--transition);
-  min-width: 0;
+  max-width: 110px;
+  box-sizing: border-box;
   flex-shrink: 0;
 }
 
@@ -200,20 +201,20 @@ body {
 .delivery-pill-top {
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.2rem;
 }
 
 .eta-badge-pill {
   background: #0C831F;
   color: #ffffff;
-  font-size: 0.62rem;
+  font-size: 0.58rem;
   font-weight: 900;
-  padding: 0.08rem 0.36rem;
+  padding: 0.06rem 0.3rem;
   border-radius: 3px;
   display: inline-flex;
   align-items: center;
-  gap: 0.2rem;
-  letter-spacing: 0.25px;
+  gap: 0.18rem;
+  letter-spacing: 0.2px;
   box-shadow: 0 1px 2px rgba(12, 131, 31, 0.25);
   flex-shrink: 0;
 }
@@ -221,15 +222,16 @@ body {
 .delivery-pill-bottom {
   display: flex;
   align-items: center;
-  gap: 0.2rem;
+  gap: 0.18rem;
+  width: 100%;
   min-width: 0;
   line-height: 1.2;
 }
 
 .delivery-pill-bottom .address-text {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   color: var(--text-muted);
-  max-width: 140px;
+  max-width: 70px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1575,10 +1577,9 @@ body {
   .brand-location-group {
     display: flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: 0.38rem;
     min-width: 0;
     flex: 1 1 auto;
-    overflow: hidden;
   }
 
   .logo {
@@ -1599,14 +1600,15 @@ body {
 
   /* Delivery Address & 8 MINS pill right side of QuickKart on mobile */
   .delivery-location-pill {
-    padding: 0.18rem 0.45rem;
-    max-width: 145px;
+    padding: 0.14rem 0.36rem;
+    max-width: 98px;
     border-radius: var(--radius-sm);
+    flex-shrink: 0;
   }
 
   .delivery-pill-bottom .address-text {
-    max-width: 98px;
-    font-size: 0.68rem;
+    max-width: 60px;
+    font-size: 0.65rem;
   }
 
   .nav-actions {
@@ -1951,9 +1953,15 @@ body {
     border-radius: var(--radius-sm);
   }
 
+  .delivery-location-pill {
+    padding: 0.12rem 0.32rem;
+    max-width: 92px;
+  }
+
+  .delivery-pill-bottom .address-text,
   .address-text {
-    max-width: 95px;
-    font-size: 0.68rem;
+    max-width: 56px;
+    font-size: 0.64rem;
   }
 
   .logo-brand-text {
@@ -1976,9 +1984,15 @@ body {
     gap: 0.25rem;
   }
 
+  .delivery-location-pill {
+    padding: 0.1rem 0.28rem;
+    max-width: 86px;
+  }
+
+  .delivery-pill-bottom .address-text,
   .address-text {
-    max-width: 78px;
-    font-size: 0.65rem;
+    max-width: 50px;
+    font-size: 0.62rem;
   }
 
   .logo {
