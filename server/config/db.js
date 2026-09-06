@@ -1,107 +1,17 @@
 const mongoose = require('mongoose');
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+require('dotenv').config();
 
 const autoSeedIfEmpty = async () => {
   try {
     const Product = require('../models/Product');
     const User = require('../models/User');
+    const sampleProducts = require('../seed/catalog');
 
     const count = await Product.countDocuments();
     if (count === 0) {
-      console.log('⚡ Initializing catalog with sample quick-commerce products...');
-      // Sample products seed
-      const sampleProducts = [
-        {
-          name: 'Amul Taaza Homogenised Toned Milk',
-          description: 'Fresh and pure toned milk, fortified with Vitamin A and D.',
-          category: 'Dairy & Breakfast',
-          price: 54,
-          unit: '1 L',
-          stock: 120,
-          imageUrl: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=600&q=80',
-          isActive: true
-        },
-        {
-          name: 'Amul Salted Butter',
-          description: 'Delicious creamy salted butter made from pure cow milk.',
-          category: 'Dairy & Breakfast',
-          price: 58,
-          unit: '100 g',
-          stock: 90,
-          imageUrl: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=600&q=80',
-          isActive: true
-        },
-        {
-          name: 'Farm Fresh Brown Eggs',
-          description: 'Nutrient-rich antibiotic-free farm fresh brown eggs packed with protein.',
-          category: 'Dairy & Breakfast',
-          price: 95,
-          unit: '6 pcs',
-          stock: 80,
-          imageUrl: 'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=600&q=80',
-          isActive: true
-        },
-        {
-          name: 'Fresh Shimla Apples',
-          description: 'Crisp, sweet and juicy premium quality red apples.',
-          category: 'Fruits & Vegetables',
-          price: 140,
-          unit: '500 g',
-          stock: 65,
-          imageUrl: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=600&q=80',
-          isActive: true
-        },
-        {
-          name: 'Robusta Golden Bananas',
-          description: 'Naturally ripened sweet bananas, high in potassium and fiber.',
-          category: 'Fruits & Vegetables',
-          price: 45,
-          unit: '1 kg',
-          stock: 150,
-          imageUrl: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=600&q=80',
-          isActive: true
-        },
-        {
-          name: 'Lay\'s India\'s Magic Masala Chips',
-          description: 'Spicy, crunchy potato chips seasoned with Indian spices.',
-          category: 'Snacks & Munchies',
-          price: 20,
-          unit: '50 g',
-          stock: 200,
-          imageUrl: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=600&q=80',
-          isActive: true
-        },
-        {
-          name: 'Coca-Cola Zero Sugar Can',
-          description: 'Crisp, refreshing taste of Coca-Cola with zero sugar.',
-          category: 'Beverages',
-          price: 40,
-          unit: '300 ml',
-          stock: 160,
-          imageUrl: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80',
-          isActive: true
-        },
-        {
-          name: 'Maggi 2-Minute Masala Noodles',
-          description: 'Favorite Indian instant noodles with authentic tastemaker.',
-          category: 'Instant Food',
-          price: 56,
-          unit: 'Pack of 4',
-          stock: 180,
-          imageUrl: 'https://images.unsplash.com/photo-1612927601601-6638404737ce?auto=format&fit=crop&w=600&q=80',
-          isActive: true
-        },
-        {
-          name: 'Whole Wheat Fresh Bread',
-          description: '100% whole wheat bread loaf baked fresh daily.',
-          category: 'Bakery',
-          price: 55,
-          unit: '350 g',
-          stock: 70,
-          imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80',
-          isActive: true
-        }
-      ];
-
+      console.log('⚡ Initializing catalog with full quick-commerce products catalog...');
       await Product.insertMany(sampleProducts);
       console.log(`✅ Preloaded ${sampleProducts.length} items into catalog.`);
 
@@ -137,14 +47,14 @@ const connectDB = async () => {
   const targetUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/quickkart';
 
   try {
-    // Attempt standard connection with 3-second timeout
+    // Attempt standard connection with 5-second timeout
     const conn = await mongoose.connect(targetUri, {
-      serverSelectionTimeoutMS: 3000
+      serverSelectionTimeoutMS: 5000
     });
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
     await autoSeedIfEmpty();
   } catch (error) {
-    console.warn(`⚠️  Local MongoDB at ${targetUri} was unreachable (${error.message}).`);
+    console.warn(`⚠️  MongoDB connection at ${targetUri} failed (${error.message}).`);
     console.log('🚀 Activating embedded in-memory MongoDB for instant zero-config development...');
 
     try {
@@ -155,7 +65,7 @@ const connectDB = async () => {
       const conn = await mongoose.connect(memUri);
       console.log(`✅ In-Memory MongoDB Connected at: ${memUri}`);
       console.log('💡 Note: Data is saved in memory while the server runs.');
-      console.log('   To connect to a persistent database, add your MongoDB Atlas URI in server/.env (MONGO_URI=mongodb+srv://...)');
+      console.log('   To connect to a persistent database, verify your MongoDB Atlas URI in server/.env (MONGO_URI=mongodb+srv://...)');
 
       await autoSeedIfEmpty();
     } catch (memError) {
