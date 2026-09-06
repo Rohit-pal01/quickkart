@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Package, Truck, CheckCircle2, Clock, MapPin, RefreshCw, XCircle, ArrowLeft, ShieldCheck, ShoppingBag, User } from 'lucide-react';
+import { Package, Truck, CheckCircle2, Clock, MapPin, RefreshCw, XCircle, ArrowLeft, ShieldCheck, ShoppingBag, User, ChevronDown, History, Search } from 'lucide-react';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
@@ -10,6 +10,8 @@ export default function OrderTracking({ orderId, onBackToStore, onOpenAuth }) {
   const [activeId, setActiveId] = useState(orderId || null);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
+  const [isOrderMenuOpen, setIsOrderMenuOpen] = useState(false);
+  const [orderSearchTerm, setOrderSearchTerm] = useState('');
 
   // Clear data when user logs out or account switches
   useEffect(() => {
@@ -214,15 +216,17 @@ export default function OrderTracking({ orderId, onBackToStore, onOpenAuth }) {
         )}
       </div>
 
-      {/* My Orders History Switcher */}
+      {/* Professional Order History Bar & Dropdown Selector */}
       {myOrders.length > 1 && (
         <div
           style={{
+            position: 'relative',
             background: 'var(--bg-card)',
             borderRadius: 'var(--radius-lg)',
             border: '1px solid var(--border-light)',
-            padding: '0.75rem 1.25rem',
+            padding: '0.85rem 1.25rem',
             marginBottom: '1rem',
+            boxShadow: 'var(--shadow-sm)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -230,37 +234,182 @@ export default function OrderTracking({ orderId, onBackToStore, onOpenAuth }) {
             gap: '0.75rem'
           }}
         >
-          <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-muted)' }}>
-            Switch Order:
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div
+              style={{
+                width: '34px',
+                height: '34px',
+                borderRadius: '50%',
+                background: '#ECFDF5',
+                color: '#059669',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+              }}
+            >
+              <History size={17} />
+            </div>
+            <div>
+              <div style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Order History ({myOrders.length} Total)
+              </div>
+              <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--text-main)', marginTop: '0.1rem' }}>
+                Viewing #{order?.orderId} • ₹{order?.totalAmount}
+              </div>
+            </div>
+          </div>
 
-          <div style={{ display: 'flex', gap: '0.45rem', overflowX: 'auto', maxWidth: '100%', paddingBottom: '0.2rem' }}>
-            {myOrders.map((o) => {
-              const isSelected = order && order.orderId === o.orderId;
-              return (
-                <button
-                  key={o._id}
-                  onClick={() => {
-                    setActiveId(o.orderId);
-                    setOrder(o);
-                  }}
+          {/* Switch Order Dropdown Trigger Button */}
+          <div style={{ position: 'relative' }}>
+            <button
+              onClick={() => setIsOrderMenuOpen(!isOrderMenuOpen)}
+              style={{
+                background: isOrderMenuOpen ? 'var(--bg-subtle)' : 'var(--bg-card)',
+                border: '1px solid var(--border-light)',
+                borderRadius: 'var(--radius-md)',
+                padding: '0.5rem 0.95rem',
+                fontSize: '0.82rem',
+                fontWeight: 700,
+                color: 'var(--text-main)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                boxShadow: isOrderMenuOpen ? 'none' : '0 1px 3px rgba(0,0,0,0.05)'
+              }}
+            >
+              <History size={14} color="#10B981" />
+              <span>Switch Order ({myOrders.length})</span>
+              <ChevronDown
+                size={15}
+                style={{
+                  transform: isOrderMenuOpen ? 'rotate(180deg)' : 'none',
+                  transition: 'transform 0.2s ease',
+                  color: 'var(--text-muted)'
+                }}
+              />
+            </button>
+
+            {/* Dropdown Menu Popup */}
+            {isOrderMenuOpen && (
+              <>
+                <div
+                  style={{ position: 'fixed', inset: 0, zIndex: 90 }}
+                  onClick={() => setIsOrderMenuOpen(false)}
+                />
+                <div
                   style={{
-                    padding: '0.35rem 0.75rem',
-                    fontSize: '0.75rem',
-                    fontWeight: isSelected ? 800 : 600,
-                    borderRadius: 'var(--radius-full)',
-                    background: isSelected ? '#10B981' : 'var(--bg-subtle)',
-                    color: isSelected ? '#FFFFFF' : 'var(--text-main)',
-                    border: isSelected ? '1px solid #059669' : '1px solid var(--border-light)',
-                    cursor: 'pointer',
-                    whiteSpace: 'nowrap',
-                    transition: 'var(--transition)'
+                    position: 'absolute',
+                    top: 'calc(100% + 6px)',
+                    right: 0,
+                    width: '350px',
+                    maxWidth: '90vw',
+                    background: 'var(--bg-card)',
+                    border: '1px solid var(--border-light)',
+                    borderRadius: 'var(--radius-lg)',
+                    boxShadow: '0 14px 36px rgba(0,0,0,0.18)',
+                    zIndex: 100,
+                    overflow: 'hidden',
+                    animation: 'fadeIn 0.15s ease'
                   }}
                 >
-                  #{o.orderId} • ₹{o.totalAmount}
-                </button>
-              );
-            })}
+                  <div style={{ padding: '0.75rem', borderBottom: '1px solid var(--border-light)', background: 'var(--bg-subtle)' }}>
+                    <div style={{ position: 'relative' }}>
+                      <Search size={14} style={{ position: 'absolute', left: '0.65rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                      <input
+                        type="text"
+                        placeholder="Search by order ID..."
+                        value={orderSearchTerm}
+                        onChange={(e) => setOrderSearchTerm(e.target.value)}
+                        className="search-input"
+                        style={{
+                          width: '100%',
+                          paddingLeft: '2rem',
+                          paddingRight: '0.65rem',
+                          height: '32px',
+                          fontSize: '0.8rem',
+                          borderRadius: 'var(--radius-sm)',
+                          background: 'var(--bg-card)'
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ maxHeight: '290px', overflowY: 'auto', padding: '0.35rem' }}>
+                    {myOrders
+                      .filter(o => !orderSearchTerm || o.orderId.toLowerCase().includes(orderSearchTerm.toLowerCase()))
+                      .map((o) => {
+                        const isSelected = order && order.orderId === o.orderId;
+                        const isDelivered = o.status === 'DELIVERED';
+                        const isCancelled = o.status === 'CANCELLED';
+
+                        return (
+                          <div
+                            key={o._id || o.orderId}
+                            onClick={() => {
+                              setActiveId(o.orderId);
+                              setOrder(o);
+                              setIsOrderMenuOpen(false);
+                            }}
+                            style={{
+                              padding: '0.65rem 0.8rem',
+                              borderRadius: 'var(--radius-md)',
+                              background: isSelected ? 'rgba(16, 185, 129, 0.08)' : 'transparent',
+                              border: isSelected ? '1px solid rgba(16, 185, 129, 0.25)' : '1px solid transparent',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              marginBottom: '0.2rem',
+                              transition: 'all 0.12s ease'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (!isSelected) e.currentTarget.style.background = 'var(--bg-subtle)';
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!isSelected) e.currentTarget.style.background = 'transparent';
+                            }}
+                          >
+                            <div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                <span style={{ fontWeight: 800, fontSize: '0.86rem', color: isSelected ? '#059669' : 'var(--text-main)' }}>
+                                  #{o.orderId}
+                                </span>
+                                <span
+                                  style={{
+                                    fontSize: '0.68rem',
+                                    fontWeight: 700,
+                                    padding: '0.12rem 0.45rem',
+                                    borderRadius: '9999px',
+                                    background: isCancelled ? '#FEE2E2' : isDelivered ? '#ECFDF5' : '#FEF3C7',
+                                    color: isCancelled ? '#B91C1C' : isDelivered ? '#047857' : '#B45309'
+                                  }}
+                                >
+                                  {o.status}
+                                </span>
+                              </div>
+                              <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                                {o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-IN', {
+                                  day: 'numeric',
+                                  month: 'short',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                }) : 'Recent'} • ₹{o.totalAmount}
+                              </div>
+                            </div>
+
+                            {isSelected && (
+                              <CheckCircle2 size={16} color="#10B981" />
+                            )}
+                          </div>
+                        );
+                      })}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
