@@ -134,7 +134,7 @@ body {
   order: 1;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.85rem;
   flex-shrink: 0;
   white-space: nowrap;
 }
@@ -148,6 +148,14 @@ body {
   font-size: 1.45rem;
   color: var(--text-main);
   letter-spacing: -0.6px;
+  user-select: none;
+}
+
+.logo-brand-text {
+  font-weight: 900;
+  font-size: 1.4rem;
+  color: var(--text-main);
+  letter-spacing: -0.5px;
 }
 
 .logo-badge {
@@ -160,30 +168,43 @@ body {
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 6px rgba(12, 131, 31, 0.35);
+  flex-shrink: 0;
 }
 
 .delivery-eta-badge {
-  background: rgba(157, 249, 239, 0.18);
-  border: 1.5px solid var(--blue-green);
+  background: rgba(12, 131, 31, 0.08);
+  border: 1.5px solid rgba(12, 131, 31, 0.24);
   padding: 0.32rem 0.75rem;
   border-radius: var(--radius-md);
   display: flex;
   flex-direction: column;
   transition: var(--transition);
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
 .delivery-eta-badge:hover {
-  background: rgba(157, 249, 239, 0.32);
-  border-color: var(--bright-blue);
+  background: rgba(12, 131, 31, 0.15);
+  border-color: #0C831F;
+}
+
+[data-theme="dark"] .delivery-eta-badge {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.3);
 }
 
 .eta-time {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 900;
-  color: #0a5f55;
+  color: #0C831F;
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  line-height: 1.1;
+}
+
+[data-theme="dark"] .eta-time {
+  color: #34D399;
 }
 
 .address-line {
@@ -191,6 +212,7 @@ body {
   align-items: center;
   gap: 0.2rem;
   min-width: 0;
+  line-height: 1.2;
 }
 
 .address-text {
@@ -443,6 +465,13 @@ body {
 .profile-dropdown-item.logout:hover {
   background: rgba(239, 68, 68, 0.1);
   color: #DC2626;
+}
+
+/* Responsive visibility utilities */
+@media (max-width: 900px) {
+  .desktop-only {
+    display: none !important;
+  }
 }
 
 .cart-btn,
@@ -1326,12 +1355,12 @@ body {
 
 /* Dark mode form inputs & cards enhancements */
 [data-theme="dark"] .delivery-eta-badge {
-  background: rgba(81, 226, 245, 0.1);
-  border-color: #0369A1;
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.3);
 }
 
 [data-theme="dark"] .eta-time {
-  color: #38BDF8;
+  color: #34D399;
 }
 
 [data-theme="dark"] .address-line {
@@ -1607,20 +1636,20 @@ body {
   }
 
   .brand-section {
-    gap: 0.45rem;
+    gap: 0.5rem;
     flex: 1 1 auto;
     min-width: 0;
     overflow: hidden;
   }
 
   .delivery-eta-badge {
-    min-width: 0;
-    flex-shrink: 1;
-    overflow: hidden;
+    padding: 0.25rem 0.55rem;
+    max-width: 155px;
+    flex-shrink: 0;
   }
 
   .logo {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     flex-shrink: 0;
   }
 
@@ -1811,99 +1840,147 @@ body {
 
 @media (max-width: 600px) {
   .navbar {
-    padding: 0.45rem 0.55rem;
-    gap: 0.35rem;
-    overflow: hidden;
+    padding: 0.45rem 0.65rem;
+    gap: 0.4rem;
   }
 
   .navbar-top-bar {
     gap: 0.35rem;
     width: 100%;
     order: 1;
-    flex-wrap: nowrap;
-    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
+  /* Zepto / Blinkit Stacked Brand & Delivery Block */
   .brand-section {
-    gap: 0.35rem;
-    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0.12rem;
     min-width: 0;
+    flex: 1 1 auto;
     overflow: hidden;
+    white-space: normal;
   }
 
   .logo {
-    font-size: 1.08rem;
-    gap: 0.28rem;
+    font-size: 1.05rem;
+    gap: 0.3rem;
+    line-height: 1;
     flex-shrink: 0;
   }
 
-  .logo-badge {
-    width: 26px;
-    height: 26px;
+  .logo-brand-text {
+    font-size: 1.05rem;
+    letter-spacing: -0.3px;
   }
 
+  .logo-badge {
+    width: 21px;
+    height: 21px;
+    border-radius: 4px;
+  }
+
+  /* Seamless Zepto/Blinkit Location Row: No border, No cyan bracket, pure clean typography */
   .delivery-eta-badge {
-    padding: 0.2rem 0.45rem;
-    flex-shrink: 1;
-    min-width: 0;
-    max-width: 130px;
-    overflow: hidden;
-    box-sizing: border-box;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    display: flex;
+    flex-direction: row !important;
+    align-items: center;
+    gap: 0.3rem;
+    max-width: 100%;
+    margin-top: 0.08rem;
+    cursor: pointer;
+  }
+
+  .delivery-eta-badge:hover {
+    background: transparent !important;
+    border: none !important;
   }
 
   .eta-time {
-    font-size: 0.68rem;
+    background: #0C831F;
+    color: #ffffff !important;
+    font-size: 0.62rem;
+    font-weight: 900;
+    padding: 0.08rem 0.36rem;
+    border-radius: 3px;
+    letter-spacing: 0.2px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .eta-time svg {
+    display: none; /* Clean solid chip like Zepto/Blinkit */
   }
 
   .address-line {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
     min-width: 0;
-    overflow: hidden;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-muted);
   }
 
   .address-text {
-    max-width: 72px;
-    font-size: 0.66rem;
+    max-width: 125px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-muted);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
   .nav-actions {
-    gap: 0.28rem;
+    gap: 0.3rem;
     flex-shrink: 0;
     margin-left: auto;
+    display: flex;
+    align-items: center;
   }
 
   .theme-toggle-btn {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     padding: 0;
+    flex-shrink: 0;
+    border-radius: var(--radius-sm);
+  }
+
+  .user-profile-menu-container {
     flex-shrink: 0;
   }
 
   .btn-auth {
-    padding: 0.3rem 0.48rem;
-    font-size: 0.74rem;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.76rem;
     gap: 0.2rem;
     flex-shrink: 0;
   }
 
   .user-nav-name {
-    max-width: 55px;
+    max-width: 58px;
+    font-size: 0.76rem;
   }
 
   .nav-admin-btn {
-    padding: 0.3rem 0.42rem;
-  }
-
-  .nav-admin-label-short {
-    display: none;
+    display: none !important;
   }
 
   .cart-btn,
   .cart-btn-desktop {
-    padding: 0.32rem 0.55rem;
-    font-size: 0.76rem;
+    padding: 0.36rem 0.6rem;
+    font-size: 0.78rem;
     gap: 0.25rem;
     flex-shrink: 0;
     white-space: nowrap;
@@ -1912,10 +1989,37 @@ body {
   .user-profile-dropdown {
     width: 215px;
     right: 0;
+    max-width: calc(100vw - 20px);
   }
 }
 
-@media (max-width: 375px) {
+@media (max-width: 460px) {
+  .user-nav-name {
+    display: none !important;
+  }
+
+  .btn-profile {
+    padding: 0.38rem 0.45rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .address-text {
+    max-width: 95px;
+    font-size: 0.68rem;
+  }
+
+  .logo-brand-text {
+    font-size: 0.98rem;
+  }
+
+  .cart-btn,
+  .cart-btn-desktop {
+    padding: 0.34rem 0.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 360px) {
   .navbar {
     padding: 0.38rem 0.45rem;
   }
@@ -1924,62 +2028,33 @@ body {
     gap: 0.25rem;
   }
 
-  .brand-section {
-    gap: 0.25rem;
-    flex: 1 1 auto;
-    min-width: 0;
+  .address-text {
+    max-width: 78px;
+    font-size: 0.65rem;
   }
 
   .logo {
-    font-size: 1rem;
+    font-size: 0.94rem;
     gap: 0.22rem;
   }
 
   .logo-badge {
-    width: 24px;
-    height: 24px;
-  }
-
-  .delivery-eta-badge {
-    padding: 0.16rem 0.35rem;
-    flex-shrink: 1;
-    min-width: 0;
-    max-width: 105px;
-  }
-
-  .address-text {
-    max-width: 58px;
-    font-size: 0.62rem;
+    width: 18px;
+    height: 18px;
   }
 
   .nav-actions {
-    gap: 0.22rem;
+    gap: 0.2rem;
   }
 
   .theme-toggle-btn {
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
   }
 
   .btn-auth {
-    padding: 0.28rem 0.4rem;
+    padding: 0.28rem 0.38rem;
     font-size: 0.7rem;
-  }
-
-  .user-nav-name {
-    max-width: 45px;
-  }
-
-  .cart-btn,
-  .cart-btn-desktop {
-    padding: 0.28rem 0.45rem;
-    font-size: 0.72rem;
-  }
-}
-
-@media (max-width: 360px) {
-  .user-nav-name {
-    display: none;
   }
 
   .cart-label-mobile {
@@ -1988,7 +2063,7 @@ body {
 
   .cart-btn,
   .cart-btn-desktop {
-    padding: 0.35rem 0.52rem;
+    padding: 0.34rem 0.48rem;
   }
 }
 

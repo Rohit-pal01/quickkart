@@ -47,34 +47,35 @@ export default function Navbar({
       {/* Top Bar: Brand & Actions */}
       <div className="navbar-top-bar">
         {/* Brand & Location Indicator */}
+        {/* Brand & Location Indicator (Zepto & Blinkit Style) */}
         <div className="brand-section">
           <div
             className="logo"
             style={{ cursor: 'pointer' }}
             onClick={() => setActiveView('store')}
+            title="QuickKart Home"
           >
             <div className="logo-badge">
-              <Zap size={18} fill="#F7D000" color="#F7D000" />
+              <Zap size={16} fill="#F7D000" color="#F7D000" />
             </div>
-            <span>
+            <span className="logo-brand-text">
               Quick<strong style={{ color: '#0C831F' }}>Kart</strong>
             </span>
           </div>
 
-          {/* Blinkit/Zepto Delivery ETA pill with Clickable Location Modal */}
           <div
             className="delivery-eta-badge"
             onClick={onOpenLocation}
-            style={{ cursor: 'pointer', transition: 'var(--transition)' }}
+            style={{ cursor: 'pointer' }}
             title="Click to change your delivery city or address"
           >
             <div className="eta-time">
-              <Zap size={12} fill="#0C831F" color="#0C831F" />
+              <Zap size={11} fill="#0C831F" color="#0C831F" />
               <span>8 MINS</span>
             </div>
             <div className="address-line">
               <span className="address-text">{activeAddress ? activeAddress.line1 : 'Select City'}</span>
-              <ChevronDown size={12} color="var(--text-muted)" style={{ flexShrink: 0 }} />
+              <ChevronDown size={11} color="var(--text-muted)" style={{ flexShrink: 0 }} />
             </div>
           </div>
         </div>
@@ -93,7 +94,7 @@ export default function Navbar({
 
           {isAuthenticated && user?.role === 'admin' && (
             <button
-              className="btn-auth nav-admin-btn"
+              className="btn-auth nav-admin-btn desktop-only"
               style={{
                 borderColor: activeView === 'admin' ? '#0C831F' : undefined,
                 background: activeView === 'admin' ? 'var(--primary-light)' : 'var(--bg-card)',
