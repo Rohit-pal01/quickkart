@@ -126,7 +126,7 @@ export default function Navbar({
               {itemCount > 0 && <span className="cart-badge-dot">{itemCount}</span>}
             </div>
             <span className="cart-label-desktop">
-              {itemCount > 0 ? `${itemCount} items • ₹${totalAmount}` : 'My Cart'}
+              {itemCount > 0 ? `${itemCount} items • ₹${totalAmount}` : 'Cart'}
             </span>
             <span className="cart-label-mobile">
               {itemCount > 0 ? `₹${totalAmount}` : 'Cart'}
