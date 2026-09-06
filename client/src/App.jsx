@@ -133,10 +133,16 @@ function StoreContent() {
 
       <main className="main-content">
         {activeView === 'admin' ? (
-          <AdminDashboard onBackToStore={() => setActiveView('store')} />
+          <AdminDashboard
+            onBackToStore={() => setActiveView('store')}
+            onViewOrder={(orderId) => {
+              setActiveOrderId(orderId);
+              setActiveView('orders');
+            }}
+          />
         ) : activeView === 'orders' ? (
           <OrderTracking
-            orderId={activeOrderId || 'QK-749102-3847'}
+            orderId={activeOrderId}
             onBackToStore={() => setActiveView('store')}
           />
         ) : (

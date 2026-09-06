@@ -143,7 +143,8 @@ const getOrderById = async (req, res, next) => {
     }
 
     // Ensure customer can only view their own order unless admin or delivery role
-    const isOwner = order.userId && order.userId._id.toString() === req.user._id.toString();
+    const orderUserId = order.userId ? (order.userId._id ? order.userId._id.toString() : order.userId.toString()) : null;
+    const isOwner = orderUserId && orderUserId === req.user._id.toString();
     const isStaff = ['admin', 'delivery'].includes(req.user.role);
 
     if (!isOwner && !isStaff) {

@@ -3,7 +3,7 @@ import { Package, TrendingUp, Users, Plus, Edit2, Trash2, CheckCircle2, Clock, A
 import { api } from '../services/api';
 import { useTheme } from '../context/ThemeContext';
 
-export default function AdminDashboard({ onBackToStore }) {
+export default function AdminDashboard({ onBackToStore, onViewOrder }) {
   const { isDark } = useTheme();
   const [activeTab, setActiveTab] = useState('orders'); // 'orders' | 'inventory' | 'users' | 'add_product'
   const [orders, setOrders] = useState([]);
@@ -608,7 +608,24 @@ export default function AdminDashboard({ onBackToStore }) {
                 paginatedOrders.map((o) => (
                   <tr key={o._id}>
                     <td>
-                      <strong>#{o.orderId}</strong>
+                      <button
+                        type="button"
+                        onClick={() => onViewOrder && onViewOrder(o.orderId)}
+                        title={`Click to track order #${o.orderId}`}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          padding: 0,
+                          cursor: 'pointer',
+                          color: '#10B981',
+                          fontWeight: 800,
+                          textAlign: 'left',
+                          fontSize: '0.85rem',
+                          textDecoration: 'underline'
+                        }}
+                      >
+                        #{o.orderId}
+                      </button>
                     </td>
                     <td>
                       <div>{o.userId?.name || 'Customer'}</div>

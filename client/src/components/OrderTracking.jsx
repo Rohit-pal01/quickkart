@@ -1,30 +1,80 @@
 import React, { useState, useEffect } from 'react';
-import { Package, Truck, CheckCircle2, Clock, MapPin, RefreshCw, XCircle, ArrowLeft, ShieldCheck } from 'lucide-react';
+import { Package, Truck, CheckCircle2, Clock, MapPin, RefreshCw, XCircle, ArrowLeft, ShieldCheck, ShoppingBag } from 'lucide-react';
 import { api } from '../services/api';
 
 export default function OrderTracking({ orderId, onBackToStore }) {
   const [order, setOrder] = useState(null);
+  const [myOrders, setMyOrders] = useState([]);
+  const [activeId, setActiveId] = useState(orderId || null);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
 
-  const fetchOrder = async () => {
+  // Sync if orderId prop changes from parent
+  useEffect(() => {
+    if (orderId) {
+      setActiveId(orderId);
+    }
+  }, [orderId]);
+
+  const loadData = async (targetId) => {
+    setLoading(true);
     try {
-      const res = await api.getOrderById(orderId);
-      if (res.success && res.order) {
-        setOrder(res.order);
+      // 1. Fetch user's orders list
+      let userOrders = [];
+      const myOrdersRes = await api.getMyOrders();
+      if (myOrdersRes.success && Array.isArray(myOrdersRes.orders)) {
+        userOrders = myOrdersRes.orders;
+        setMyOrders(userOrders);
+      }
+
+      // 2. Resolve which order to display:
+      // - If targetId is provided, use that
+      // - Otherwise, default to user's latest actual order
+      const idToFetch = targetId || (userOrders.length > 0 ? userOrders[0].orderId : null);
+
+      if (idToFetch) {
+        setActiveId(idToFetch);
+        const res = await api.getOrderById(idToFetch);
+        if (res.success && res.order) {
+          setOrder(res.order);
+        } else if (userOrders.length > 0 && idToFetch !== userOrders[0].orderId) {
+          // If specific targetId failed, fallback to the user's latest order
+          const fallbackRes = await api.getOrderById(userOrders[0].orderId);
+          if (fallbackRes.success && fallbackRes.order) {
+            setOrder(fallbackRes.order);
+            setActiveId(userOrders[0].orderId);
+          }
+        } else {
+          setOrder(null);
+        }
+      } else {
+        setOrder(null);
       }
     } catch (err) {
       console.error('Error fetching order status:', err);
+      setOrder(null);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchOrder();
-    const interval = setInterval(fetchOrder, 6000); // Polling status every 6s
+    loadData(activeId);
+  }, [activeId]);
+
+  // Periodic polling for status transitions
+  useEffect(() => {
+    if (!activeId) return;
+    const interval = setInterval(async () => {
+      try {
+        const res = await api.getOrderById(activeId);
+        if (res.success && res.order) {
+          setOrder(res.order);
+        }
+      } catch (err) {}
+    }, 6000);
     return () => clearInterval(interval);
-  }, [orderId]);
+  }, [activeId]);
 
   const handleCancelOrder = async () => {
     if (!order) return;
@@ -56,11 +106,30 @@ export default function OrderTracking({ orderId, onBackToStore }) {
 
   if (!order) {
     return (
-      <div style={{ textAlign: 'center', padding: '5rem 1rem' }}>
-        <h3>Order #{orderId} not found</h3>
-        <button className="btn-auth" onClick={onBackToStore} style={{ margin: '1rem auto' }}>
-          Back to Store
-        </button>
+      <div style={{ textAlign: 'center', padding: '4rem 1.5rem', background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)', maxWidth: '560px', margin: '2rem auto' }}>
+        {myOrders.length === 0 ? (
+          <>
+            <ShoppingBag size={48} color="#10B981" style={{ margin: '0 auto 1rem auto' }} />
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800 }}>No Orders Placed Yet</h2>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '0.5rem 0 1.5rem 0' }}>
+              You haven't placed any orders yet. Fresh groceries and essentials will appear here once you order!
+            </p>
+            <button className="btn-checkout" onClick={onBackToStore} style={{ margin: '0 auto', justifyContent: 'center' }}>
+              Browse Store & Shop
+            </button>
+          </>
+        ) : (
+          <>
+            <XCircle size={44} color="#EF4444" style={{ margin: '0 auto 1rem auto' }} />
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800 }}>Order Not Found</h2>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '0.5rem 0 1.5rem 0' }}>
+              We couldn't locate this specific order details.
+            </p>
+            <button className="btn-auth" onClick={onBackToStore} style={{ margin: '0 auto' }}>
+              Back to Store
+            </button>
+          </>
+        )}
       </div>
     );
   }
@@ -86,14 +155,72 @@ export default function OrderTracking({ orderId, onBackToStore }) {
 
   return (
     <div style={{ maxWidth: '780px', margin: '0 auto', width: '100%' }}>
-      <button
-        onClick={onBackToStore}
-        className="btn-auth"
-        style={{ marginBottom: '1.25rem' }}
-      >
-        <ArrowLeft size={16} />
-        <span>Continue Shopping</span>
-      </button>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+        <button
+          onClick={onBackToStore}
+          className="btn-auth"
+        >
+          <ArrowLeft size={16} />
+          <span>Continue Shopping</span>
+        </button>
+
+        {myOrders.length > 0 && (
+          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+            {myOrders.length} {myOrders.length === 1 ? 'Order' : 'Orders'} on Record
+          </span>
+        )}
+      </div>
+
+      {/* My Orders History Switcher */}
+      {myOrders.length > 1 && (
+        <div
+          style={{
+            background: 'var(--bg-card)',
+            borderRadius: 'var(--radius-lg)',
+            border: '1px solid var(--border-light)',
+            padding: '0.75rem 1.25rem',
+            marginBottom: '1rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '0.75rem'
+          }}
+        >
+          <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-muted)' }}>
+            Switch Order:
+          </span>
+
+          <div style={{ display: 'flex', gap: '0.45rem', overflowX: 'auto', maxWidth: '100%', paddingBottom: '0.2rem' }}>
+            {myOrders.map((o) => {
+              const isSelected = order && order.orderId === o.orderId;
+              return (
+                <button
+                  key={o._id}
+                  onClick={() => {
+                    setActiveId(o.orderId);
+                    setOrder(o);
+                  }}
+                  style={{
+                    padding: '0.35rem 0.75rem',
+                    fontSize: '0.75rem',
+                    fontWeight: isSelected ? 800 : 600,
+                    borderRadius: 'var(--radius-full)',
+                    background: isSelected ? '#10B981' : 'var(--bg-subtle)',
+                    color: isSelected ? '#FFFFFF' : 'var(--text-main)',
+                    border: isSelected ? '1px solid #059669' : '1px solid var(--border-light)',
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                    transition: 'var(--transition)'
+                  }}
+                >
+                  #{o.orderId} • ₹{o.totalAmount}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Header Card */}
       <div
