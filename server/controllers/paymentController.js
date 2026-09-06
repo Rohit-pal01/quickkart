@@ -1,4 +1,4 @@
-const juspay = require('../config/juspay');
+const juspay = require('../services/juspay');
 const Order = require('../models/Order');
 const Payment = require('../models/Payment');
 const Product = require('../models/Product');
