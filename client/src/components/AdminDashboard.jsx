@@ -20,7 +20,8 @@ import {
   MapPin,
   Shield,
   RefreshCw,
-  LogOut
+  LogOut,
+  Zap
 } from 'lucide-react';
 import { api } from '../services/api';
 import { useTheme } from '../context/ThemeContext';
@@ -161,6 +162,27 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
       }
     } catch (err) {
       alert('Failed to update status');
+    }
+  };
+
+  const [simulating, setSimulating] = useState(false);
+
+  const handleSimulateOrder = async () => {
+    setSimulating(true);
+    try {
+      const res = await api.simulateOrder();
+      if (res.success && res.order) {
+        setOrders(prev => [res.order, ...prev]);
+        setOrderPage(1);
+        alert(`⚡ Live Incoming Order Received!\n\nOrder ID: #${res.order.orderId}\nCustomer: ${res.order.userId?.name || 'Customer'}\nItems: ${res.order.items?.length} products (₹${res.order.totalAmount})\nStatus: CONFIRMED\n\nYou can now change its status in the table to test the packing & dispatch flow!`);
+      } else {
+        alert(res.message || 'Failed to simulate incoming order');
+      }
+    } catch (err) {
+      console.error('Error simulating order:', err);
+      alert('Error simulating incoming order');
+    } finally {
+      setSimulating(false);
     }
   };
 
@@ -731,6 +753,32 @@ export default function AdminDashboard({ onBackToStore, onViewOrder }) {
                 <option value="DELIVERED">DELIVERED</option>
                 <option value="CANCELLED">CANCELLED</option>
               </select>
+
+              <button
+                type="button"
+                className="btn-checkout"
+                disabled={simulating}
+                onClick={handleSimulateOrder}
+                style={{
+                  height: '42px',
+                  minHeight: '42px',
+                  padding: '0 1rem',
+                  fontSize: '0.84rem',
+                  fontWeight: 700,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  whiteSpace: 'nowrap',
+                  background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                  borderRadius: 'var(--radius-md)',
+                  boxShadow: '0 2px 8px rgba(16, 185, 129, 0.25)',
+                  cursor: simulating ? 'wait' : 'pointer'
+                }}
+                title="Simulate an instant incoming quick-commerce live order to test the 10-minute dispatch pipeline"
+              >
+                <Zap size={15} fill="#F7D000" color="#F7D000" />
+                <span>{simulating ? 'Simulating...' : '⚡ Simulate Order'}</span>
+              </button>
             </div>
           </div>
 

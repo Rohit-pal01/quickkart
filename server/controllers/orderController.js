@@ -298,11 +298,96 @@ const cancelOrder = async (req, res, next) => {
   }
 };
 
+// @desc    Simulate an incoming live order for Dark Store testing & demos
+// @route   POST /api/orders/simulate
+// @access  Private (Admin)
+const simulateIncomingOrder = async (req, res, next) => {
+  try {
+    const User = require('../models/User');
+    const products = await Product.find({ isActive: true }).limit(20);
+    if (!products.length) {
+      return res.status(400).json({ success: false, message: 'No active products available to simulate order' });
+    }
+
+    const shuffled = [...products].sort(() => 0.5 - Math.random());
+    const pickedProducts = shuffled.slice(0, Math.floor(Math.random() * 3) + 1);
+
+    const sampleCustomers = [
+      { name: 'Priya Sharma', phone: '9845123456', address: 'Flat 302, Palm Meadows, Indiranagar, Bengaluru' },
+      { name: 'Karthik Verma', phone: '9876541230', address: 'Villa 14, Green Glen Layout, Bellandur, Bengaluru' },
+      { name: 'Ananya Roy', phone: '9765432109', address: '12th Cross, Sector 4, HSR Layout, Bengaluru' },
+      { name: 'Sneha Patel', phone: '9812345678', address: 'Tower B, Sobha Iris, Outer Ring Road, Bengaluru' },
+      { name: 'Rohan Iyer', phone: '9900112233', address: '4th Main Road, Domlur 2nd Stage, Bengaluru' }
+    ];
+    const customer = sampleCustomers[Math.floor(Math.random() * sampleCustomers.length)];
+
+    let subtotal = 0;
+    const items = pickedProducts.map(p => {
+      const qty = Math.floor(Math.random() * 2) + 1;
+      const total = p.price * qty;
+      subtotal += total;
+      return {
+        productId: p._id,
+        name: p.name,
+        price: p.price,
+        qty,
+        total,
+        imageUrl: p.imageUrl
+      };
+    });
+
+    const deliveryFee = subtotal >= 199 ? 0 : 25;
+    const platformFee = 5;
+    const totalAmount = subtotal + deliveryFee + platformFee;
+
+    const customerUser = await User.findOne({ role: 'customer' });
+    const targetUserId = customerUser ? customerUser._id : req.user._id;
+
+    const order = await Order.create({
+      orderId: generateOrderId(),
+      userId: targetUserId,
+      items,
+      subtotal,
+      deliveryFee,
+      platformFee,
+      totalAmount,
+      status: 'CONFIRMED',
+      paymentMethod: 'UPI',
+      deliveryAddress: {
+        label: 'Home',
+        line1: customer.address,
+        lat: 12.9716 + (Math.random() - 0.5) * 0.04,
+        lng: 77.5946 + (Math.random() - 0.5) * 0.04
+      },
+      confirmedAt: new Date()
+    });
+
+    const populatedOrder = {
+      ...order.toObject(),
+      userId: {
+        _id: targetUserId,
+        name: customer.name,
+        phone: customer.phone,
+        email: `${customer.name.toLowerCase().replace(' ', '.')}@example.com`
+      }
+    };
+
+    res.status(201).json({
+      success: true,
+      message: `Simulated live order #${order.orderId} from ${customer.name}!`,
+      order: populatedOrder
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createOrder,
   getMyOrders,
   getOrderById,
   getAllOrders,
   updateOrderStatus,
-  cancelOrder
+  cancelOrder,
+  simulateIncomingOrder
 };

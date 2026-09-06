@@ -158,6 +158,14 @@ export const api = {
     return res.json();
   },
 
+  async simulateOrder() {
+    const res = await fetch(`${API_BASE}/orders/simulate`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    });
+    return res.json();
+  },
+
   async updateOrderStatus(orderId, status) {
     const res = await fetch(`${API_BASE}/orders/${orderId}/status`, {
       method: 'PUT',
