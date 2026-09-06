@@ -14,7 +14,10 @@ export default function Navbar({
 }) {
   const { user, isAuthenticated, logout, activeAddress } = useAuth();
   const { itemCount, totalAmount, setIsCartOpen } = useCart();
-  const { theme, toggleTheme, isDark } = useTheme();
+  const handleLogout = () => {
+    logout();
+    setActiveView('store');
+  };
 
   return (
     <header className="navbar">
@@ -110,7 +113,7 @@ export default function Navbar({
             </button>
             <button
               className="btn-auth"
-              onClick={logout}
+              onClick={handleLogout}
               title="Logout"
               style={{ padding: '0.55rem' }}
             >

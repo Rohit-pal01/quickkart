@@ -83,6 +83,18 @@ function StoreContent() {
     loadCatalog();
   }, [selectedCategory, searchTerm]);
 
+  // Auto-redirect to store and clear active order when user logs out or switches account
+  useEffect(() => {
+    if (!user) {
+      if (activeView === 'orders' || activeView === 'admin') {
+        setActiveView('store');
+      }
+      setActiveOrderId(null);
+    } else {
+      setActiveOrderId(null);
+    }
+  }, [user?._id]);
+
   // Handle checkout
   const handleProceedToPayment = async () => {
     if (items.length === 0) return;
@@ -144,6 +156,7 @@ function StoreContent() {
           <OrderTracking
             orderId={activeOrderId}
             onBackToStore={() => setActiveView('store')}
+            onOpenAuth={() => setIsAuthOpen(true)}
           />
         ) : (
           <>

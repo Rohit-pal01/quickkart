@@ -1,13 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Package, Truck, CheckCircle2, Clock, MapPin, RefreshCw, XCircle, ArrowLeft, ShieldCheck, ShoppingBag } from 'lucide-react';
+import { Package, Truck, CheckCircle2, Clock, MapPin, RefreshCw, XCircle, ArrowLeft, ShieldCheck, ShoppingBag, User } from 'lucide-react';
 import { api } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
-export default function OrderTracking({ orderId, onBackToStore }) {
+export default function OrderTracking({ orderId, onBackToStore, onOpenAuth }) {
+  const { user, isAuthenticated } = useAuth();
   const [order, setOrder] = useState(null);
   const [myOrders, setMyOrders] = useState([]);
   const [activeId, setActiveId] = useState(orderId || null);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
+
+  // Clear data when user logs out or account switches
+  useEffect(() => {
+    if (!isAuthenticated || !user) {
+      setOrder(null);
+      setMyOrders([]);
+      setActiveId(null);
+      setLoading(false);
+    }
+  }, [isAuthenticated, user?._id]);
 
   // Sync if orderId prop changes from parent
   useEffect(() => {
@@ -17,6 +29,14 @@ export default function OrderTracking({ orderId, onBackToStore }) {
   }, [orderId]);
 
   const loadData = async (targetId) => {
+    if (!user) {
+      setOrder(null);
+      setMyOrders([]);
+      setActiveId(null);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     try {
       // 1. Fetch user's orders list
@@ -64,12 +84,14 @@ export default function OrderTracking({ orderId, onBackToStore }) {
   };
 
   useEffect(() => {
-    loadData(orderId || null);
-  }, [orderId]);
+    if (user) {
+      loadData(orderId || null);
+    }
+  }, [orderId, user?._id]);
 
   // Periodic polling for status transitions
   useEffect(() => {
-    if (!activeId) return;
+    if (!activeId || !user) return;
     const interval = setInterval(async () => {
       try {
         const res = await api.getOrderById(activeId);
@@ -79,7 +101,7 @@ export default function OrderTracking({ orderId, onBackToStore }) {
       } catch (err) {}
     }, 6000);
     return () => clearInterval(interval);
-  }, [activeId]);
+  }, [activeId, user?._id]);
 
   const handleCancelOrder = async () => {
     if (!order) return;
@@ -99,6 +121,29 @@ export default function OrderTracking({ orderId, onBackToStore }) {
       setCancelling(false);
     }
   };
+
+  // If user is not logged in, prompt to log in instead of showing old order
+  if (!isAuthenticated || !user) {
+    return (
+      <div style={{ textAlign: 'center', padding: '4rem 1.5rem', background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-light)', maxWidth: '560px', margin: '2rem auto' }}>
+        <ShoppingBag size={48} color="#10B981" style={{ margin: '0 auto 1rem auto' }} />
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 800 }}>Please Log In</h2>
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '0.5rem 0 1.5rem 0' }}>
+          Please log in to view your orders and live delivery tracking.
+        </p>
+        <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+          <button className="btn-auth" onClick={onBackToStore}>
+            Back to Store
+          </button>
+          {onOpenAuth && (
+            <button className="btn-checkout" onClick={onOpenAuth} style={{ padding: '0.6rem 1.25rem' }}>
+              Log In
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   if (loading && !order) {
     return (
