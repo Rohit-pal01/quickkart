@@ -161,24 +161,7 @@ function StoreContent() {
         ) : (
           <>
             {/* Zepto/Blinkit Promo Banner with Custom Brand Palette */}
-            <div
-              style={{
-                background: 'linear-gradient(135deg, #0d2822 0%, #153a41 45%, #463b41 100%)',
-                color: 'white',
-                borderRadius: 'var(--radius-lg)',
-                padding: '1.35rem 1.6rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: '1rem',
-                boxShadow: '0 8px 24px rgba(81, 226, 245, 0.18)',
-                border: '1px solid rgba(81, 226, 245, 0.25)',
-                marginBottom: '1.35rem',
-                position: 'relative',
-                overflow: 'hidden'
-              }}
-            >
+            <div className="hero-promo-banner">
               {/* Subtle ambient lighting */}
               <div
                 style={{
@@ -203,7 +186,7 @@ function StoreContent() {
                 }}
               />
 
-              <div style={{ maxWidth: '520px', zIndex: 2 }}>
+              <div className="hero-promo-text">
                 <div
                   style={{
                     display: 'inline-flex',
@@ -231,23 +214,22 @@ function StoreContent() {
                 </p>
               </div>
 
-              {/* Zepto / Rapido style Free Delivery Perk Pass */}
-              <div
-                style={{
-                  background: 'rgba(12, 26, 28, 0.72)',
-                  backdropFilter: 'blur(14px)',
-                  padding: '1.05rem 1.3rem',
-                  borderRadius: 'var(--radius-lg)',
-                  border: '1.5px solid rgba(81, 226, 245, 0.4)',
-                  zIndex: 2,
-                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '0.45rem',
-                  minWidth: '245px'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
+              {/* Modern Glassmorphic VIP Delivery Perk Pass */}
+              <div className="hero-vip-pass">
+                {/* Subtle luminous ambient glow inside card */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '-24px',
+                    right: '-24px',
+                    width: '80px',
+                    height: '80px',
+                    background: 'radial-gradient(circle, rgba(52, 211, 153, 0.25) 0%, transparent 70%)',
+                    pointerEvents: 'none'
+                  }}
+                />
+
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.6rem' }}>
                   <div
                     style={{
                       display: 'inline-flex',

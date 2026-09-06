@@ -62,6 +62,16 @@
   --shadow-xl: 0 20px 30px rgba(0, 0, 0, 0.7);
 }
 
+html,
+body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -76,6 +86,9 @@ body {
   line-height: 1.4;
   -webkit-font-smoothing: antialiased;
   padding-bottom: 85px; /* Space for floating mobile cart bar */
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
 }
 
 /* Base Layout */
@@ -83,6 +96,10 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  position: relative;
 }
 
 .main-content {
@@ -627,12 +644,18 @@ body {
 .modal-overlay {
   position: fixed;
   inset: 0;
+  width: 100vw;
+  max-width: 100%;
+  height: 100%;
   background: rgba(15, 23, 42, 0.65);
   backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   z-index: 100;
   display: flex;
   justify-content: flex-end;
   animation: fadeIn 0.2s ease;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 /* Centered Responsive Modals (Auth, Location) */
@@ -761,12 +784,15 @@ body {
 .cart-drawer {
   background: var(--bg-card);
   width: 100%;
-  max-width: 440px;
+  max-width: min(440px, 100vw);
   height: 100%;
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-xl);
   animation: slideInRight 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  overflow-x: hidden;
+  position: relative;
 }
 
 @keyframes slideInRight {
@@ -780,12 +806,16 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .drawer-body {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 1.15rem;
+  box-sizing: border-box;
 }
 
 .cart-item-row {
@@ -794,6 +824,8 @@ body {
   gap: 0.75rem;
   padding: 0.75rem 0;
   border-bottom: 1px solid var(--border-light);
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .cart-item-img {
@@ -802,10 +834,12 @@ body {
   border-radius: var(--radius-sm);
   object-fit: cover;
   background: var(--bg-subtle);
+  flex-shrink: 0;
 }
 
 .cart-item-details {
   flex: 1;
+  min-width: 0;
 }
 
 .bill-card {
@@ -813,6 +847,7 @@ body {
   border-radius: var(--radius-md);
   padding: 1rem;
   margin-top: 1.25rem;
+  box-sizing: border-box;
 }
 
 .bill-row {
@@ -836,6 +871,8 @@ body {
   padding: 1.15rem;
   border-top: 1px solid var(--border-light);
   background: var(--bg-card);
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .btn-checkout {
@@ -853,6 +890,8 @@ body {
   justify-content: space-between;
   box-shadow: 0 4px 14px rgba(12, 131, 31, 0.35);
   transition: var(--transition);
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .btn-checkout:hover {
@@ -1194,7 +1233,148 @@ body {
 }
 
 /* ==========================================================================
-   Mobile Responsive Styles (Blinkit / Zepto App Feel)
+   Hero Promo Banner Responsive Classes
+   ========================================================================== */
+.hero-promo-banner {
+  background: linear-gradient(135deg, #0d2822 0%, #153a41 45%, #463b41 100%);
+  color: white;
+  border-radius: var(--radius-lg);
+  padding: 1.35rem 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  box-shadow: 0 8px 24px rgba(81, 226, 245, 0.18);
+  border: 1px solid rgba(81, 226, 245, 0.25);
+  margin-bottom: 1.35rem;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.hero-promo-text {
+  flex: 1 1 300px;
+  max-width: 540px;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+.hero-vip-pass {
+  flex: 1 1 240px;
+  max-width: 320px;
+  min-width: 240px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  padding: 1.15rem 1.35rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.nav-admin-label-short {
+  display: none;
+}
+
+/* ==========================================================================
+   Tablet & Medium Screen Styles (Landscape / Large Tablets up to 1024px)
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .navbar {
+    padding: 0.6rem 1rem;
+    gap: 0.75rem;
+  }
+
+  .address-line {
+    max-width: 125px;
+  }
+
+  .nav-admin-label-full {
+    display: none;
+  }
+  .nav-admin-label-short {
+    display: inline;
+  }
+
+  .cart-btn,
+  .cart-btn-desktop {
+    padding: 0.45rem 0.75rem;
+    font-size: 0.84rem;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+    gap: 0.8rem;
+  }
+}
+
+/* ==========================================================================
+   Tablet Portrait & Medium Screen Styles (769px - 920px)
+   ========================================================================== */
+@media (max-width: 920px) {
+  .navbar {
+    flex-wrap: wrap;
+    gap: 0.55rem 0.75rem;
+    padding: 0.6rem 0.85rem;
+  }
+
+  .brand-section {
+    flex: 1;
+    min-width: 0;
+    gap: 0.6rem;
+  }
+
+  .nav-actions {
+    gap: 0.45rem;
+    flex-shrink: 0;
+  }
+
+  .search-wrapper {
+    order: 3;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 0.15rem;
+  }
+
+  .search-input {
+    padding: 0.62rem 0.9rem 0.62rem 2.6rem;
+    font-size: 0.88rem;
+  }
+
+  .cart-label-desktop {
+    display: none;
+  }
+
+  .cart-label-mobile {
+    display: inline;
+  }
+
+  .cart-drawer {
+    max-width: min(420px, 88vw);
+  }
+
+  .hero-promo-banner {
+    padding: 1.15rem;
+    gap: 1rem;
+  }
+
+  .hero-vip-pass {
+    max-width: 100%;
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* ==========================================================================
+   Mobile Responsive Styles (Blinkit / Zepto App Feel <= 768px)
    ========================================================================== */
 @media (max-width: 768px) {
   body {
@@ -1212,7 +1392,7 @@ body {
   }
 
   .brand-section {
-    gap: 0.5rem;
+    gap: 0.45rem;
   }
 
   .logo {
@@ -1220,16 +1400,16 @@ body {
   }
 
   .address-line {
-    max-width: 110px;
+    max-width: 105px;
   }
 
   .nav-actions {
-    gap: 0.4rem;
+    gap: 0.35rem;
   }
 
   .btn-auth {
-    padding: 0.45rem 0.7rem;
-    font-size: 0.8rem;
+    padding: 0.42rem 0.65rem;
+    font-size: 0.78rem;
     gap: 0.3rem;
   }
 
@@ -1361,9 +1541,9 @@ body {
   .cart-btn,
   .cart-btn-desktop {
     display: flex;
-    padding: 0.45rem 0.75rem;
-    font-size: 0.82rem;
-    gap: 0.4rem;
+    padding: 0.42rem 0.7rem;
+    font-size: 0.8rem;
+    gap: 0.35rem;
     border-radius: var(--radius-md);
   }
 
@@ -1378,17 +1558,10 @@ body {
   }
 }
 
-.nav-admin-label-short {
-  display: none;
-}
-
 @media (max-width: 640px) {
-  .cart-label-desktop {
-    display: none;
-  }
-
-  .cart-label-mobile {
-    display: inline;
+  .cart-drawer {
+    max-width: 100vw;
+    width: 100%;
   }
 
   .cart-badge-dot {
@@ -1408,15 +1581,6 @@ body {
     border-radius: 9999px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     line-height: 1;
-  }
-}
-
-@media (max-width: 540px) {
-  .nav-admin-label-full {
-    display: none;
-  }
-  .nav-admin-label-short {
-    display: inline;
   }
 }
 
