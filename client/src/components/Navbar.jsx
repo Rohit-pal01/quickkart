@@ -50,12 +50,9 @@ export default function Navbar({
               <Zap size={12} fill="#0C831F" color="#0C831F" />
               <span>8 MINS</span>
             </div>
-            <div
-              className="address-line"
-              style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}
-            >
-              <span>{activeAddress ? activeAddress.line1 : 'Select City'}</span>
-              <ChevronDown size={13} color="var(--text-muted)" />
+            <div className="address-line">
+              <span className="address-text">{activeAddress ? activeAddress.line1 : 'Select City'}</span>
+              <ChevronDown size={12} color="var(--text-muted)" style={{ flexShrink: 0 }} />
             </div>
           </div>
         </div>
