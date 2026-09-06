@@ -199,10 +199,6 @@ export default function ProductDetailModal({ product, isOpen, onClose }) {
                   <span className="spec-label">Shelf Life:</span>
                   <span className="spec-val">Best before 4 months from packaging</span>
                 </div>
-                <div className="pdm-spec-row">
-                  <span className="spec-label">Country of Origin:</span>
-                  <span className="spec-val">India</span>
-                </div>
               </div>
             </div>
 
