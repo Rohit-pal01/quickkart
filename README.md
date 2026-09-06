@@ -215,12 +215,12 @@ npm run dev
 
 ## 🔑 Access Accounts & Live Website
 
-| Portal / Role | Email | Password | Privileges & Notes |
-| :--- | :--- | :--- | :--- |
-| 🌐 **Live Website Link** | — | — | **[https://quickkartservice.vercel.app](https://quickkartservice.vercel.app)** |
-| 👑 **Store Owner (Real Admin)** | `admin@quickkart.com` | `admin123` | **Full Administrative Control:** Add/edit products, change Veg/Non-Veg dietary badges, update prices, delete items, restore catalog, manage orders. |
-| 🛡️ **Public Demo Admin** | `demo.admin@quickkart.com` | `demo123` | **Read-Only Demo Mode:** Inspect Dark Store Hub, view live orders, analytics, and stock without risk of altering store data. |
-| 🛍️ **Customer Account** | `customer@quickkart.com` | `customer123` | Browse catalog, add to cart, test Dark Mode, checkout via Juspay, track live 8-min delivery. |
+| Portal / Role | Access Method | Privileges & Notes |
+| :--- | :--- | :--- |
+| 🌐 **Live Website Link** | **[https://quickkartservice.vercel.app](https://quickkartservice.vercel.app)** | Official live deployment URL |
+| 🛡️ **Public Demo Admin** | 1-Click Button / `demo.admin@quickkart.com` (`demo123`) | **Read-Only Demo Mode:** Safe demo for recruiters or visitors to inspect the Dark Store Hub without risk of altering store catalog. |
+| 🛍️ **Customer Account** | 1-Click Button / `customer@quickkart.com` (`customer123`) | Browse catalog, add to cart, test Dark Mode, checkout via Juspay, track live 8-min delivery. |
+| 👑 **Store Owner (Full Admin)** | Private Login Only | Managed privately by the store owner. Not exposed in public documentation. |
 
 ---
 
